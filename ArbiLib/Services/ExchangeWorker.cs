@@ -1,5 +1,4 @@
-﻿using ArbiLib.Libs;
-using ccxt;
+﻿using ccxt;
 
 namespace ArbiLib.Services
 {
@@ -14,7 +13,6 @@ namespace ArbiLib.Services
         public void StartWork()
         {
             _task = Task.Run(async () => await DoWork(_cancellationTokenSource.Token));
-
         }
 
         private async Task DoWork(CancellationToken cancellationToken)
@@ -23,8 +21,9 @@ namespace ArbiLib.Services
             {
                 try
                 {
-                    _tickers = await _exchange.FetchTickers();
-                    foreach (var item in _tickers.Value.tickers)
+                    await _exchange.FetchTickers();
+                    await Task.Delay(10000, cancellationToken);
+                    /*Parallel.ForEach(_tickers.Value.tickers, item =>
                     {
                         string ticker = TickerLib.RemoveSemiColon(item.Key);
                         if (TickerLib.IsUsdtPair(ticker))
@@ -32,29 +31,35 @@ namespace ArbiLib.Services
                             ticker = TickerLib.GetPureTicker(ticker);
                             if (item.Value.ask != null && item.Value.bid != null)
                             {
-                                _arbiServce.AddArbi(ticker, new Models.Arbi(
-                                    _exchange,
-                                    (double)item.Value.ask,
-                                    (double)item.Value.bid,
-                                    ticker));
+                                _arbiServce.UpdateTicker(ticker,
+                                                                _exchange,
+                                                                (double)item.Value.ask,
+                                                                (double)item.Value.bid,
+                                                                ticker);
                             }
                         }
-
-                    }
-
+                    });*/
+                    // Запускаем Garbage Collector для освобождения ненужной памяти
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
                 }
                 catch (Exception ex)
                 {
 
                 }
-                await Task.Delay(100, cancellationToken);
+               
             }
         }
 
         public void Dispose()
         {
             _cancellationTokenSource.Cancel();
-            _task.Wait();
+            try
+            {
+                _task?.Wait();
+            }catch(Exception) { }
+                    
+
             _cancellationTokenSource.Dispose();
         }
 

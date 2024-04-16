@@ -10,6 +10,13 @@ namespace ArbiLib.Models
 
         public bool IsValid => MinimalAsk != null && MaximalBid != null;
 
+        public double PercentDiff()
+        {
+            double a = MinimalAsk?.Ask ?? 0;
+            double b = MaximalBid?.Bid ?? 0;
+            return TickerLib.CalculatePercentDifference(a, b);
+        }
+
         public override string ToString()
         {
             if(IsValid)
@@ -19,6 +26,6 @@ namespace ArbiLib.Models
             return "Invalid ArbiOportunity " + base.ToString();
         }
 
-        public double PercentDiff() => TickerLib.CalculatePercentDifference(MinimalAsk.Ask, MaximalBid.Bid);
+
     }
 }
