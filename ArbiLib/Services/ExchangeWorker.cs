@@ -1,4 +1,5 @@
-﻿using ccxt;
+﻿using ArbiLib.Libs;
+using ccxt;
 
 namespace ArbiLib.Services
 {
@@ -21,9 +22,8 @@ namespace ArbiLib.Services
             {
                 try
                 {
-                    await _exchange.FetchTickers();
-                    await Task.Delay(10000, cancellationToken);
-                    /*Parallel.ForEach(_tickers.Value.tickers, item =>
+                    _tickers = await _exchange.FetchTickers();
+                    _ = Parallel.ForEach(_tickers.Value.tickers, item =>
                     {
                         string ticker = TickerLib.RemoveSemiColon(item.Key);
                         if (TickerLib.IsUsdtPair(ticker))
@@ -33,32 +33,33 @@ namespace ArbiLib.Services
                             {
                                 _arbiServce.UpdateTicker(ticker,
                                                                 _exchange,
-                                                                (double)item.Value.ask,
-                                                                (double)item.Value.bid,
-                                                                ticker);
+                                                                item.Value.ask ?? 0.0,
+                                                                item.Value.bid ?? 0.0,
+                                                                ticker,
+                                                                item.Value.quoteVolume ?? 0.0);
                             }
                         }
-                    });*/
-                    // Запускаем Garbage Collector для освобождения ненужной памяти
-                    GC.Collect();
-                    GC.WaitForPendingFinalizers();
+                    });
+                    await Task.Delay(1000);
                 }
                 catch (Exception ex)
                 {
 
                 }
-               
+
             }
         }
 
         public void Dispose()
         {
+            Console.WriteLine(_exchange.name.ToString() + " - Dispose");
             _cancellationTokenSource.Cancel();
             try
             {
                 _task?.Wait();
-            }catch(Exception) { }
-                    
+            }
+            catch (Exception) { }
+
 
             _cancellationTokenSource.Dispose();
         }

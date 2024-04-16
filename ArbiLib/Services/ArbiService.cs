@@ -7,11 +7,27 @@ namespace ArbiLib.Services
 {
     public class ArbiService(List<Exchange> InExchanges) : IDisposable
     {
-        public ConcurrentDictionary<string, List<Arbi>> ArbiDictionary { get; private set; } = [];
+        public ConcurrentDictionary<string, ConcurrentBag<Arbi>> ArbiDictionary { get; private set; } = [];
         public List<Exchange> Exchanges { get; private set; } = InExchanges;
         public List<ExchangeWorker> Workers { get; private set; } = [];
+
+        public ConcurrentQueue<ArbiOportunity> ArbiOportunitiesQueue { get; private set; } = [];
         public List<ArbiOportunity> Oportunities { get; private set; } = [];
-        public Queue<ArbiOportunity> ArbiOportunitiesQueue { get; private set; } = [];
+        private int _maxOportunities = 50;
+        public int MaxOportunities 
+        { 
+            get => _maxOportunities;
+            set 
+            {
+                _maxOportunities = value;
+                Oportunities.Clear();
+            } 
+        }
+
+        public double MinPercent { get; set; } = 1.0;
+        public double MaxPercent { get; set; } = 50.0;
+
+
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _collectArbiTask = null;
         private Task? _processArbiTask = null;
@@ -51,99 +67,101 @@ namespace ArbiLib.Services
             _processArbiTask = ProcessArbi();
         }
 
-        public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, double Ask, double Bid, string Symbol)
+        public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, double Ask, double Bid, string Symbol,
+             double DayVolume)
         {
-            List<Arbi> arbiList = ArbiDictionary.GetOrAdd(Key, _ => new List<Arbi>());
+            ConcurrentBag<Arbi> arbiList = ArbiDictionary.GetOrAdd(Key, _ => new ConcurrentBag<Arbi>());
             Arbi? exchangeArbi = arbiList.FirstOrDefault(x => x.ExchangeObject == ExchangeObject);
             if (exchangeArbi is not null)
             {
                 exchangeArbi.Ask = Ask;
                 exchangeArbi.Bid = Bid;
+                exchangeArbi.DayVolumeUSDT = DayVolume;
             }
             else
             {
-                arbiList.Add(new Arbi(ExchangeObject, Ask, Bid, Symbol));
+                arbiList.Add(new Arbi(ExchangeObject, Ask, Bid, Symbol, DayVolume));
             }
         }
 
         public async Task ProcessArbi()
         {
-            while (!_cancellationTokenSource.IsCancellationRequested)
+            await Task.Run(async () =>
             {
-                if(ArbiOportunitiesQueue.TryDequeue(out ArbiOportunity? value))
+                while (!_cancellationTokenSource.IsCancellationRequested)
                 {
-                    
+                    if (ArbiOportunitiesQueue.TryDequeue(out ArbiOportunity? value))
+                    {
+                        var res = Oportunities.FirstOrDefault(x => x.MinimalAsk?.Ticker == value.MinimalAsk?.Ticker);
+                        if(res is not null)
+                        {
+                            res.MinimalAsk = value.MinimalAsk;
+                            res.MaximalBid = value.MaximalBid;
+                        }
+                        else
+                        {
+                            Oportunities.Add(value);
+                        }
+                        Oportunities = Oportunities.OrderByDescending(x => x.PercentDiff()).Take(MaxOportunities).ToList();
+                    }
+                    await Task.Delay(250);
                 }
-                await Task.Delay(100);
-            }
+            });
         }
+
+
+
         public async Task CollectArbi()
         {
-            while(!_cancellationTokenSource.IsCancellationRequested)
+            await Task.Run(async () =>
             {
-                Parallel.ForEach(ArbiDictionary, item =>
+                while (!_cancellationTokenSource.IsCancellationRequested)
                 {
-                    List<Arbi> symbolDatas = item.Value;
-                    // Find the element with the lowest ask
-                    Arbi? lowestAskElement = symbolDatas.OrderBy(arbi => arbi.Ask).FirstOrDefault();
-                    if (lowestAskElement is null)
+                    Parallel.ForEach(ArbiDictionary, item =>
                     {
-                        return;
-                    }
-                    // Find the element with the highest bid
-                    Arbi? highestBidElement = symbolDatas
-                        .Where(arbi => arbi.ExchangeObject != lowestAskElement?.ExchangeObject && lowestAskElement?.Ask < arbi.Bid)
-                        .OrderByDescending(arbi => arbi.Bid)
-                        .FirstOrDefault();
-                    if (highestBidElement is null)
-                    {
-                        return;
-                    }
-                    var oportunity = new ArbiOportunity()
-                    {
-                        MinimalAsk = lowestAskElement,
-                        MaximalBid = highestBidElement
-                    };
-                    ArbiOportunitiesQueue.Enqueue(oportunity);
-                });
-                await Task.Delay(100);
-            }
-           
+                        ConcurrentBag<Arbi> symbolDatas = item.Value;
+                        // Find the element with the lowest ask
+                        Arbi? lowestAskElement = symbolDatas.OrderBy(arbi => arbi.Ask).FirstOrDefault();
+                        if (lowestAskElement is null)
+                        {
+                            return;
+                        }
+                        // Find the element with the highest bid
+                        Arbi? highestBidElement = symbolDatas
+                            .Where(arbi => arbi.ExchangeObject != lowestAskElement.ExchangeObject)
+                            .Where(arbi => lowestAskElement?.Ask < arbi.Bid)
+                            .OrderByDescending(arbi => arbi.Bid)
+                            .FirstOrDefault();
+                        if (highestBidElement is null)
+                        {
+                            return;
+                        }
+                        var oportunity = new ArbiOportunity()
+                        {
+                            MinimalAsk = lowestAskElement,
+                            MaximalBid = highestBidElement
+                        };
+                        double diff = oportunity.PercentDiff();
+                        if (diff > MinPercent && diff <= MaxPercent)
+                        {
+                            ArbiOportunitiesQueue.Enqueue(oportunity);
+                        }
+                    });
+                    await Task.Delay(250);
+                }
+            });
         }
 
-        public ArbiOportunity? FindOportunity(string Key)
+        static int FindIndexToInsert(List<ArbiOportunity> List, ArbiOportunity NewElement)
         {
-            List<Arbi> list = GetArbi(Key);
-            if (list.Count == 0)
+            for (int i = 0; i < List.Count; i++)
             {
-                return null;
-            }
-            // Find the element with the lowest ask
-            Arbi? lowestAskElement = list.OrderBy(arbi => arbi.Ask).FirstOrDefault();
-
-            // Find the element with the highest bid
-            Arbi? highestBidElement = list.Where(arbi => arbi.ExchangeObject != lowestAskElement?.ExchangeObject).OrderByDescending(arbi => arbi.Bid).FirstOrDefault();
-
-            if (lowestAskElement != null && highestBidElement != null)
-            {
-                return new ArbiOportunity()
+                if (List[i].PercentDiff() <= NewElement.PercentDiff())
                 {
-                    MinimalAsk = lowestAskElement,
-                    MaximalBid = highestBidElement
-                };
+                    return i;
+                }
             }
-            return null;
+            return List.Count;
         }
-
-        public List<Arbi> GetArbi(string Key)
-        {
-            if (!ArbiDictionary.ContainsKey(Key))
-            {
-                return new List<Arbi>();
-            }
-            return ArbiDictionary[Key];
-        }
-
-
     }
 }
