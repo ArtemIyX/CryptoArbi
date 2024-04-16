@@ -1,32 +1,20 @@
 ﻿using ArbiLib.Libs;
 using ccxt;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ArbiLib.Services
 {
-    public class ExchangeWorker : IDisposable
+    public class ExchangeWorker(ccxt.Exchange ExchangeObject, ArbiService ArbiServce) : IDisposable
     {
-        private CancellationTokenSource _cancellationTokenSource;
-        private Task _task;
-        private ccxt.Exchange _exchange;
-        private readonly ArbiService _arbiServce;
+        private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
+        private Task? _task = null;
+        private ccxt.Exchange _exchange = ExchangeObject;
+        private readonly ArbiService _arbiServce = ArbiServce;
         private Tickers? _tickers;
 
-        public ExchangeWorker(ccxt.Exchange ExchangeObject, ArbiService ArbiServce)
-        {
-            _cancellationTokenSource = new CancellationTokenSource();
-            _exchange = ExchangeObject;
-            _arbiServce = ArbiServce;
-        }
-
-
-        public async Task StartWork()
+        public void StartWork()
         {
             _task = Task.Run(async () => await DoWork(_cancellationTokenSource.Token));
+
         }
 
         private async Task DoWork(CancellationToken cancellationToken)
@@ -53,13 +41,13 @@ namespace ArbiLib.Services
                         }
 
                     }
-                    
+
                 }
                 catch (Exception ex)
                 {
 
                 }
-                await Task.Delay(100, cancellationToken); 
+                await Task.Delay(100, cancellationToken);
             }
         }
 

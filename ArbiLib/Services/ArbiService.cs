@@ -1,18 +1,33 @@
 ﻿using ArbiLib.Models;
 using ccxt;
-
 namespace ArbiLib.Services
 {
-    public class ArbiService
+    public class ArbiService(List<Exchange> InExchanges) : IDisposable
     {
-        protected Dictionary<string, List<Arbi>> ArbiDictionary { get; private set; }
-        protected List<Exchange> Exchanges { get; private set; }
+        public Dictionary<string, List<Arbi>> ArbiDictionary { get; private set; } = [];
+        public List<Exchange> Exchanges { get; private set; } = InExchanges;
+        public List<ExchangeWorker> Workers { get; private set; } = [];
 
-        public ArbiService(List<Exchange> InExchanges)
+        public void Dispose()
         {
-            this.ArbiDictionary = new Dictionary<string, List<Arbi>>();
+            foreach (var ex in Workers) 
+            { 
+                ex.Dispose();
+            }
+            ArbiDictionary.Clear(); 
+            Exchanges.Clear();
+            Workers.Clear();
         }
 
+        public void StartWorkers()
+        {
+            foreach (var ex in Exchanges)
+            {
+                ExchangeWorker worker = new ExchangeWorker(ex, this);
+                Workers.Add(worker);
+                worker.StartWork();
+            }
+        }
 
         public void AddArbi(string Key, Arbi NewValue)
         {
@@ -79,5 +94,7 @@ namespace ArbiLib.Services
             }
             return ArbiDictionary[Key];
         }
+
+
     }
 }
