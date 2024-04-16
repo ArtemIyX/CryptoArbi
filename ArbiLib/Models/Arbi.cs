@@ -8,27 +8,29 @@ namespace ArbiLib.Models
 {
     public class Arbi
     {
-        public Arbi(ccxt.Exchange ExchangeObject, double Ask, double Bid, string Symbol, 
-            double Volume)
-        {
-            this.Ask = Ask;
-            this.Bid = Bid;
-            this.ExchangeObject = ExchangeObject;
-            Ticker = Symbol;
-            DayVolumeUSDT = Volume;
-        }
 
-        public string Ticker { get; set; }
-        public ccxt.Exchange ExchangeObject { get; set; }
+        public required string Ticker { get; set; }
+        public required ccxt.Exchange ExchangeObject { get; set; }
         public double Ask { get; set; }
         public double Bid { get; set; }
         public double DayVolumeUSDT { get; set; }
-        
-        public string DayVolumeStr => DayVolumeUSDT >= 1_000_000 ? $"{DayVolumeUSDT / 1_000_000:F2}kk" : DayVolumeUSDT >= 1_000 ? $"{DayVolumeUSDT / 1_000:F2}k" : DayVolumeUSDT.ToString("F2");
+        public double AskVolume { get; set; }
+        public double BidVolune { get; set; }
+
+        public double AskVolumeUsdt => AskVolume / Ask;
+        public double BidVolumeUsdt => BidVolune / Bid;
+
+        public string DayVolumeStr => MakeVolumeString(DayVolumeUSDT);
+        public string AskVolumeStr => MakeVolumeString(AskVolume);
+        public string BidVolumeStr => MakeVolumeString(BidVolune);
+
+        public string AskVolumeUsdtStr => MakeVolumeString(AskVolumeUsdt);
+        public string BidVolumeUsdtStr => MakeVolumeString(BidVolumeUsdt);
 
         public override string ToString()
         {
             return $"{ExchangeObject.name} {Ticker} - Ask: {Ask:F10}, Bid: {Bid:F10} (Vol: {DayVolumeStr})";
         }
+        protected string MakeVolumeString(double Volume) => Volume >= 1_000_000 ? $"{Volume / 1_000_000:F2}kk" : Volume >= 1_000 ? $"{Volume / 1_000:F2}k" : Volume.ToString("F2");
     }
 }

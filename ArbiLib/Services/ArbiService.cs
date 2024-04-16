@@ -24,9 +24,10 @@ namespace ArbiLib.Services
             } 
         }
 
-        public double MinPercent { get; set; } = 1.0;
-        public double MaxPercent { get; set; } = 50.0;
-
+        public double MinProfitPercent { get; set; } = 1.0;
+        public double MaxProfitPercent { get; set; } = 50.0;
+        public double MinAskVolumeUsdt { get; set; } = 500.0;
+        public double MinBidVolumeUsdt { get; set; } = 500.0;
 
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _collectArbiTask = null;
@@ -57,6 +58,7 @@ namespace ArbiLib.Services
 
         public void StartWorkers()
         {
+            
             foreach (var ex in Exchanges)
             {
                 ExchangeWorker worker = new ExchangeWorker(ex, this);
@@ -68,7 +70,7 @@ namespace ArbiLib.Services
         }
 
         public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, double Ask, double Bid, string Symbol,
-             double DayVolume)
+             double DayVolume, double AskVolume, double BidVolume)
         {
             ConcurrentBag<Arbi> arbiList = ArbiDictionary.GetOrAdd(Key, _ => new ConcurrentBag<Arbi>());
             Arbi? exchangeArbi = arbiList.FirstOrDefault(x => x.ExchangeObject == ExchangeObject);
@@ -77,10 +79,21 @@ namespace ArbiLib.Services
                 exchangeArbi.Ask = Ask;
                 exchangeArbi.Bid = Bid;
                 exchangeArbi.DayVolumeUSDT = DayVolume;
+                exchangeArbi.AskVolume = AskVolume;
+                exchangeArbi.BidVolune = BidVolume;
             }
             else
             {
-                arbiList.Add(new Arbi(ExchangeObject, Ask, Bid, Symbol, DayVolume));
+                arbiList.Add(new Arbi()
+                {
+                    ExchangeObject = ExchangeObject,
+                    Ask = Ask,
+                    Bid = Bid,
+                    Ticker = Symbol,
+                    AskVolume = AskVolume,
+                    BidVolune = BidVolume,
+                    DayVolumeUSDT = DayVolume
+                });
             }
         }
 
@@ -142,7 +155,9 @@ namespace ArbiLib.Services
                             MaximalBid = highestBidElement
                         };
                         double diff = oportunity.PercentDiff();
-                        if (diff > MinPercent && diff <= MaxPercent)
+                        if (diff > 0 && diff > MinProfitPercent && diff <= MaxProfitPercent
+                            && lowestAskElement.AskVolumeUsdt > MinAskVolumeUsdt 
+                            && highestBidElement.BidVolumeUsdt > MinBidVolumeUsdt)
                         {
                             ArbiOportunitiesQueue.Enqueue(oportunity);
                         }

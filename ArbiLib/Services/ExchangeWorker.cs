@@ -1,5 +1,6 @@
 ﻿using ArbiLib.Libs;
 using ccxt;
+using Newtonsoft.Json;
 
 namespace ArbiLib.Services
 {
@@ -18,36 +19,42 @@ namespace ArbiLib.Services
 
         private async Task DoWork(CancellationToken cancellationToken)
         {
-            while (!cancellationToken.IsCancellationRequested)
+            await Task.Run(async () =>
             {
-                try
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    _tickers = await _exchange.FetchTickers();
-                    _ = Parallel.ForEach(_tickers.Value.tickers, item =>
+                    try
                     {
-                        string ticker = TickerLib.RemoveSemiColon(item.Key);
-                        if (TickerLib.IsUsdtPair(ticker))
+                        _tickers = await _exchange.FetchTickers();
+                        _ = Parallel.ForEach(_tickers.Value.tickers, async item =>
                         {
-                            ticker = TickerLib.GetPureTicker(ticker);
-                            if (item.Value.ask != null && item.Value.bid != null)
+                            string ticker = TickerLib.RemoveSemiColon(item.Key);
+                            if (TickerLib.IsUsdtPair(ticker))
                             {
-                                _arbiServce.UpdateTicker(ticker,
-                                                                _exchange,
-                                                                item.Value.ask ?? 0.0,
-                                                                item.Value.bid ?? 0.0,
-                                                                ticker,
-                                                                item.Value.quoteVolume ?? 0.0);
+                                ticker = TickerLib.GetPureTicker(ticker);
+                                if (item.Value.ask != null && item.Value.bid != null)
+                                {
+                                    _arbiServce.UpdateTicker(ticker,
+                                                                    _exchange,
+                                                                    item.Value.ask ?? 0.0,
+                                                                    item.Value.bid ?? 0.0,
+                                                                    ticker,
+                                                                    item.Value.quoteVolume ?? 0.0,
+                                                                    item.Value.askVolume ?? 0.0,
+                                                                    item.Value.bidVolume ?? 0.0);
+                                }
                             }
-                        }
-                    });
-                    await Task.Delay(1000);
-                }
-                catch (Exception ex)
-                {
+                        });
+                        await Task.Delay(1000);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
 
                 }
+            });
 
-            }
         }
 
         public void Dispose()

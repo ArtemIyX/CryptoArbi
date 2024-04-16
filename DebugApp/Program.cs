@@ -22,8 +22,11 @@ internal class Program
             new Huobi(),
             new Bitstamp()
         });
-        service.MaxOportunities = 10;
-
+        service.MaxOportunities = 25;
+        service.MinProfitPercent = 0.1;
+        service.MaxProfitPercent = 100.0;
+        service.MinBidVolumeUsdt = 0;
+        service.MinAskVolumeUsdt = 0;
         service.StartWorkers();
         _ = Display(service);
         await WaitForKeyPress();
@@ -43,9 +46,10 @@ internal class Program
             foreach(var item in res)
             {
                 await Console.Out.WriteLineAsync(item.ToString());
+                //await Console.Out.WriteLineAsync();
             }
             //await Console.Out.WriteLineAsync(Newtonsoft.Json.JsonConvert.SerializeObject(res, Formatting.Indented));
-            await Task.Delay(250);
+            await Task.Delay(2500);
         }
     }
     static async Task WaitForKeyPress()
