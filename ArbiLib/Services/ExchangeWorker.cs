@@ -18,7 +18,6 @@ namespace ArbiLib.Services
 
         private async Task DoWork(CancellationToken cancellationToken)
         {
-
             await Task.Run(async () =>
             {
                 while (!cancellationToken.IsCancellationRequested)
