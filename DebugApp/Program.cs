@@ -47,7 +47,7 @@ internal class Program
         while(true)
         {
             Console.Clear();
-            var res = service.Oportunities.OrderByDescending(x => x.PercentDiff()).ToArray();
+            var res = service.OportunityList.OrderByDescending(x => x.PercentDiff()).ToArray();
             foreach(var item in res)
             {
                 await Console.Out.WriteLineAsync(item.ToString());

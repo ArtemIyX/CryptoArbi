@@ -1,6 +1,6 @@
 ﻿namespace ArbiLib.Services.Worker
 {
-    public abstract class AsyncWorker(ArbiService Service) : IDisposable
+    public class AsyncWorker(ArbiService Service) : IDisposable
     {
         public bool IsRunning { get; protected set; } = false;
         public ArbiService Arbi { get; protected set; } = Service;
@@ -37,11 +37,13 @@
         {
             while (!cancellationToken.IsCancellationRequested)
             {
-                Task t = DoWork();
-                await t;
+                await DoWork();
             }
         }
 
-        protected abstract Task DoWork();
+        protected virtual async Task DoWork()
+        {
+
+        }
     }
 }

@@ -2,6 +2,7 @@
 using ArbiLib.Services.AsyncWorkers.Impl;
 using ccxt;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 namespace ArbiLib.Services
 {
     public class ArbiService : IDisposable
@@ -11,9 +12,11 @@ namespace ArbiLib.Services
         public List<ExchangeWorker> ExchangeWorkers { get; private set; } = [];
 
         public ArbiCollector Collector { get; private set; }
+        public ArbiProcessor Processor { get; private set; }
 
         public ConcurrentQueue<ArbiOportunity> ArbiOportunitiesQueue { get; private set; } = [];
-        public List<ArbiOportunity> Oportunities { get; private set; } = [];
+        public List<ArbiOportunity> OportunityList { get; set; } = [];
+
         private int _maxOportunities = 50;
         public int MaxOportunities
         {
@@ -21,7 +24,7 @@ namespace ArbiLib.Services
             set
             {
                 _maxOportunities = value;
-                Oportunities.Clear();
+                OportunityList.Clear();
             }
         }
 
@@ -31,13 +34,11 @@ namespace ArbiLib.Services
         public double MinBidVolumeUsdt { get; set; } = 500.0;
         public double MinDayVolumeUsdt { get; set; } = 0;
 
-        private CancellationTokenSource _cancellationTokenSource = new();
-        private Task? _processArbiTask = null;
-
         public ArbiService(List<Exchange> InExchanges)
         {
             Exchanges = InExchanges;
             Collector = new ArbiCollector(this);
+            Processor = new ArbiProcessor(this);
         }
 
         public void Dispose()
@@ -47,13 +48,7 @@ namespace ArbiLib.Services
                 ex.Dispose();
             }
             Collector.Dispose();
-            _cancellationTokenSource.Cancel();
-            try
-            {
-                _processArbiTask?.Wait();
-            }
-            catch (Exception) { }
-            _cancellationTokenSource.Dispose();
+            Processor.Dispose();
 
             ArbiDictionary.Clear();
             Exchanges.Clear();
@@ -69,7 +64,7 @@ namespace ArbiLib.Services
                 worker.StartWork();
             }
             Collector.StartWork();
-            _processArbiTask = ProcessArbi();
+            Processor.StartWork();
         }
 
         public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, double Ask, double Bid, string Symbol,
@@ -98,44 +93,6 @@ namespace ArbiLib.Services
                     DayVolumeUSDT = DayVolume
                 });
             }
-        }
-
-        public async Task ProcessArbi()
-        {
-            await Task.Run(async () =>
-            {
-                while (!_cancellationTokenSource.IsCancellationRequested)
-                {
-                    if (ArbiOportunitiesQueue.TryDequeue(out ArbiOportunity? value))
-                    {
-                        var res = Oportunities.FirstOrDefault(x => x.MinimalAsk?.Ticker == value.MinimalAsk?.Ticker);
-                        if (res is not null)
-                        {
-                            res.MinimalAsk = value.MinimalAsk;
-                            res.MaximalBid = value.MaximalBid;
-                        }
-                        else
-                        {
-                            Oportunities.Add(value);
-                        }
-                        Oportunities = Oportunities.OrderByDescending(x => x.PercentDiff()).Take(MaxOportunities).ToList();
-                    }
-                    await Task.Delay(250);
-                }
-            });
-        }
-
-
-        static int FindIndexToInsert(List<ArbiOportunity> List, ArbiOportunity NewElement)
-        {
-            for (int i = 0; i < List.Count; i++)
-            {
-                if (List[i].PercentDiff() <= NewElement.PercentDiff())
-                {
-                    return i;
-                }
-            }
-            return List.Count;
         }
     }
 }
