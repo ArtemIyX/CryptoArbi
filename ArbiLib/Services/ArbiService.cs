@@ -28,6 +28,7 @@ namespace ArbiLib.Services
         public double MaxProfitPercent { get; set; } = 50.0;
         public double MinAskVolumeUsdt { get; set; } = 500.0;
         public double MinBidVolumeUsdt { get; set; } = 500.0;
+        public double MinDayVolumeUsdt { get; set; } = 0;
 
         private CancellationTokenSource _cancellationTokenSource = new();
         private Task? _collectArbiTask = null;
@@ -156,7 +157,9 @@ namespace ArbiLib.Services
                         double diff = oportunity.PercentDiff();
                         if (diff > 0 && diff > MinProfitPercent && diff <= MaxProfitPercent
                             && lowestAskElement.AskVolumeUsdt > MinAskVolumeUsdt 
-                            && highestBidElement.BidVolumeUsdt > MinBidVolumeUsdt)
+                            && highestBidElement.BidVolumeUsdt > MinBidVolumeUsdt
+                            && lowestAskElement.DayVolumeUSDT > MinDayVolumeUsdt
+                            && highestBidElement.DayVolumeUSDT > MinDayVolumeUsdt)
                         {
                             ArbiOportunitiesQueue.Enqueue(oportunity);
                         }

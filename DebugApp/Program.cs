@@ -31,6 +31,7 @@ internal class Program
         service.MaxProfitPercent = 65.0;
         service.MinBidVolumeUsdt = 0;
         service.MinAskVolumeUsdt = 0;
+        service.MinDayVolumeUsdt = 0;
         service.StartWorkers();
         _ = Display(service);
         await WaitForKeyPress();
