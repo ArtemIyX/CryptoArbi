@@ -4,7 +4,7 @@ using ccxt;
 
 namespace ArbiLib.Services.AsyncWorkers.Impl
 {
-    public class ExchangeWorker(Exchange ExchangeObject, ArbiService Service) : AsyncWorker(Service)
+    public class ExchangeWorker(Exchange ExchangeObject, ArbiService InService) : AsyncWorker(InService)
     {
         private Exchange _exchange = ExchangeObject;
         private Tickers? _tickers;
@@ -22,7 +22,7 @@ namespace ArbiLib.Services.AsyncWorkers.Impl
                         ticker = TickerLib.GetPureTicker(ticker);
                         if (item.Value.ask != null && item.Value.bid != null)
                         {
-                            ArbiServce.UpdateTicker(ticker,
+                            Arbi.UpdateTicker(ticker,
                                                             _exchange,
                                                             item.Value.ask ?? 0.0,
                                                             item.Value.bid ?? 0.0,
