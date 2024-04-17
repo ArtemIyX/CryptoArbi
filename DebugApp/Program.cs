@@ -15,16 +15,20 @@ internal class Program
         ArbiLib.Services.ArbiService service = new ArbiService(new List<Exchange>()
         {
             new Binance(),
-            //new Mexc(),
+            new Mexc(),
             new Kucoin(),
             new Kraken(),
-            new Bybit(),
+            //new Bybit(),
             new Huobi(),
-            new Bitstamp()
+            new Bitstamp(),
+            new Coinbase(),
+            new Okx(),
+            new Bitget(),
+            new Bitfinex(),
         });
-        service.MaxOportunities = 25;
+        service.MaxOportunities = 100;
         service.MinProfitPercent = 0.1;
-        service.MaxProfitPercent = 100.0;
+        service.MaxProfitPercent = 65.0;
         service.MinBidVolumeUsdt = 0;
         service.MinAskVolumeUsdt = 0;
         service.StartWorkers();

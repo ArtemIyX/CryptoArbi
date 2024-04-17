@@ -1,6 +1,5 @@
 ﻿using ArbiLib.Libs;
 using ccxt;
-using Newtonsoft.Json;
 
 namespace ArbiLib.Services
 {
@@ -19,6 +18,7 @@ namespace ArbiLib.Services
 
         private async Task DoWork(CancellationToken cancellationToken)
         {
+
             await Task.Run(async () =>
             {
                 while (!cancellationToken.IsCancellationRequested)

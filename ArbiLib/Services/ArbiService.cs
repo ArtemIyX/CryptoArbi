@@ -58,7 +58,6 @@ namespace ArbiLib.Services
 
         public void StartWorkers()
         {
-            
             foreach (var ex in Exchanges)
             {
                 ExchangeWorker worker = new ExchangeWorker(ex, this);
