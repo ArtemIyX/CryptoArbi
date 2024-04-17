@@ -1,33 +1,46 @@
 ﻿using ArbiLib.Libs;
 using ArbiLib.Services.Worker;
 using ccxt;
+using Newtonsoft.Json;
 
 namespace ArbiLib.Services.AsyncWorkers.Impl
 {
     public class ExchangeWorker(Exchange ExchangeObject, ArbiService InService) : AsyncWorker(InService)
     {
         private Exchange _exchange = ExchangeObject;
-        private Tickers? _tickers;
+        public Tickers? Tickers;
+        public TradingFees? Fees;
+
+        public override void StartWork()
+        {
+            base.StartWork();
+
+            _ = FetchFees();  
+        }
+
+        protected virtual async Task FetchFees()
+        {
+            await Task.Run(async () =>
+            {
+                Fees = await _exchange.FetchTradingFees();
+            }, _cancellationTokenSource.Token);
+        }
 
         protected override async Task DoWork()
         {
-            _tickers = await _exchange.FetchTickers();
-            _ = Parallel.ForEach(_tickers.Value.tickers, item =>
+            Tickers = await _exchange.FetchTickers();
+            _ = Parallel.ForEach(Tickers.Value.tickers, item =>
             {
-                string ticker = TickerLib.RemoveSemiColon(item.Key);
-                if (TickerLib.IsUsdtPair(ticker))
+                string tickerName = TickerLib.RemoveSemiColon(item.Key);
+                if (TickerLib.IsUsdtPair(tickerName))
                 {
-                    ticker = TickerLib.GetPureTicker(ticker);
+                    string friendlySymbol = TickerLib.GetPureTicker(tickerName);
                     if (item.Value.ask != null && item.Value.bid != null)
                     {
-                        Arbi.UpdateTicker(ticker,
+                        Ticker ticker = item.Value;
+                        Arbi.UpdateTicker(friendlySymbol,
                                                         _exchange,
-                                                        item.Value.ask ?? 0.0,
-                                                        item.Value.bid ?? 0.0,
-                                                        ticker,
-                                                        item.Value.quoteVolume ?? 0.0,
-                                                        item.Value.askVolume ?? 0.0,
-                                                        item.Value.bidVolume ?? 0.0);
+                                                        ref ticker);
                     }
                 }
             });

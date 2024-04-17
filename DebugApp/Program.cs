@@ -34,6 +34,7 @@ internal class Program
         service.MinDayVolumeUsdt = 0;
         service.StartWorkers();
         _ = Display(service);
+
         await WaitForKeyPress();
         Console.WriteLine("Key pressed. Program exiting...");
         service.Dispose();

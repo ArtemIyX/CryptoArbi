@@ -21,7 +21,7 @@ namespace ArbiLib.Models
         {
             if(IsValid)
             {
-                return $"{PercentDiff():F2}%\t{MinimalAsk?.Ticker}\t{MinimalAsk?.ExchangeObject.name}\t{MinimalAsk?.Ask:F10}\t (AskVol: {MinimalAsk?.AskVolumeUsdtStr}$) \tB|" +
+                return $"{PercentDiff():F2}%\t{MinimalAsk?.FriendlySymbolName}\t{MinimalAsk?.ExchangeObject.name}\t{MinimalAsk?.Ask:F10}\t (AskVol: {MinimalAsk?.AskVolumeUsdtStr}$) \tB|" +
                     $"S (BidVol: {MaximalBid?.BidVolumeUsdtStr}$)\t{MaximalBid?.ExchangeObject.name}\t{MaximalBid?.Bid:F10}";
             }
             return "Invalid ArbiOportunity " + base.ToString();

@@ -7,12 +7,12 @@
         protected CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
         protected Task? _task = null;
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             StopWork();
         }
 
-        public void StopWork()
+        public virtual void StopWork()
         {
             _cancellationTokenSource.Cancel();
             try
@@ -24,7 +24,7 @@
             IsRunning = false;
         }
 
-        public void StartWork()
+        public virtual void StartWork()
         {
             if (IsRunning) return;
 

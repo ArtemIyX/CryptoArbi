@@ -67,30 +67,30 @@ namespace ArbiLib.Services
             Processor.StartWork();
         }
 
-        public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, double Ask, double Bid, string Symbol,
-             double DayVolume, double AskVolume, double BidVolume)
+        public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, ref Ticker Ticker)
         {
             ConcurrentBag<Arbi> arbiList = ArbiDictionary.GetOrAdd(Key, _ => new ConcurrentBag<Arbi>());
             Arbi? exchangeArbi = arbiList.FirstOrDefault(x => x.ExchangeObject == ExchangeObject);
             if (exchangeArbi is not null)
             {
-                exchangeArbi.Ask = Ask;
-                exchangeArbi.Bid = Bid;
-                exchangeArbi.DayVolumeUSDT = DayVolume;
-                exchangeArbi.AskVolume = AskVolume;
-                exchangeArbi.BidVolune = BidVolume;
+                exchangeArbi.Ask = Ticker.ask ?? 0.0;
+                exchangeArbi.Bid = Ticker.bid ?? 0.0;
+                exchangeArbi.DayVolumeUSDT = Ticker.quoteVolume ?? 0.0;
+                exchangeArbi.AskVolume = Ticker.askVolume ?? 0.0;
+                exchangeArbi.BidVolune = Ticker.bidVolume ?? 0.0;
             }
             else
             {
                 arbiList.Add(new Arbi()
                 {
                     ExchangeObject = ExchangeObject,
-                    Ask = Ask,
-                    Bid = Bid,
-                    Ticker = Symbol,
-                    AskVolume = AskVolume,
-                    BidVolune = BidVolume,
-                    DayVolumeUSDT = DayVolume
+                    FriendlySymbolName = Key,
+                    FullSymbolName = Ticker.symbol ?? "",
+                    Ask = Ticker.ask ?? 0.0,
+                    Bid = Ticker.bid ?? 0.0,
+                    AskVolume = Ticker.askVolume ?? 0.0,
+                    BidVolune = Ticker.bidVolume ?? 0.0,
+                    DayVolumeUSDT = Ticker.quoteVolume ?? 0.0
                 });
             }
         }

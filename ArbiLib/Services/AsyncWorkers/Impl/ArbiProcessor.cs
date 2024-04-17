@@ -9,7 +9,7 @@ namespace ArbiLib.Services.AsyncWorkers.Impl
         {
             if (Arbi.ArbiOportunitiesQueue.TryDequeue(out ArbiOportunity? value))
             {
-                ArbiOportunity? res = Arbi.OportunityList.FirstOrDefault(x => x.MinimalAsk?.Ticker == value.MinimalAsk?.Ticker);
+                ArbiOportunity? res = Arbi.OportunityList.FirstOrDefault(x => x.MinimalAsk?.FriendlySymbolName == value.MinimalAsk?.FriendlySymbolName);
                 if (res is not null)
                 {
                     res.MinimalAsk = value.MinimalAsk;
