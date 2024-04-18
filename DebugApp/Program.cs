@@ -1,7 +1,5 @@
 ﻿using ArbiLib.Services;
 using ccxt;
-using Nethereum.Util;
-using Newtonsoft.Json;
 using System.Globalization;
 
 internal class Program
@@ -18,17 +16,17 @@ internal class Program
             new Mexc(),
             new Kucoin(),
             new Kraken(),
-            //new Bybit(),
+            new Bybit(),
             new Huobi(),
+            new Gateio(),
             new Bitstamp(),
             new Coinbase(),
             new Okx(),
             new Bitget(),
             new Bitfinex(),
         });
-        service.MaxOportunities = 100;
-        service.MinProfitPercent = 0.1;
-        service.MaxProfitPercent = 65.0;
+        service.MinProfitPercent = 0.0;
+        service.MaxProfitPercent = 50;
         service.MinBidVolumeUsdt = 0;
         service.MinAskVolumeUsdt = 0;
         service.MinDayVolumeUsdt = 0;
@@ -45,11 +43,12 @@ internal class Program
 
     static async Task Display(ArbiLib.Services.ArbiService service)
     {
-        while(true)
+        while (true)
         {
+
             Console.Clear();
-            var res = service.OportunityList.OrderByDescending(x => x.PercentDiff()).ToArray();
-            foreach(var item in res)
+            var res = service.OportunityList.OrderByDescending(x => x.PercentDiff()).Take(15).ToArray();
+            foreach (var item in res)
             {
                 await Console.Out.WriteLineAsync(item.ToString());
                 //await Console.Out.WriteLineAsync();

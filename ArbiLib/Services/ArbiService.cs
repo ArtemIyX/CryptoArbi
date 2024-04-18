@@ -17,17 +17,6 @@ namespace ArbiLib.Services
         public ConcurrentQueue<ArbiOportunity> ArbiOportunitiesQueue { get; private set; } = [];
         public List<ArbiOportunity> OportunityList { get; set; } = [];
 
-        private int _maxOportunities = 50;
-        public int MaxOportunities
-        {
-            get => _maxOportunities;
-            set
-            {
-                _maxOportunities = value;
-                OportunityList.Clear();
-            }
-        }
-
         public double MinProfitPercent { get; set; } = 1.0;
         public double MaxProfitPercent { get; set; } = 50.0;
         public double MinAskVolumeUsdt { get; set; } = 500.0;

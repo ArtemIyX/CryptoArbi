@@ -11,7 +11,12 @@ namespace ArbiLib.Services
     {
         public ArbiService ArbiService { get; private set; } = InService;
 
-        double CalculateProfit(double BalanceUsdt, ArbiOportunity ArbiOportunity)
+        public double CalculateProfit(ArbiOportunity ArbiOportunity,
+            double BalanceUsdt, 
+            double TakerFeeAsk,
+            double TakerFeeBid,
+            double WithdrawFeeAmount,
+            double UsdtWithdrawFeeAmount)
         {
             if (!ArbiOportunity.IsValid)
                 return 0.0;
@@ -22,8 +27,19 @@ namespace ArbiLib.Services
             double ask = askArbi.Ask;
             double bid = bidArbi.Bid;
 
+            double amountToBuy = BalanceUsdt / ask;
 
-            return 0.0;
+            double amountReceived = amountToBuy - (amountToBuy * TakerFeeAsk);
+
+            double amountTransferred = amountReceived - WithdrawFeeAmount;
+
+            double amountSold = amountTransferred * bid;
+
+            double amountUsdtReceived = amountSold - (amountSold * TakerFeeBid);
+
+            double finalBalance = (amountUsdtReceived - UsdtWithdrawFeeAmount);
+
+            return finalBalance - BalanceUsdt;
         }
     }
 }

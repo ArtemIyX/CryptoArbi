@@ -19,9 +19,8 @@ namespace ArbiLib.Services.AsyncWorkers.Impl
                 {
                     Arbi.OportunityList.Add(value);
                 }
-                Arbi.OportunityList = Arbi.OportunityList.OrderByDescending(x => x.PercentDiff()).Take(Arbi.MaxOportunities).ToList();
             }
-            await Task.Delay(250);
+            await Task.Delay(50);
         }
     }
 }
