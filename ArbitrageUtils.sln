@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DebugApp", "DebugApp\DebugA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiLib", "ArbiLib\ArbiLib.csproj", "{BFB05078-F514-4E81-AD12-075BFA04DE4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArbiTools", "ArbiTools\ArbiTools.csproj", "{C386F70C-96A4-457E-957A-A99BAC43F2C0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArbiWriter", "ArbiWriter\ArbiWriter.csproj", "{5F4B6863-7B42-46D2-A038-B0B6D7F6DAB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{BFB05078-F514-4E81-AD12-075BFA04DE4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFB05078-F514-4E81-AD12-075BFA04DE4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFB05078-F514-4E81-AD12-075BFA04DE4E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C386F70C-96A4-457E-957A-A99BAC43F2C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C386F70C-96A4-457E-957A-A99BAC43F2C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C386F70C-96A4-457E-957A-A99BAC43F2C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C386F70C-96A4-457E-957A-A99BAC43F2C0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F4B6863-7B42-46D2-A038-B0B6D7F6DAB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F4B6863-7B42-46D2-A038-B0B6D7F6DAB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F4B6863-7B42-46D2-A038-B0B6D7F6DAB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F4B6863-7B42-46D2-A038-B0B6D7F6DAB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

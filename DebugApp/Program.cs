@@ -16,14 +16,15 @@ internal class Program
             new Mexc(),
             new Kucoin(),
             new Kraken(),
-            new Bybit(),
+            //new Bybit(),
             new Huobi(),
             new Gateio(),
             new Bitstamp(),
             new Coinbase(),
             new Okx(),
-            new Bitget(),
-            new Bitfinex(),
+            new Bitmex(),
+            /*new Bitget(),
+            new Bitfinex(),*/
         });
         service.MinProfitPercent = 0.0;
         service.MaxProfitPercent = 50;
