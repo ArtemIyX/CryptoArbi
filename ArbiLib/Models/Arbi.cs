@@ -16,14 +16,14 @@ namespace ArbiLib.Models
         public double Bid { get; set; }
         public double DayVolumeUSDT { get; set; }
         public double AskVolume { get; set; }
-        public double BidVolune { get; set; }
+        public double BidVolume { get; set; }
 
         public double AskVolumeUsdt => AskVolume * Ask;
-        public double BidVolumeUsdt => BidVolune *Bid;
+        public double BidVolumeUsdt => BidVolume * Bid;
 
         public string DayVolumeStr => MakeVolumeString(DayVolumeUSDT);
         public string AskVolumeStr => MakeVolumeString(AskVolume);
-        public string BidVolumeStr => MakeVolumeString(BidVolune);
+        public string BidVolumeStr => MakeVolumeString(BidVolume);
 
         public string AskVolumeUsdtStr => MakeVolumeString(AskVolumeUsdt);
         public string BidVolumeUsdtStr => MakeVolumeString(BidVolumeUsdt);

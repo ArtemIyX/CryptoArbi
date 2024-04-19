@@ -66,7 +66,7 @@ namespace ArbiLib.Services
                 exchangeArbi.Bid = Ticker.bid ?? 0.0;
                 exchangeArbi.DayVolumeUSDT = Ticker.quoteVolume ?? 0.0;
                 exchangeArbi.AskVolume = Ticker.askVolume ?? 0.0;
-                exchangeArbi.BidVolune = Ticker.bidVolume ?? 0.0;
+                exchangeArbi.BidVolume = Ticker.bidVolume ?? 0.0;
             }
             else
             {
@@ -78,7 +78,7 @@ namespace ArbiLib.Services
                     Ask = Ticker.ask ?? 0.0,
                     Bid = Ticker.bid ?? 0.0,
                     AskVolume = Ticker.askVolume ?? 0.0,
-                    BidVolune = Ticker.bidVolume ?? 0.0,
+                    BidVolume = Ticker.bidVolume ?? 0.0,
                     DayVolumeUSDT = Ticker.quoteVolume ?? 0.0
                 });
             }

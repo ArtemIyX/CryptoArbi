@@ -9,7 +9,6 @@ internal class Program
         CultureInfo culture = new CultureInfo("en-US");
         culture.NumberFormat.NumberDecimalSeparator = ".";
         System.Threading.Thread.CurrentThread.CurrentCulture = culture;
-
         ArbiLib.Services.ArbiService service = new ArbiService(new List<Exchange>()
         {
             new Binance(),
