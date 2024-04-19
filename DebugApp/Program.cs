@@ -1,5 +1,6 @@
 ﻿using ArbiLib.Services;
 using ccxt;
+using DebugApp;
 using System.Globalization;
 
 internal class Program
@@ -9,7 +10,7 @@ internal class Program
         CultureInfo culture = new CultureInfo("en-US");
         culture.NumberFormat.NumberDecimalSeparator = ".";
         System.Threading.Thread.CurrentThread.CurrentCulture = culture;
-        ArbiLib.Services.ArbiService service = new ArbiService(new List<Exchange>()
+        LocalArbiService service = new LocalArbiService(new List<Exchange>()
         {
             new Binance(),
             new Mexc(),
@@ -26,7 +27,7 @@ internal class Program
             new Bitfinex(),*/
         });
         service.MinProfitPercent = 0.0;
-        service.MaxProfitPercent = 50;
+        service.MaxProfitPercent = 100;
         service.MinBidVolumeUsdt = 0;
         service.MinAskVolumeUsdt = 0;
         service.MinDayVolumeUsdt = 0;
@@ -41,12 +42,13 @@ internal class Program
         Console.ReadLine();
     }
 
-    static async Task Display(ArbiLib.Services.ArbiService service)
+    static async Task Display(LocalArbiService service)
     {
         while (true)
         {
 
             Console.Clear();
+            await Console.Out.WriteLineAsync(service.OportunityList.Count.ToString());
             var res = service.OportunityList.OrderByDescending(x => x.PercentDiff()).Take(15).ToArray();
             foreach (var item in res)
             {

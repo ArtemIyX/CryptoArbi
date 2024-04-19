@@ -1,15 +1,16 @@
 ﻿using ArbiLib.Models;
 using ArbiLib.Services.AsyncWorkers.Impl;
 using ccxt;
+using DebugApp.Workers;
 using System.Collections.Concurrent;
 using System.Diagnostics;
-namespace ArbiLib.Services
+namespace DebugApp
 {
-    public class ArbiService : IDisposable
+    public class LocalArbiService : IDisposable
     {
         public ConcurrentDictionary<string, ConcurrentBag<Arbi>> ArbiDictionary { get; private set; } = [];
         public List<Exchange> Exchanges { get; private set; }
-        public List<ExchangeWorker> ExchangeWorkers { get; private set; } = [];
+        public List<LocalExchangeWorker> ExchangeWorkers { get; private set; } = [];
 
         public ArbiCollector Collector { get; private set; }
         public ArbiProcessor Processor { get; private set; }
@@ -23,7 +24,7 @@ namespace ArbiLib.Services
         public double MinBidVolumeUsdt { get; set; } = 500.0;
         public double MinDayVolumeUsdt { get; set; } = 0;
 
-        public ArbiService(List<Exchange> InExchanges)
+        public LocalArbiService(List<Exchange> InExchanges)
         {
             Exchanges = InExchanges;
             Collector = new ArbiCollector(this);
@@ -48,7 +49,7 @@ namespace ArbiLib.Services
         {
             foreach (var ex in Exchanges)
             {
-                ExchangeWorker worker = new ExchangeWorker(ex, this);
+                LocalExchangeWorker worker = new LocalExchangeWorker(ex, this);
                 ExchangeWorkers.Add(worker);
                 worker.StartWork();
             }
@@ -56,7 +57,7 @@ namespace ArbiLib.Services
             Processor.StartWork();
         }
 
-        public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, ref Ticker Ticker)
+        public void UpdateTicker(string Key, ccxt.Exchange ExchangeObject, in Ticker Ticker)
         {
             ConcurrentBag<Arbi> arbiList = ArbiDictionary.GetOrAdd(Key, _ => new ConcurrentBag<Arbi>());
             Arbi? exchangeArbi = arbiList.FirstOrDefault(x => x.ExchangeObject == ExchangeObject);

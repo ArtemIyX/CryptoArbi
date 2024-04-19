@@ -1,4 +1,5 @@
 ﻿using ArbiLib.Models;
+using DebugApp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace ArbiLib.Services
 {
-    public class ProfitCalculator(ArbiService InService)
+    public class ProfitCalculator(LocalArbiService InService)
     {
-        public ArbiService ArbiService { get; private set; } = InService;
+        public LocalArbiService ArbiService { get; private set; } = InService;
 
         public double CalculateProfit(ArbiOportunity ArbiOportunity,
             double BalanceUsdt, 
