@@ -1,6 +1,12 @@
+using ArbiDataLib.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+string conString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+builder.Services.AddDbContext<ArbiDbContext>(options =>
+    options.UseMySQL(conString));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
