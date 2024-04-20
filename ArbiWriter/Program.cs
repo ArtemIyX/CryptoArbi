@@ -1,5 +1,5 @@
-using ArbiWriter.Data;
-using ArbiWriter.Data.Repo;
+using ArbiDataLib.Data;
+using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
 using ArbiWriter.Services.Impl;
 using ArbiWriter.Services.Interfaces;

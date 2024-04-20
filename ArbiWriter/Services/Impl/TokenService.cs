@@ -1,5 +1,5 @@
 ﻿using ArbiLib.Libs;
-using ArbiWriter.Data;
+using ArbiDataLib.Data;
 using ArbiDataLib.Models;
 using ArbiWriter.Services.Interfaces;
 using ccxt;

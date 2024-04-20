@@ -1,7 +1,7 @@
 ﻿using ArbiDataLib.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ArbiWriter.Data.Repo
+namespace ArbiDataLib.Data.Repo
 {
     public class TokenRepository(ArbiDbContext context) : IRepository<ExchangeToken, int>
     {

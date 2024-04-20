@@ -1,10 +1,8 @@
 ﻿
-
 using ArbiDataLib.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Metadata;
 
-namespace ArbiWriter.Data
+namespace ArbiDataLib.Data
 {
     public class ArbiDbContext : DbContext
     {

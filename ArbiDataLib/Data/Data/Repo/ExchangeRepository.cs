@@ -1,7 +1,8 @@
-﻿using ArbiDataLib.Models;
+﻿using ArbiDataLib.Data;
+using ArbiDataLib.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ArbiWriter.Data.Repo
+namespace ArbiDataLib.Data.Repo
 {
     public class ExchangeRepository(ArbiDbContext context) : IRepository<ExchangeEntity, string>
     {
