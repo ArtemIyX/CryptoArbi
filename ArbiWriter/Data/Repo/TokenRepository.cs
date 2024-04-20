@@ -1,4 +1,4 @@
-﻿using ArbiWriter.Models;
+﻿using ArbiDataLib.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArbiWriter.Data.Repo

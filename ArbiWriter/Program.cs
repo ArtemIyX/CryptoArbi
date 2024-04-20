@@ -1,6 +1,6 @@
 using ArbiWriter.Data;
 using ArbiWriter.Data.Repo;
-using ArbiWriter.Models;
+using ArbiDataLib.Models;
 using ArbiWriter.Services.Impl;
 using ArbiWriter.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;

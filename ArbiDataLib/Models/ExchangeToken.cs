@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 
-namespace ArbiWriter.Models
+namespace ArbiDataLib.Models
 {
     [Table("Tokens")]
     public class ExchangeToken

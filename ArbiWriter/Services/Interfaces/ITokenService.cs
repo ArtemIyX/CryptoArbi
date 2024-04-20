@@ -1,4 +1,4 @@
-﻿using ArbiWriter.Models;
+﻿using ArbiDataLib.Models;
 
 namespace ArbiWriter.Services.Interfaces
 {
