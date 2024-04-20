@@ -1,4 +1,4 @@
-﻿using ArbiDataLib.Data.Data.Repo;
+﻿using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
 using Microsoft.EntityFrameworkCore;
 

@@ -5,7 +5,7 @@ using ccxt;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Util;
 using System.Data;
-using ArbiDataLib.Data.Data.Repo;
+using ArbiDataLib.Data.Repo;
 
 namespace ArbiWriter.Services.Impl
 {
