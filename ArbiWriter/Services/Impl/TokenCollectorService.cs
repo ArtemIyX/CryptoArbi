@@ -18,38 +18,68 @@ namespace ArbiWriter.Services.Impl
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await PrepareExchanges(stoppingToken);
-
+            await Task.Delay(1000, stoppingToken);
+            List<Exchange> exchanges = [];
+            using (IServiceScope scope = serviceScopeFactory.CreateScope())
+            {
+                IExchangeService exchangeService =
+                   scope.ServiceProvider.GetRequiredService<IExchangeService>();
+                exchanges = [.. exchangeService.GetSupportedExchanges()];
+            }
             while (!stoppingToken.IsCancellationRequested)
             {
-                await DoWorkAsync(stoppingToken);
+                await DoWorkAsync(exchanges, stoppingToken);
             }
         }
 
-        private async Task DoWorkAsync(CancellationToken stoppingToken = default)
+        private async Task DoWorkAsync(List<Exchange> exchanges, CancellationToken stoppingToken = default)
         {
-            using IServiceScope scope = serviceScopeFactory.CreateScope();
-            IExchangeService exchangeService =
-               scope.ServiceProvider.GetRequiredService<IExchangeService>();
-            ITokenService tokenService =
-                scope.ServiceProvider.GetRequiredService<ITokenService>();
+            List<Task> tasks = [];
 
-            List<Exchange> exchanges = exchangeService.GetSupportedExchanges().ToList();
-            foreach (Exchange ex in exchanges)
+            foreach (var exchange in exchanges)
             {
-                await tokenService.UpdateTokens(ex, stoppingToken);
+                tasks.Add(RunExchangeAsync(exchange, stoppingToken));
             }
-            await Task.Delay(5000);
+
+            // Wait until stoppingToken.IsCancellationRequested
+            await Task.WhenAll(tasks);
+        }
+
+        private async Task RunExchangeAsync(Exchange exchange, CancellationToken stoppingToken)
+        {
+            while (!stoppingToken.IsCancellationRequested)
+            {
+                await HandleExchangeAsync(exchange, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
+            }
+        }
+
+
+        private async Task HandleExchangeAsync(ccxt.Exchange exchange, CancellationToken stoppingToken = default)
+        {
+            using (IServiceScope scope = serviceScopeFactory.CreateScope())
+            {
+                ITokenService tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
+                await tokenService.UpdateTokens(exchange, stoppingToken);
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                _logger.LogInformation($"{exchange.id} fetching finished");
+            }
         }
 
         public async Task PrepareExchanges(CancellationToken stoppingToken = default)
         {
-            using IServiceScope scope = serviceScopeFactory.CreateScope();
-            IExchangeService exchangeService =
-                scope.ServiceProvider.GetRequiredService<IExchangeService>();
-            // Stop all work
-            await exchangeService.MarkAllAsWorkingAsync(false, stoppingToken);
-            // Mark working exchanges
-            await exchangeService.UploadData(stoppingToken);
+            _logger.LogInformation($"Preparing exchanges...");
+            using (IServiceScope scope = serviceScopeFactory.CreateScope())
+            {
+                IExchangeService exchangeService =
+                    scope.ServiceProvider.GetRequiredService<IExchangeService>();
+                // Stop all work
+                await exchangeService.MarkAllAsWorkingAsync(false, stoppingToken);
+                // Mark working exchanges
+                await exchangeService.UploadData(stoppingToken);
+            }
+            _logger.LogInformation($"Preparing exchanges finished");
         }
     }
 }

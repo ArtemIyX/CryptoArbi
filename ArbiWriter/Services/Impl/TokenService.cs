@@ -21,12 +21,13 @@ namespace ArbiWriter.Services.Impl
             if (!TickerLib.IsUsdtPair(tickerName)) return null;
 
             // Valid ask, bid, volume
-            if (ticker.ask is null || ticker.bid is null || ticker.quoteVolume is null) return null;
+            if (ticker.symbol is null || ticker.ask is null || ticker.bid is null || ticker.quoteVolume is null
+                || ticker.askVolume is null || ticker.bidVolume is null) return null;
 
             string friendlySymbol = TickerLib.GetPureTicker(tickerName);
             return new ExchangeToken()
             {
-                FullSymbolName = tickerName,
+                FullSymbolName = ticker.symbol,
                 ExchangeId = exchange.id,
                 DisplayName = friendlySymbol,
                 Ask = ticker.ask,
@@ -38,7 +39,7 @@ namespace ArbiWriter.Services.Impl
         }
 
         public async Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default)
-            => await _tokenRepo.AsQueryable().FirstOrDefaultAsync(
+            => await _tokenRepo.GetDbSet().FirstOrDefaultAsync(
                 x => x.ExchangeId == ownerId && x.FullSymbolName == fullName,
                 stoppingToken);
 
@@ -49,6 +50,7 @@ namespace ArbiWriter.Services.Impl
             foreach (KeyValuePair<string, Ticker> x in container.tickers)
             {
                 ExchangeToken? tokenInDb = await FindToken(owner.id, x.Value.symbol ?? "", stoppingToken);
+                
                 if (tokenInDb is not null)
                 {
                     tokenInDb.Ask = x.Value.ask;
@@ -60,11 +62,15 @@ namespace ArbiWriter.Services.Impl
                 }
                 else
                 {
-                    ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value);
-                    if (tokenEntity is not null)
+                    if(x.Value.symbol is not null && TickerLib.IsUsdtPair(x.Value.symbol))
                     {
-                        await _tokenRepo.Add(tokenEntity, stoppingToken);
+                        ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value);
+                        if (tokenEntity is not null)
+                        {
+                            await _tokenRepo.Add(tokenEntity, stoppingToken);
+                        }
                     }
+                   
                 }
             }
             await _tokenRepo.SaveChangesAsync(stoppingToken);

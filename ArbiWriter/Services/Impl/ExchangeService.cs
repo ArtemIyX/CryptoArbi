@@ -13,12 +13,9 @@ namespace ArbiWriter.Services.Impl
                 new Binance(),
                 new Mexc(),
                 new Kucoin(),
-                new Kraken(),
                 new Bybit(),
                 new Huobi(),
-                new Gateio(),
                 new Okx(),
-                new Bitmex(),
                 new Bitget(),
             ];
 

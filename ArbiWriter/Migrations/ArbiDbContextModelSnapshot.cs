@@ -22,7 +22,7 @@ namespace ArbiWriter.Migrations
                 .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("ArbiWriter.Models.ExchangeEntity", b =>
+            modelBuilder.Entity("ArbiDataLib.Models.ExchangeEntity", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -42,7 +42,7 @@ namespace ArbiWriter.Migrations
                     b.ToTable("Exchanges");
                 });
 
-            modelBuilder.Entity("ArbiWriter.Models.ExchangeToken", b =>
+            modelBuilder.Entity("ArbiDataLib.Models.ExchangeToken", b =>
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,9 +87,9 @@ namespace ArbiWriter.Migrations
                     b.ToTable("Tokens");
                 });
 
-            modelBuilder.Entity("ArbiWriter.Models.ExchangeToken", b =>
+            modelBuilder.Entity("ArbiDataLib.Models.ExchangeToken", b =>
                 {
-                    b.HasOne("ArbiWriter.Models.ExchangeEntity", "Exchange")
+                    b.HasOne("ArbiDataLib.Models.ExchangeEntity", "Exchange")
                         .WithMany("Tokens")
                         .HasForeignKey("ExchangeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -98,7 +98,7 @@ namespace ArbiWriter.Migrations
                     b.Navigation("Exchange");
                 });
 
-            modelBuilder.Entity("ArbiWriter.Models.ExchangeEntity", b =>
+            modelBuilder.Entity("ArbiDataLib.Models.ExchangeEntity", b =>
                 {
                     b.Navigation("Tokens");
                 });
