@@ -1,11 +1,11 @@
 ﻿using ArbiLib.Libs;
-using ArbiDataLib.Data;
 using ArbiDataLib.Models;
 using ArbiWriter.Services.Interfaces;
 using ccxt;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Util;
 using System.Data;
+using ArbiDataLib.Data.Data.Repo;
 
 namespace ArbiWriter.Services.Impl
 {

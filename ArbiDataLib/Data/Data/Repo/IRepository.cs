@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace ArbiDataLib.Data
+namespace ArbiDataLib.Data.Data.Repo
 {
     public interface IRepository<T, G> where T : class
     {

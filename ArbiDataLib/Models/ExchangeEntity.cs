@@ -21,5 +21,21 @@ namespace ArbiDataLib.Models
         public required bool Working { get; set; } = true;
 
         public virtual ICollection<ExchangeToken>? Tokens { get; set; }
+
+        public ExchangeEntityResponse ToReposnse() => new ExchangeEntityResponse()
+        {
+            Id = Id,
+            Name = Name,
+            Url = Url,
+            Working = Working,
+        };
+    }
+
+    public class ExchangeEntityResponse
+    {
+        public required string Id { get; set; }
+        public required string Name { get; set; }
+        public string? Url { get; set; } = null;
+        public required bool Working { get; set; } = true;
     }
 }
