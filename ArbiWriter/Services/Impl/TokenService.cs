@@ -46,10 +46,10 @@ namespace ArbiWriter.Services.Impl
         public async Task UpdateTokens(ccxt.Exchange owner, CancellationToken stoppingToken = default)
         {
             Tickers container = await owner.FetchTickers();
-            await container.tickers.ForEachAsync(async x =>
+            foreach (KeyValuePair<string, Ticker> x in container.tickers)
             {
                 ExchangeToken? tokenInDb = await FindToken(owner.id, x.Value.symbol ?? "", stoppingToken);
-                if(tokenInDb is not null)
+                if (tokenInDb is not null)
                 {
                     tokenInDb.Ask = x.Value.ask;
                     tokenInDb.Bid = x.Value.bid;
@@ -61,12 +61,12 @@ namespace ArbiWriter.Services.Impl
                 else
                 {
                     ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value);
-                    if(tokenEntity is not null)
+                    if (tokenEntity is not null)
                     {
                         await _tokenRepo.Add(tokenEntity, stoppingToken);
                     }
                 }
-            });
+            }
             await _tokenRepo.SaveChangesAsync(stoppingToken);
         }
     }

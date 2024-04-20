@@ -2,7 +2,7 @@
 using ArbiWriter.Models;
 using ArbiWriter.Services.Interfaces;
 using ccxt;
-using Nethereum.Util;
+using Microsoft.EntityFrameworkCore;
 
 namespace ArbiWriter.Services.Impl
 {
@@ -17,12 +17,9 @@ namespace ArbiWriter.Services.Impl
                 new Bybit(),
                 new Huobi(),
                 new Gateio(),
-                new Bitstamp(),
-                new Coinbase(),
                 new Okx(),
                 new Bitmex(),
                 new Bitget(),
-                new Bitfinex()
             ];
 
         protected readonly IRepository<ExchangeEntity, string> _exchangeRepo = exchangeRepository;
@@ -40,11 +37,11 @@ namespace ArbiWriter.Services.Impl
         public async Task MarkAllAsWorkingAsync(bool bWorking = true, CancellationToken stoppingToken = default)
         {
             // Mark each exchange as "Working = false"
-            await _exchangeRepo.AsQueryable().ForEachAsync(async x =>
+            foreach (var x in _exchangeRepo.GetDbSet())
             {
                 x.Working = bWorking;
                 _exchangeRepo.Update(x, stoppingToken);
-            });
+            }
             await _exchangeRepo.SaveChangesAsync(stoppingToken);
         }
 

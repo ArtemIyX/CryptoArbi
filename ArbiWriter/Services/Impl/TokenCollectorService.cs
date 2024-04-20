@@ -18,20 +18,27 @@ namespace ArbiWriter.Services.Impl
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             await PrepareExchanges(stoppingToken);
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await DoWorkAsync(stoppingToken);
             }
         }
 
-        public override async Task StopAsync(CancellationToken stoppingToken)
-        {
-            await TurnOff(stoppingToken); 
-        }
-
         private async Task DoWorkAsync(CancellationToken stoppingToken = default)
         {
-            //using IServiceScope scope = serviceScopeFactory.CreateScope();
+            using IServiceScope scope = serviceScopeFactory.CreateScope();
+            IExchangeService exchangeService =
+               scope.ServiceProvider.GetRequiredService<IExchangeService>();
+            ITokenService tokenService =
+                scope.ServiceProvider.GetRequiredService<ITokenService>();
+
+            List<Exchange> exchanges = exchangeService.GetSupportedExchanges().ToList();
+            foreach (Exchange ex in exchanges)
+            {
+                await tokenService.UpdateTokens(ex, stoppingToken);
+            }
+            await Task.Delay(5000);
         }
 
         public async Task PrepareExchanges(CancellationToken stoppingToken = default)
@@ -43,15 +50,6 @@ namespace ArbiWriter.Services.Impl
             await exchangeService.MarkAllAsWorkingAsync(false, stoppingToken);
             // Mark working exchanges
             await exchangeService.UploadData(stoppingToken);
-        }
-
-        public async Task TurnOff(CancellationToken stoppingToken = default)
-        {
-            using IServiceScope scope = serviceScopeFactory.CreateScope();
-            IExchangeService exchangeService =
-                scope.ServiceProvider.GetRequiredService<IExchangeService>();
-            // Stop all work
-            await exchangeService.MarkAllAsWorkingAsync(false, stoppingToken);
         }
     }
 }
