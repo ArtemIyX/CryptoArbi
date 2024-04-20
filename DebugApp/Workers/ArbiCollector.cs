@@ -22,44 +22,27 @@ namespace DebugApp.Workers
                     .FirstOrDefault();
 
                 if (highestBidElement is null) return;
-                ArbiOportunity oportunity = new ArbiOportunity()
+                ArbiOportunity entity = new ArbiOportunity()
                 {
                     MinimalAsk = lowestAskElement,
                     MaximalBid = highestBidElement
                 };
 
-
-                await HandleOportunity(oportunity);
-                ArbiService.ArbiOportunitiesQueue.Enqueue(oportunity);
+                
+                double diff = entity.PercentDiff();
+                if (diff >= 0
+                    && diff >= ArbiService.MinProfitPercent
+                    && diff <= ArbiService.MaxProfitPercent
+                    && entity.MinimalAsk.AskVolumeUsdt > ArbiService.MinAskVolumeUsdt
+                    && entity.MaximalBid.BidVolumeUsdt > ArbiService.MinBidVolumeUsdt
+                    && entity.MinimalAsk.DayVolumeUSDT > ArbiService.MinDayVolumeUsdt
+                    && (entity.MaximalBid?.DayVolumeUSDT ?? 0) > ArbiService.MinDayVolumeUsdt)
+                {
+                    ArbiService.ArbiOportunitiesQueue.Enqueue(entity);
+                }
             });
             await Task.Delay(250);
 
-        }
-
-        protected virtual async Task HandleOportunity(ArbiOportunity entity)
-        {
-            double diff = entity.PercentDiff();
-            if (diff < 0)
-            {
-                return;
-            }
-            if (diff < ArbiService.MinProfitPercent)
-            {
-                return;
-            }
-            if (diff > ArbiService.MaxProfitPercent)
-            {
-                return;
-            }
-
-
-            if (entity.MinimalAsk.AskVolumeUsdt > ArbiService.MinAskVolumeUsdt
-               && entity.MaximalBid.BidVolumeUsdt > ArbiService.MinBidVolumeUsdt
-               && entity.MinimalAsk.DayVolumeUSDT > ArbiService.MinDayVolumeUsdt
-               && entity.MaximalBid?.DayVolumeUSDT > ArbiService.MinDayVolumeUsdt)
-            {
-                ArbiService.ArbiOportunitiesQueue.Enqueue(entity);
-            }
         }
     }
 }

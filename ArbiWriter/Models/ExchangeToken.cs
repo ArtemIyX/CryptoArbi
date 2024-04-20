@@ -9,7 +9,7 @@ namespace ArbiWriter.Models
     public class ExchangeToken
     {
         [Key, Required, NotNull]
-        public required int Id { get; set; }
+        public long Id { get; set; }
 
         [Required, NotNull]
         public required string FullSymbolName { get; set; }
@@ -32,8 +32,10 @@ namespace ArbiWriter.Models
         [MaybeNull, DefaultValue(null)]
         public double? BidVolume { get; set; }
 
+        public DateTime Updated { get; set; }
+
         public required string ExchangeId { get; set; }
-        public virtual required ExchangeEntity Exchange { get; set; }
+        public virtual ExchangeEntity? Exchange { get; set; }
 
         public double? AskVolumeUsdt => AskVolume is not null ? AskVolume * Ask : null;
         public double? BidVolumeUsdt => AskVolume is not null ? BidVolume * Bid : null;

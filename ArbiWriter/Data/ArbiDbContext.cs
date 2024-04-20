@@ -1,6 +1,7 @@
 ﻿
 using ArbiWriter.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Metadata;
 
 namespace ArbiWriter.Data
 {
@@ -19,5 +20,11 @@ namespace ArbiWriter.Data
             optionsBuilder.UseLazyLoadingProxies();
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ExchangeToken>()
+                .Property(b => b.Updated)
+                .HasDefaultValueSql("current_timestamp(6)");
+        }
     }
 }

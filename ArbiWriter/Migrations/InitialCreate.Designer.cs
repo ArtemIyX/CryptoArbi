@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArbiWriter.Migrations
 {
     [DbContext(typeof(ArbiDbContext))]
-    [Migration("20240419195514_InitialCreate")]
+    [Migration("20240420095527_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -47,9 +47,9 @@ namespace ArbiWriter.Migrations
 
             modelBuilder.Entity("ArbiWriter.Models.ExchangeToken", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("bigint");
 
                     b.Property<double?>("Ask")
                         .HasColumnType("double");
@@ -77,6 +77,11 @@ namespace ArbiWriter.Migrations
                     b.Property<string>("FullSymbolName")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime>("Updated")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)")
+                        .HasDefaultValueSql("current_timestamp(6)");
 
                     b.HasKey("Id");
 

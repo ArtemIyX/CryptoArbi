@@ -21,7 +21,7 @@ namespace ArbiLib.Services.AsyncWorkers.Impl
             Tickers = await _exchange.FetchTickers();
             _ = Parallel.ForEach(Tickers.Value.tickers, item =>
             {
-                string tickerName = TickerLib.RemoveSemiColon(item.Key);
+                string tickerName = TickerLib.RemoveSemiColon(item.Value.symbol ?? "");
 
                 if (TickerLib.IsUsdtPair(tickerName))
                 {

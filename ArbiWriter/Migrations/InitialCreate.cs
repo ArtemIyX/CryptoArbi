@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using MySql.EntityFrameworkCore.Metadata;
 
 #nullable disable
@@ -33,7 +34,7 @@ namespace ArbiWriter.Migrations
                 name: "Tokens",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     FullSymbolName = table.Column<string>(type: "longtext", nullable: false),
                     DisplayName = table.Column<string>(type: "longtext", nullable: false),
@@ -42,6 +43,7 @@ namespace ArbiWriter.Migrations
                     DayVolumeUSDT = table.Column<double>(type: "double", nullable: true),
                     AskVolume = table.Column<double>(type: "double", nullable: true),
                     BidVolume = table.Column<double>(type: "double", nullable: true),
+                    Updated = table.Column<DateTime>(type: "datetime(6)", nullable: false, defaultValueSql: "current_timestamp(6)"),
                     ExchangeId = table.Column<string>(type: "varchar(255)", nullable: false)
                 },
                 constraints: table =>

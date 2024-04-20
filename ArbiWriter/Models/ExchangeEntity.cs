@@ -20,6 +20,6 @@ namespace ArbiWriter.Models
         [Required, NotNull, DefaultValue(true)]
         public required bool Working { get; set; } = true;
 
-        public virtual required ICollection<ExchangeToken> Tokens { get; set; }
+        public virtual ICollection<ExchangeToken>? Tokens { get; set; }
     }
 }

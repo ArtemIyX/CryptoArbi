@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ArbiLib.Libs
 {
-    internal class TickerLib
+    public class TickerLib
     {
         public static string GetPureTicker(string str)
         {
