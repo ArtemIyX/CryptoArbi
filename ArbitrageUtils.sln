@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiLib", "ArbiLib\ArbiLib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiWriter", "ArbiWriter\ArbiWriter.csproj", "{5F4B6863-7B42-46D2-A038-B0B6D7F6DAB5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArbiDataLib", "ArbiDataLib\ArbiDataLib.csproj", "{F4B5B39F-08A5-4FAF-B762-0A274DCFB42E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiDataLib", "ArbiDataLib\ArbiDataLib.csproj", "{F4B5B39F-08A5-4FAF-B762-0A274DCFB42E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
