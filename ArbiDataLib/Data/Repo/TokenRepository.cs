@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArbiDataLib.Data.Repo
 {
-    public class TokenRepository(ArbiDbContext context) : IRepository<ExchangeToken, int>
+    public class TokenRepository(ArbiDbContext context) : IRepository<ExchangeToken, long>
     {
         private readonly ArbiDbContext _context = context;
 
@@ -17,7 +17,7 @@ namespace ArbiDataLib.Data.Repo
 
         public IEnumerable<ExchangeToken> GetAll() => _context.ExchangeTokens.AsEnumerable();
 
-        public async Task<ExchangeToken?> GetById(int id, CancellationToken stoppingToken = default)
+        public async Task<ExchangeToken?> GetById(long id, CancellationToken stoppingToken = default)
             => await _context.ExchangeTokens.FirstOrDefaultAsync(x => x.Id == id, stoppingToken);
 
         public void Update(ExchangeToken entity, CancellationToken stoppingToken = default)
@@ -26,7 +26,7 @@ namespace ArbiDataLib.Data.Repo
             _context.Entry(entity).State = EntityState.Modified;
         }
 
-        public async Task Delete(int id, CancellationToken stoppingToken = default)
+        public async Task Delete(long id, CancellationToken stoppingToken = default)
         {
             ExchangeToken? entity = await GetById(id, stoppingToken);
             if (entity is not null)

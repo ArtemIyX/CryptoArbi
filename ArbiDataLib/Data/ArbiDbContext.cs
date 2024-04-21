@@ -16,7 +16,7 @@ namespace ArbiDataLib.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseLazyLoadingProxies();
+            optionsBuilder.UseLazyLoadingProxies(true);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

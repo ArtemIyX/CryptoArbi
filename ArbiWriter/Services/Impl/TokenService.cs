@@ -9,9 +9,9 @@ using ArbiDataLib.Data.Repo;
 
 namespace ArbiWriter.Services.Impl
 {
-    public class TokenService(IRepository<ExchangeToken, int> tokenRepository) : ITokenService
+    public class TokenService(IRepository<ExchangeToken, long> tokenRepository) : ITokenService
     {
-        private readonly IRepository<ExchangeToken, int> _tokenRepo = tokenRepository;
+        private readonly IRepository<ExchangeToken, long> _tokenRepo = tokenRepository;
 
         public ExchangeToken? CreateTokenEntity(Exchange exchange, in Ticker ticker)
         {

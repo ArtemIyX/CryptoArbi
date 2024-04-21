@@ -1,5 +1,4 @@
 ﻿using ArbiReader.Data;
-using ArbiReader.Data.Responses;
 using ArbiReader.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
@@ -8,34 +7,44 @@ namespace ArbiReader.Controllers
 {
     [Route("api/exchange")]
     [ApiController]
-    public class ExchangeController(IExchangeService exchangeService) : ControllerBase
+    public class ExchangeController(IServiceScopeFactory serviceScopeFactory) : ControllerBase
     {
-        private readonly IExchangeService _exchangeService = exchangeService;
+        private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            IList<ArbiDataLib.Models.ExchangeEntityResponse> content = await _exchangeService.Get();
-            return Ok(new BasicResponse()
+            using IServiceScope scope = _serviceScopeFactory.CreateScope();
+            IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
+            return this.OkData(await exchangeService.Get());
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(string id)
+        {
+            using IServiceScope scope = _serviceScopeFactory.CreateScope();
+            IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
+            ArbiDataLib.Models.ExchangeEntityResponse? ex = await exchangeService.Get(id);
+            if (ex is null)
             {
-                Code = (int)HttpStatusCode.OK,
-                Message = "",
-                Data = new ExchangeListResponse(content),
-                Success = true
-            });
+                return NotFound(new BasicResponse()
+                {
+                    Data = null,
+                    Code = (int)HttpStatusCode.NotFound,
+                    Success = false,
+                    Message = $"Exchange with id '{id}' not found"
+                });
+            }
+            return this.OkData(ex);
         }
 
         [HttpGet("working")]
         public async Task<IActionResult> GetWorking()
         {
-            IList<ArbiDataLib.Models.ExchangeEntityResponse> content = await _exchangeService.Working();
-            return Ok(new BasicResponse()
-            {
-                Code = (int)HttpStatusCode.OK,
-                Message = "",
-                Data = new ExchangeListResponse(content),
-                Success = true
-            });
+            using IServiceScope scope = _serviceScopeFactory.CreateScope();
+            IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
+            return this.OkData(await exchangeService.Working());
         }
+           
     }
 }

@@ -9,13 +9,16 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 string conString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+
+MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 builder.Services.AddDbContext<ArbiDbContext>(options =>
-    options.UseMySQL(conString));
+    options.UseMySql(conString, serverVersion));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHostedService<TokenCollectorService>();
-builder.Services.AddScoped<IRepository<ExchangeToken, int>, TokenRepository>();
+builder.Services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
 builder.Services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IExchangeService, ExchangeService>();
