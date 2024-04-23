@@ -6,6 +6,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArbiWriter.Services.Impl
 {
+    public interface IExchangeService
+    {
+        public ICollection<ccxt.Exchange> GetSupportedExchanges();
+        public Task MarkAllAsWorkingAsync(bool bWorking = true, CancellationToken stoppingToken = default);
+        public ExchangeEntity CreateExchangeEntity(Exchange exchange);
+        public Task UploadData(CancellationToken stoppingToken = default);
+    }
+
     public class ExchangeService(IRepository<ExchangeEntity, string> exchangeRepository) : IExchangeService
     {
         public static readonly ICollection<Exchange> ExchangeObjects =

@@ -7,6 +7,11 @@ using Nethereum.Util;
 
 namespace ArbiWriter.Services.Impl
 {
+    public interface ITokenCollector
+    {
+        public Task PrepareExchanges(CancellationToken stoppingToken = default);
+    }
+
     public class TokenCollectorService(
         ILogger<TokenCollectorService> logger,
         IServiceScopeFactory serviceScopeFactory) : BackgroundService, ITokenCollector
