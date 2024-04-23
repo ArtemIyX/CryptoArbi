@@ -9,9 +9,17 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        IHost host = CreateHostBuilder(args).Build();
+        try
+        {
+            IHost host = CreateHostBuilder(args).Build();
 
-        await host.RunAsync();
+            await host.RunAsync();
+        }
+        catch(Exception ex)
+        {
+            await Console.Out.WriteLineAsync(ex.Message);
+        }
+       
     }
 
     static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -22,13 +30,11 @@ class Program
             })
             .ConfigureServices((context, services) =>
             {
-                // Получаем строку подключения из конфигурации
                 IConfiguration configuration = context.Configuration;
                 string conString = configuration.GetConnectionString("DefaultConnection") ?? "";
 
                 MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
-                // Регистрируем сервисы в контейнере зависимостей
                 services.AddDbContext<ArbiDbContext>(options =>
                     options.UseMySql(conString, serverVersion));
 
