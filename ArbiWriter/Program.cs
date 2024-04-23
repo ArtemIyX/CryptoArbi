@@ -5,37 +5,38 @@ using ArbiWriter.Services.Impl;
 using ArbiWriter.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-string conString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
-
-MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
-builder.Services.AddDbContext<ArbiDbContext>(options =>
-    options.UseMySql(conString, serverVersion));
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.AddHostedService<TokenCollectorService>();
-builder.Services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
-builder.Services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IExchangeService, ExchangeService>();
-builder.Services.AddScoped<ITokenCollector, TokenCollectorService>();
-
-WebApplication app = builder.Build();
-
-if (app.Environment.IsDevelopment())
+class Program
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    static async Task Main(string[] args)
+    {
+        IHost host = CreateHostBuilder(args).Build();
+
+        await host.RunAsync();
+    }
+
+    static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration((hostingContext, config) =>
+            {
+                config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            })
+            .ConfigureServices((context, services) =>
+            {
+                // Получаем строку подключения из конфигурации
+                IConfiguration configuration = context.Configuration;
+                string conString = configuration.GetConnectionString("DefaultConnection") ?? "";
+
+                MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
+
+                // Регистрируем сервисы в контейнере зависимостей
+                services.AddDbContext<ArbiDbContext>(options =>
+                    options.UseMySql(conString, serverVersion));
+
+                services.AddHostedService<TokenCollectorService>();
+                services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
+                services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
+                services.AddScoped<ITokenService, TokenService>();
+                services.AddScoped<IExchangeService, ExchangeService>();
+                services.AddScoped<ITokenCollector, TokenCollectorService>();
+            });
 }
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();

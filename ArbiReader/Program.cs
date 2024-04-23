@@ -6,8 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Security.Cryptography.X509Certificates;
 
-/*try
-{*/
+try
+{
     var builder = WebApplication.CreateBuilder(args);
 
 
@@ -42,7 +42,7 @@ using System.Security.Cryptography.X509Certificates;
     builder.Services.AddControllers();
     // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddSwaggerGen();
+    //builder.Services.AddSwaggerGen();
     builder.Services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
     builder.Services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
     builder.Services.AddScoped<IExchangeService, ExchangeService>();
@@ -64,9 +64,8 @@ using System.Security.Cryptography.X509Certificates;
     app.MapControllers();
 
     app.Run();
-/*}
+}
 catch(Exception ex)
 {
     Console.WriteLine(ex.Message);
 }
-*/

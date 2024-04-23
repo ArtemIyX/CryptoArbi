@@ -33,6 +33,8 @@ namespace ArbiReader.Services
                                                     join t2 in _tokenRepo.AsQueryable() on t1.DisplayName equals t2.DisplayName
                                                     let diff = ((t2.Bid - t1.Ask) / t1.Ask) * 100
                                                     where t1.ExchangeId != t2.ExchangeId && // different exchanges
+                                                          t1.Exchange.Working && 
+                                                          t2.Exchange.Working &&
                                                           t1.Ask < t2.Bid &&               // spread
                                                           t1.Ask > filter.MinAsk &&      // ask filter
                                                           t2.Bid > filter.MinBid &&      // bid filter
