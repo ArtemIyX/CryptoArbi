@@ -2,15 +2,35 @@
 
 @using ArbiBlazor.Services
 @using ArbiDataLib.Models
+@using System.Text.Json
 @inject IExchangeService exchangeService
 
 <h3>Exchanges</h3>
-@DebugStr
+@if (ExchangeEntities.Count == 0)
+{
+    <div>
+        <p>Loading...</p>
+    </div>
+
+}
+else
+{
+    <div>@DebugStr</div>
+    @foreach (var ex in ExchangeEntities)
+    {
+        <div> hello</div>
+        <div>
+            <h2>@ex.Id</h2>
+        </div>
+    }
+}
+
 @code {
-    public string DebugStr { get; set; } = "Debug";
+    public List<ExchangeEntityResponse> ExchangeEntities { get; set; } = [];
+    public string DebugStr { get; set; } = "";
     protected override async Task OnInitializedAsync()
     {
-        var res = await exchangeService.Test();
-        DebugStr = res.ToString();
+        ExchangeEntities = await exchangeService.GetWorkingExchanges();
+        DebugStr = JsonSerializer.Serialize(ExchangeEntities);
     }
 }

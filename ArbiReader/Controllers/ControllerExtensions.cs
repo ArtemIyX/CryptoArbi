@@ -1,5 +1,5 @@
-﻿using ArbiReader.Data.Responses;
-using ArbiReader.Data;
+﻿
+using ArbiDataLib.Data;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 

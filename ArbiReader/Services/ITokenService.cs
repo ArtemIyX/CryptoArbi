@@ -1,6 +1,5 @@
-﻿using ArbiDataLib.Models;
-using ArbiReader.Data;
-using ArbiReader.Data.Responses;
+﻿using ArbiDataLib.Data;
+using ArbiDataLib.Models;
 
 namespace ArbiReader.Services
 {

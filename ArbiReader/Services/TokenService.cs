@@ -1,7 +1,7 @@
 ﻿
+using ArbiDataLib.Data;
 using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
-using ArbiReader.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArbiReader.Services
@@ -22,11 +22,6 @@ namespace ArbiReader.Services
             .Select(x => x.ToResponse())
             .ToListAsync();
 
-        /*        public async Task<ExchangeEntityResponse?> GetTokenExchange(long tokenId) =>
-                    (await _tokenRepo
-                    .AsQueryable()
-                    .FirstOrDefaultAsync(x => x.Id == tokenId))
-                    ?.Exchange?.ToReposnse();*/
 
         public async Task<List<ArbiItem>> GetArbi(ArbiFilter filter)
         {
@@ -41,10 +36,10 @@ namespace ArbiReader.Services
                                                           t1.Ask < t2.Bid &&               // spread
                                                           t1.Ask > filter.MinAsk &&      // ask filter
                                                           t2.Bid > filter.MinBid &&      // bid filter
-                                                          t1.AskVolume * t1.Ask > filter.MinAskVolumeUsdt && // ask volume filter
-                                                          t2.BidVolume * t2.Bid > filter.MinBidVolumeUsdt && // bid volume filter
-                                                          t1.DayVolumeUSDT > filter.MinDayVolumeUsdt && // dayvolume ask filter
-                                                          t2.DayVolumeUSDT > filter.MinDayVolumeUsdt &&
+                                                          t1.AskVolume * t1.Ask > filter.MinAskVolumeUSDT && // ask volume filter
+                                                          t2.BidVolume * t2.Bid > filter.MinBidVolumeUSDT && // bid volume filter
+                                                          t1.DayVolumeUSDT > filter.MinDayVolumeUSDT && // dayvolume ask filter
+                                                          t2.DayVolumeUSDT > filter.MinDayVolumeUSDT &&
                                                           diff > filter.MinPercent &&
                                                           diff < filter.MaxPercent
                                                     orderby diff descending
@@ -56,11 +51,11 @@ namespace ArbiReader.Services
                                                         AskId = t1.Id,
                                                         Ask = t1.Ask ?? 0.0,
                                                         AskVolume = t1.AskVolume ?? 0.0,
-                                                        AskVolumeUsdt = t1.AskVolume * t1.Ask ?? 0.0,
+                                                        AskVolumeUSDT = t1.AskVolume * t1.Ask ?? 0.0,
                                                         BidId = t2.Id,
                                                         Bid = t2.Bid ?? 0.0,
                                                         BidVolume = t2.BidVolume ?? 0.0,
-                                                        BidVolumeUsdt = t2.BidVolume * t2.Bid ?? 0.0,
+                                                        BidVolumeUSDT = t2.BidVolume * t2.Bid ?? 0.0,
                                                         FullSymbolName = t1.FullSymbolName,
                                                         PriceDifferencePercentage = diff ?? 0.0,
                                                         Updated = t1.Updated,

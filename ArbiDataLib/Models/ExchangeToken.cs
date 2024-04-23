@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace ArbiDataLib.Models
 {
@@ -58,18 +59,34 @@ namespace ArbiDataLib.Models
 
     public class ExchangeTokenResponse()
     {
-        public required long Id { get; set; } = 0;
-        public required string FullSymbolName { get; set; } = string.Empty;
-        public required string DisplayName { get; set; } = string.Empty;
-        public double? Ask { get; set; } = null;
-        public double? Bid { get; set; } = null;
-        public double? DayVolumeUSDT { get; set; } = null;
-        public double? AskVolume { get; set; } = null;
-        public double? BidVolume { get; set; } = null;
-        public DateTime Updated { get; set; } = DateTime.MinValue;
-        public required string ExchangeId { get; set; } = string.Empty;
+        [JsonPropertyName("id")]
+        public long Id { get; set; } = 0;
 
-        public double? AskVolumeUsdt => AskVolume is not null ? AskVolume * Ask : null;
-        public double? BidVolumeUsdt => AskVolume is not null ? BidVolume * Bid : null;
+        [JsonPropertyName("fullSymbolName")]
+        public string FullSymbolName { get; set; } = string.Empty;
+
+        [JsonPropertyName("displayName")]
+        public string DisplayName { get; set; } = string.Empty;
+
+        [JsonPropertyName("ask")]
+        public double? Ask { get; set; } = null;
+
+        [JsonPropertyName("bid")]
+        public double? Bid { get; set; } = null;
+
+        [JsonPropertyName("dayVolumeUSDT")]
+        public double? DayVolumeUSDT { get; set; } = null;
+
+        [JsonPropertyName("askVolume")]
+        public double? AskVolume { get; set; } = null;
+
+        [JsonPropertyName("bidVolume")]
+        public double? BidVolume { get; set; } = null;
+
+        [JsonPropertyName("updated")]
+        public DateTime Updated { get; set; } = DateTime.MinValue;
+
+        [JsonPropertyName("exchangeId")]
+        public string ExchangeId { get; set; } = string.Empty;
     }
 }

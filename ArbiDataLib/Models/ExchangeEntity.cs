@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace ArbiDataLib.Models
 {
@@ -33,9 +34,16 @@ namespace ArbiDataLib.Models
 
     public class ExchangeEntityResponse
     {
-        public required string Id { get; set; }
-        public required string Name { get; set; }
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
+
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+
+        [JsonPropertyName("url")]
         public string? Url { get; set; } = null;
-        public required bool Working { get; set; } = true;
+
+        [JsonPropertyName("working")]
+        public bool Working { get; set; } = true;
     }
 }
