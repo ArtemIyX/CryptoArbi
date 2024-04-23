@@ -6,6 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ArbiReader.Services
 {
+    public interface ITokenService
+    {
+        public Task<IList<ExchangeTokenResponse>> GetBySymbol(string symbol);
+        public Task<ExchangeTokenResponse?> GetById(long tokenId);
+        public Task<List<ArbiItem>> GetArbi(ArbiFilter filter);
+    }
     public class TokenService(IRepository<ExchangeToken, long> tokenRepository) : ITokenService
     {
         private readonly IRepository<ExchangeToken, long> _tokenRepo = tokenRepository;

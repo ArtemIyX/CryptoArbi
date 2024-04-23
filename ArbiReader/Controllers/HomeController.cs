@@ -1,5 +1,6 @@
 ﻿
 using ArbiDataLib.Data;
+using ArbiReader.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -9,22 +10,26 @@ namespace ArbiReader.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
+        [HttpGet]
         public async Task<IActionResult> Get()
         {
-            try
+            return await Task.Run(() =>
             {
-                return Ok(new BasicResponse()
+                try
                 {
-                    Data = null,
-                    Code = (int)HttpStatusCode.OK,
-                    Message = "Pong",
-                    Success = true
-                });
-            }
-            catch (Exception ex)
-            {
-                return this.InteralServerErrorData(new Exception());
-            }
+                    return Ok(new BasicResponse()
+                    {
+                        Data = null,
+                        Code = (int)HttpStatusCode.OK,
+                        Message = "Pong",
+                        Success = true
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return this.InteralServerErrorData(ex);
+                }
+            });
         }
     }
 }

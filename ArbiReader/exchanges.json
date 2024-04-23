@@ -1,0 +1,11 @@
+{
+  "Exchanges": [
+    {
+      "ExchangeId": "bybit",
+      "HomeURL": "https://www.bybit.com/en/dashboard",
+      "TradeURL": "https://www.bybit.com/en/trade/spot/",
+      "DepositURL": "https://www.bybit.com/user/assets/deposit",
+      "WithdrawalURL": "https://www.bybit.com/user/assets/withdraw"
+    }
+  ]
+}

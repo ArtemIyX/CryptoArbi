@@ -55,6 +55,7 @@ try
     builder.Services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
     builder.Services.AddScoped<IExchangeService, ExchangeService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
+    builder.Services.AddScoped<IExchangeInfoService, ExchangeInfoService>();
 
     var app = builder.Build();
 
