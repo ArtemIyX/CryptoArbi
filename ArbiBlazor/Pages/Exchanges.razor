@@ -2,7 +2,6 @@
 
 @using ArbiBlazor.Services
 @using ArbiDataLib.Models
-@using System.Text.Json
 @inject IExchangeService exchangeService
 
 <h3>Exchanges</h3>
@@ -15,22 +14,18 @@
 }
 else
 {
-    <div>@DebugStr</div>
     @foreach (var ex in ExchangeEntities)
     {
-        <div> hello</div>
         <div>
-            <h2>@ex.Id</h2>
+            <h2>@ex.Name</h2>
         </div>
     }
 }
 
 @code {
     public List<ExchangeEntityResponse> ExchangeEntities { get; set; } = [];
-    public string DebugStr { get; set; } = "";
     protected override async Task OnInitializedAsync()
     {
         ExchangeEntities = await exchangeService.GetWorkingExchanges();
-        DebugStr = JsonSerializer.Serialize(ExchangeEntities);
     }
 }
