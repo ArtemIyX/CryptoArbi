@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ArbiDataLib.Models
 {
-    public class ExchangeInfoEntity
+    public class ExchangeInfo
     {
         public string ExchangeId { get; set; } = string.Empty;
         public string HomeUrl { get; set; } = string.Empty;
