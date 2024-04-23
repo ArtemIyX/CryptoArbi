@@ -1,18 +1,17 @@
 ﻿using ArbiLib.Libs;
 using ArbiDataLib.Models;
-using ArbiWriter.Services.Interfaces;
 using ccxt;
 using Microsoft.EntityFrameworkCore;
 using Nethereum.Util;
 using System.Data;
 using ArbiDataLib.Data.Repo;
 
-namespace ArbiWriter.Services.Impl
+namespace ArbiWriter.Services
 {
     public interface ITokenService
     {
-        Task UpdateTokens(ccxt.Exchange owner, CancellationToken stoppingToken = default);
-        ExchangeToken? CreateTokenEntity(ccxt.Exchange owner, in ccxt.Ticker ticker);
+        Task UpdateTokens(Exchange owner, CancellationToken stoppingToken = default);
+        ExchangeToken? CreateTokenEntity(Exchange owner, in Ticker ticker);
         Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default);
     }
 
@@ -51,13 +50,13 @@ namespace ArbiWriter.Services.Impl
                 stoppingToken);
 
 
-        public async Task UpdateTokens(ccxt.Exchange owner, CancellationToken stoppingToken = default)
+        public async Task UpdateTokens(Exchange owner, CancellationToken stoppingToken = default)
         {
             Tickers container = await owner.FetchTickers();
             foreach (KeyValuePair<string, Ticker> x in container.tickers)
             {
                 ExchangeToken? tokenInDb = await FindToken(owner.id, x.Value.symbol ?? "", stoppingToken);
-                
+
                 if (tokenInDb is not null)
                 {
                     tokenInDb.Ask = x.Value.ask;
@@ -69,7 +68,7 @@ namespace ArbiWriter.Services.Impl
                 }
                 else
                 {
-                    if(x.Value.symbol is not null && TickerLib.IsUsdtPair(x.Value.symbol))
+                    if (x.Value.symbol is not null && TickerLib.IsUsdtPair(x.Value.symbol))
                     {
                         ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value);
                         if (tokenEntity is not null)
@@ -77,7 +76,7 @@ namespace ArbiWriter.Services.Impl
                             await _tokenRepo.Add(tokenEntity, stoppingToken);
                         }
                     }
-                   
+
                 }
             }
             await _tokenRepo.SaveChangesAsync(stoppingToken);

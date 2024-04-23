@@ -1,8 +1,7 @@
 using ArbiDataLib.Data;
 using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
-using ArbiWriter.Services.Impl;
-using ArbiWriter.Services.Interfaces;
+using ArbiWriter.Services;
 using Microsoft.EntityFrameworkCore;
 
 class Program

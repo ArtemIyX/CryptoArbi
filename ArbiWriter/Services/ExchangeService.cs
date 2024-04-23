@@ -1,14 +1,13 @@
 ﻿using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
-using ArbiWriter.Services.Interfaces;
 using ccxt;
 using Microsoft.EntityFrameworkCore;
 
-namespace ArbiWriter.Services.Impl
+namespace ArbiWriter.Services
 {
     public interface IExchangeService
     {
-        public ICollection<ccxt.Exchange> GetSupportedExchanges();
+        public ICollection<Exchange> GetSupportedExchanges();
         public Task MarkAllAsWorkingAsync(bool bWorking = true, CancellationToken stoppingToken = default);
         public ExchangeEntity CreateExchangeEntity(Exchange exchange);
         public Task UploadData(CancellationToken stoppingToken = default);
@@ -37,7 +36,7 @@ namespace ArbiWriter.Services.Impl
             Working = true
         };
 
-        public ICollection<Exchange> GetSupportedExchanges() => ExchangeService.ExchangeObjects;
+        public ICollection<Exchange> GetSupportedExchanges() => ExchangeObjects;
 
         public async Task MarkAllAsWorkingAsync(bool bWorking = true, CancellationToken stoppingToken = default)
         {
