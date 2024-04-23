@@ -1,31 +1,38 @@
 ﻿@page "/exchanges"
 
-@using ArbiBlazor.Services
-@using ArbiDataLib.Models
-@inject IExchangeService exchangeService
+@inject ArbiBlazor.Services.IExchangeService exchangeService
 
-<h3>Exchanges</h3>
+<h3 class="display-3">Exchanges</h3>
 @if (ExchangeEntities.Count == 0)
 {
-    <div>
-        <p>Loading...</p>
-    </div>
+<div>
+    <p>Loading...</p>
+</div>
 
 }
 else
 {
+<div class="row row-cols-1 row-cols-md-2 g-4">
+
     @foreach (var ex in ExchangeEntities)
     {
-        <div>
-            <h2>@ex.Name</h2>
-        </div>
-    }
-}
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@ex.Name</h5>
+                <h6 class="card-subtitle mb-2 text-body-secondary">@ex.Id</h6>
+                <a href="@ex.Url" class="card-link">Link</a>
+                @if(!ex.Working)
+                {
+                <div class="card-footer">
+                    <small class="text-body-secondary">Not working</small>
+                </div>
+                }
 
-@code {
-    public List<ExchangeEntityResponse> ExchangeEntities { get; set; } = [];
-    protected override async Task OnInitializedAsync()
-    {
-        ExchangeEntities = await exchangeService.GetWorkingExchanges();
+            </div>
+        </div>
+
+    </div>
     }
+</div>
 }
