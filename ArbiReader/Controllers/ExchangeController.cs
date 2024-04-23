@@ -5,7 +5,7 @@ using System.Net;
 
 namespace ArbiReader.Controllers
 {
-    [Route("api/exchange")]
+    [Route("api/exchanges")]
     [ApiController]
     public class ExchangeController(IServiceScopeFactory serviceScopeFactory) : ControllerBase
     {

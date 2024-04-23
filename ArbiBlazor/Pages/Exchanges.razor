@@ -1,0 +1,16 @@
+﻿@page "/exchanges"
+
+@using ArbiBlazor.Services
+@using ArbiDataLib.Models
+@inject IExchangeService exchangeService
+
+<h3>Exchanges</h3>
+@DebugStr
+@code {
+    public string DebugStr { get; set; } = "Debug";
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await exchangeService.Test();
+        DebugStr = res.ToString();
+    }
+}

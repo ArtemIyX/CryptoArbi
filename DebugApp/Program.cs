@@ -7,6 +7,10 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
+        HttpClient client = new HttpClient();
+        var res = await client.GetAsync("http://localhost:5000/api/token/arbi");
+        await Console.Out.WriteLineAsync(await res.Content.ReadAsStringAsync());
+        return;
         CultureInfo culture = new CultureInfo("en-US");
         culture.NumberFormat.NumberDecimalSeparator = ".";
         System.Threading.Thread.CurrentThread.CurrentCulture = culture;

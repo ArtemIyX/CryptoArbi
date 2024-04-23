@@ -6,7 +6,7 @@ using System.Net;
 
 namespace ArbiReader.Controllers
 {
-    [Route("api/token")]
+    [Route("api/tokens")]
     [ApiController]
     public class TokenController(ITokenService tokenService) : ControllerBase
     {
