@@ -11,5 +11,5 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(serverUr
 builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IExchangeService, ExchangeService>();
 builder.Services.AddScoped<IAppStatusService, AppStatusService>();
-
+builder.Services.AddScoped<ITokenService, TokenService>();
 await builder.Build().RunAsync();

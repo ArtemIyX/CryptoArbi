@@ -18,7 +18,6 @@ namespace ArbiBlazor.Services
         IAppSettingsService appSettingsService) : IExchangeService
     {
         private readonly HttpClient _http = httpClient;
-        private readonly IAppSettingsService _appSettings = appSettingsService;
 
         private readonly string WorkingExchangesUrl = "api/exchanges/working";
         private readonly string ExchangesUrl = "api/exchanges";

@@ -1,5 +1,50 @@
 ﻿@page "/tokens"
-
+@inject ArbiBlazor.Services.ITokenService tokenService
 <PageTitle>Tokens</PageTitle>
 
-<h2>Hello!</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Token</th>
+      <th scope="col"></th>
+      <th scope="col">AskVolume</th>
+      <th scope="col">BidVolume</th>
+      <th scope="col">Profit</th>
+    </tr>
+  </thead>
+  <tbody>
+        @foreach(ArbiDataLib.Data.ArbiItem arbi in Tokens)
+        {
+                <tr>
+          <th scope="row">
+              <div class="col">
+                  <div class ="row">
+                      <p>@arbi.FullSymbolName</p>
+                  </div>
+                                <div class ="row">
+                          <small>@arbi.Updated.ToShortTimeString()</small>
+                      </div> 
+                            
+              </div>
+          </th>
+          <td>
+            <div class="card">
+              <div class="row">
+                    <div class="col text-center"><strong>@arbi.ExchangeId1</strong></div>
+                <div class="col text-center"><strong>@arbi.ExchangeId2</strong></div>
+              </div>
+              <div class="row">
+                    <div class="col text-center"><italic>@arbi.Ask</italic></div>
+                    <div class="col text-center"><italic>@arbi.Bid</italic></div>
+              </div>
+            </div>
+          </td>
+
+          <td>@arbi.AskVolumeUSDT</td>
+            <td>@arbi.BidVolumeUSDT</td>
+          <td>@arbi.PriceDifferencePercentage</td>
+        </tr>
+        }
+        
+  </tbody>
+</table>
