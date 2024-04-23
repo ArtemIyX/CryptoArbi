@@ -1,12 +1,19 @@
 ﻿@inherits LayoutComponentBase
+@inject ArbiBlazor.Services.IAppStatusService appStatusService
+
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4">
-            "SCP-173"
+        <div class="top-row px-4 ">
+           <div class="text-center">
+               <p class="mt-0 mb-0">
+                    @WorkingStatus
+               </p>
+           </div>
+           <img src ="@ImagePath" width=32 height =32 class="ps-2"/>
         </div>
 
         <article class="content px-4">
@@ -14,3 +21,4 @@
         </article>
     </main>
 </div>
+

@@ -10,6 +10,6 @@ string serverUrl = builder.Configuration["ServerUrl"] ?? "";
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(serverUrl) });
 builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IExchangeService, ExchangeService>();
-
+builder.Services.AddScoped<IAppStatusService, AppStatusService>();
 
 await builder.Build().RunAsync();
