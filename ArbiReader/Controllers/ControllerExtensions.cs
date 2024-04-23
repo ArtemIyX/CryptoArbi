@@ -17,5 +17,16 @@ namespace ArbiReader.Controllers
                 Success = true
             });
         }
+
+        public static IActionResult InteralServerErrorData(this ControllerBase controller, Exception ex)
+        {
+            return controller.StatusCode((int)HttpStatusCode.InternalServerError, new BasicResponse()
+            {
+                Code = (int)HttpStatusCode.InternalServerError,
+                Message = ex.Message,
+                Data = null,
+                Success = false
+            });
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace ArbiReader.Services
         private readonly IRepository<ExchangeEntity, string> _exchangeRepo = exchangeRepository;
 
         
-        public async Task<IList<ExchangeEntityResponse>> Get() => 
+        public async Task<IList<ExchangeEntityResponse>> Get() =>
             await _exchangeRepo.AsQueryable().Select(x => x.ToReposnse()).ToListAsync();
 
         public async Task<ExchangeEntityResponse?> Get(string id) => 

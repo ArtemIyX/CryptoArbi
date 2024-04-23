@@ -11,13 +11,20 @@ namespace ArbiReader.Controllers
     {
         public async Task<IActionResult> Get()
         {
-            return Ok(new BasicResponse()
+            try
             {
-                Data = null,
-                Code = (int)HttpStatusCode.OK,
-                Message = "Pong",
-                Success = true
-            });
+                return Ok(new BasicResponse()
+                {
+                    Data = null,
+                    Code = (int)HttpStatusCode.OK,
+                    Message = "Pong",
+                    Success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return this.InteralServerErrorData(new Exception());
+            }
         }
     }
 }

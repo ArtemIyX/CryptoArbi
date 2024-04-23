@@ -26,6 +26,6 @@ namespace ArbiDataLib.Data
         public double MaxPercent { get; set; } = 100.0;
 
         [JsonPropertyName("amount")]
-        public int Amount { get; set; } = 15;
+        public int Amount { get; set; } = 50;
     }
 }

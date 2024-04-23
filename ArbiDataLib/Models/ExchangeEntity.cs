@@ -30,6 +30,9 @@ namespace ArbiDataLib.Models
             Url = Url,
             Working = Working,
         };
+
+        public long InfoId { get; set; }
+        public virtual ExchangeInfoEntity? Info { get; set; }
     }
 
     public class ExchangeEntityResponse
