@@ -5,35 +5,37 @@ namespace ArbiDataLib.Data
     public class ArbiItem
     {
         public ArbiItem() { }
-        public ArbiItem(ArbiItem arbiItem)
+        // Copy Constructor
+        public ArbiItem(ArbiItem other)
         {
-            DisplayName = arbiItem.DisplayName;
-            FullSymbolName = arbiItem.FullSymbolName;
-            ExchangeId1 = arbiItem.ExchangeId1;
-            ExchangeId2 = arbiItem.ExchangeId2;
-            AskId = arbiItem.AskId;
-            Ask = arbiItem.Ask;
-            AskVolume = arbiItem.AskVolume;
-            AskVolumeUSDT = arbiItem.AskVolumeUSDT;
-            BidId = arbiItem.BidId;
-            Bid = arbiItem.Bid;
-            BidVolume = arbiItem.BidVolume;
-            BidVolumeUSDT = arbiItem.BidVolumeUSDT;
-            DayVolumeUSDT = arbiItem.DayVolumeUSDT;
-            PriceDifferencePercentage = arbiItem.PriceDifferencePercentage;
-            Updated = arbiItem.Updated;
+            DisplayName = other.DisplayName;
+            FullSymbolName = other.FullSymbolName;
+            ExchangeId1 = other.ExchangeId1;
+            ExchangeId2 = other.ExchangeId2;
+            AskId = other.AskId;
+            Ask = other.Ask;
+            AskVolume = other.AskVolume;
+            AskVolumeUSDT = other.AskVolumeUSDT;
+            AskDayVolumeUSDT = other.AskDayVolumeUSDT;
+            BidId = other.BidId;
+            Bid = other.Bid;
+            BidVolume = other.BidVolume;
+            BidVolumeUSDT = other.BidVolumeUSDT;
+            BidDayVolumeUSDT = other.BidDayVolumeUSDT;
+            PriceDifferencePercentage = other.PriceDifferencePercentage;
+            Updated = other.Updated;
         }
 
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; } = string.Empty;
 
-        [JsonPropertyName("fullSymbolName")]
+        [JsonPropertyName("fullName")]
         public string FullSymbolName { get; set; } = string.Empty;
 
-        [JsonPropertyName("exchangeId1")]
+        [JsonPropertyName("askExId")]
         public string ExchangeId1 { get; set; } = string.Empty;
 
-        [JsonPropertyName("exchangeId2")]
+        [JsonPropertyName("bidExId")]
         public string ExchangeId2 { get; set; } = string.Empty;
 
         [JsonPropertyName("askId")]
@@ -42,11 +44,14 @@ namespace ArbiDataLib.Data
         [JsonPropertyName("ask")]
         public double Ask { get; set; } = 0.0;
 
-        [JsonPropertyName("askVolume")]
+        [JsonPropertyName("askVol")]
         public double AskVolume { get; set; } = 0.0;
 
-        [JsonPropertyName("askVolumeUSDT")]
+        [JsonPropertyName("askVolUSDT")]
         public double AskVolumeUSDT { get; set; } = 0.0;
+
+        [JsonPropertyName("askDayVolUSDT")]
+        public double AskDayVolumeUSDT { get; set; } = 0.0;
 
         [JsonPropertyName("bidId")]
         public long BidId { get; set; } = 0;
@@ -54,19 +59,21 @@ namespace ArbiDataLib.Data
         [JsonPropertyName("bid")]
         public double Bid { get; set; } = 0.0;
 
-        [JsonPropertyName("bidVolume")]
+        [JsonPropertyName("bidVol")]
         public double BidVolume { get; set; } = 0.0;
 
-        [JsonPropertyName("bidVolumeUSDT")]
+        [JsonPropertyName("bidVolUSDT")]
         public double BidVolumeUSDT { get; set; } = 0.0;
 
-        [JsonPropertyName("dayVolumeUSDT")]
-        public double DayVolumeUSDT { get; set; } = 0.0;
+        [JsonPropertyName("bidDayVolUSDT")]
+        public double BidDayVolumeUSDT { get; set; } = 0.0;
 
-        [JsonPropertyName("priceDifferencePercentage")]
+        [JsonPropertyName("diff")]
         public double PriceDifferencePercentage { get; set; } = 0.0;
 
         [JsonPropertyName("updated")]
         public DateTime Updated { get; set; } = DateTime.MinValue;
+
+
     }
 }

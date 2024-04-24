@@ -11,21 +11,15 @@ namespace ArbiReader.Controllers
     {
         private readonly ITokenService _tokenService = tokenService;
 
-        [HttpGet("symbol")]
-        public async Task<IActionResult> Get([FromQuery] string symbol)
+        [HttpGet("sym/{symbol}")]
+        public async Task<IActionResult> GetBySymbol(string symbol)
         {
             try
             {
-                IList<ArbiDataLib.Models.ExchangeTokenResponse> res = await _tokenService.GetBySymbol(symbol);
-                if (res.Count == 0)
+                IList<ArbiDataLib.Models.ExchangeTokenResponse> res = await _tokenService.GetTokens(symbol);
+                if (res.Count <= 0)
                 {
-                    return NotFound(new BasicResponse()
-                    {
-                        Data = null,
-                        Code = (int)HttpStatusCode.NotFound,
-                        Success = false,
-                        Message = $"Token with symbol '{symbol}' not found"
-                    });
+                    return this.NotFoundData($"Token with symbol '{symbol}' not found");
                 }
                 return this.OkData(res);
             }
@@ -40,16 +34,10 @@ namespace ArbiReader.Controllers
         {
             try
             {
-                ArbiDataLib.Models.ExchangeTokenResponse? token = await _tokenService.GetById(id);
+                ArbiDataLib.Models.ExchangeTokenResponse? token = await _tokenService.GetToken(id);
                 if (token is null)
                 {
-                    return NotFound(new BasicResponse()
-                    {
-                        Data = null,
-                        Code = (int)HttpStatusCode.NotFound,
-                        Success = false,
-                        Message = $"Token with id '{id}' not found"
-                    });
+                    return this.NotFoundData($"Token with id '{id}' not found");
                 }
                 return this.OkData(token);
             }
@@ -59,19 +47,6 @@ namespace ArbiReader.Controllers
             }
         }
 
-        [HttpGet("arbi")]
-        public async Task<IActionResult> ArbiFilterd([FromQuery] ArbiFilter filter)
-        {
-            try
-            {
-                filter.Amount = Math.Clamp(filter.Amount, 1, 200);
-                List<ArbiItem> content = await _tokenService.GetArbi(filter);
-                return this.OkData(content);
-            }
-            catch (Exception ex)
-            {
-                return this.InteralServerErrorData(ex);
-            }
-        }
+
     }
 }

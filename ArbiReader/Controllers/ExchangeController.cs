@@ -19,7 +19,12 @@ namespace ArbiReader.Controllers
             {
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
                 IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
-                return this.OkData(await exchangeService.Get());
+                IList<ArbiDataLib.Models.ExchangeEntityResponse> exchanges = await exchangeService.Get();
+                if(exchanges.Count <= 0)
+                {
+                    return this.NotFoundData($"No exchanges");
+                }
+                return this.OkData(exchanges);
             }
             catch(Exception ex)
             {
@@ -37,13 +42,7 @@ namespace ArbiReader.Controllers
                 ArbiDataLib.Models.ExchangeEntityResponse? ex = await exchangeService.Get(id);
                 if (ex is null)
                 {
-                    return NotFound(new BasicResponse()
-                    {
-                        Data = null,
-                        Code = (int)HttpStatusCode.NotFound,
-                        Success = false,
-                        Message = $"Exchange with id '{id}' not found"
-                    });
+                    return this.NotFoundData($"Exchange with id '{id}' not found");
                 }
                 return this.OkData(ex);
             }
@@ -60,7 +59,12 @@ namespace ArbiReader.Controllers
             {
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
                 IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
-                return this.OkData(await exchangeService.Working());
+                IList<ArbiDataLib.Models.ExchangeEntityResponse> working = await exchangeService.Working();
+                if(working.Count <= 0)
+                {
+                    return this.NotFoundData($"No working exchanges");
+                }
+                return this.OkData(working);
             }
             catch(Exception ex)
             {

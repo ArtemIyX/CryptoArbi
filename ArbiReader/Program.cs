@@ -10,10 +10,10 @@ try
 {
     var builder = WebApplication.CreateBuilder(args);
 
-    builder.Logging.ClearProviders();
+/*    builder.Logging.ClearProviders();
     Log.Logger = new LoggerConfiguration()
         .WriteTo.Console()
-        .CreateLogger();
+        .CreateLogger();*/
 
 
     builder.Configuration.AddJsonFile(path:"exchanges.json", optional:true, reloadOnChange:true);
