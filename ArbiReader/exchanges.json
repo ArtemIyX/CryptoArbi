@@ -1,46 +1,46 @@
 {
-  "Exchanges": [
+  "exchanges": [
     {
-      "ExchangeId": "bybit",
-      "HomeURL": "https://www.bybit.com/en/dashboard",
-      "TradeURL": "https://www.bybit.com/en/trade/spot/btc/usdt",
-      "DepositURL": "https://www.bybit.com/user/assets/deposit",
-      "WithdrawalURL": "https://www.bybit.com/user/assets/withdraw"
+      "id": "bybit",
+      "home": "https://www.bybit.com/en/dashboard",
+      "trade": "https://www.bybit.com/en/trade/spot/btc/usdt",
+      "deposit": "https://www.bybit.com/user/assets/deposit",
+      "withdraw": "https://www.bybit.com/user/assets/withdraw"
     },
     {
-      "ExchangeId": "bitget",
-      "HomeURL": "https://www.bitget.com/",
-      "TradeURL": "https://www.bitget.com/spot/btcusdt",
-      "DepositURL": "https://www.bitget.com/asset/recharge",
-      "WithdrawalURL": "https://www.bitget.com/asset/withdraw"
+      "id": "bitget",
+      "home": "https://www.bitget.com/",
+      "trade": "https://www.bitget.com/spot/btcusdt",
+      "deposit": "https://www.bitget.com/asset/recharge",
+      "withdraw": "https://www.bitget.com/asset/withdraw"
     },
     {
-      "ExchangeId": "huobi",
-      "HomeURL": "https://www.htx.com/",
-      "TradeURL": "https://www.htx.com/trade/btc_usdt?type=spot",
-      "DepositURL": "https://www.htx.com/en-us/finance/deposit/",
-      "WithdrawalURL": "https://www.htx.com/en-us/finance/withdraw/"
+      "id": "huobi",
+      "home": "https://www.htx.com/",
+      "trade": "https://www.htx.com/trade/btc_usdt?type=spot",
+      "deposit": "https://www.htx.com/en-us/finance/deposit/",
+      "withdraw": "https://www.htx.com/en-us/finance/withdraw/"
     },
     {
-      "ExchangeId": "kucoin",
-      "HomeURL": "https://www.kucoin.com/",
-      "TradeURL": "https://www.kucoin.com/trade/btc-usdt",
-      "DepositURL": "https://www.kucoin.com/assets/coin/USDT",
-      "WithdrawalURL": "https://www.kucoin.com/assets/withdraw"
+      "id": "kucoin",
+      "home": "https://www.kucoin.com/",
+      "trade": "https://www.kucoin.com/trade/btc-usdt",
+      "deposit": "https://www.kucoin.com/assets/coin/USDT",
+      "withdraw": "https://www.kucoin.com/assets/withdraw"
     },
     {
-      "ExchangeId": "mexc",
-      "HomeURL": "https://mexc.com/",
-      "TradeURL": "https://www.mexc.com/exchange/btc_usdt",
-      "DepositURL": "https://www.mexc.com/assets/deposit/USDT",
-      "WithdrawalURL": "https://www.mexc.com/assets/withdraw"
+      "id": "mexc",
+      "home": "https://mexc.com/",
+      "trade": "https://www.mexc.com/exchange/btc_usdt",
+      "deposit": "https://www.mexc.com/assets/deposit/USDT",
+      "withdraw": "https://www.mexc.com/assets/withdraw"
     },
     {
-      "ExchangeId": "gateio",
-      "HomeURL": "https://mexc.com/",
-      "TradeURL": "https://www.gate.io/trade/btc_usdt",
-      "DepositURL": "https://www.gate.io/myaccount/deposit/USDT",
-      "WithdrawalURL": "https://www.gate.io/myaccount/withdraw/USDT"
+      "id": "gateio",
+      "home": "https://www.gate.io/",
+      "trade": "https://www.gate.io/trade/btc_usdt",
+      "deposit": "https://www.gate.io/myaccount/deposit/USDT",
+      "withdraw": "https://www.gate.io/myaccount/withdraw/USDT"
     }
   ]
 }

@@ -3,21 +3,21 @@
 
 namespace ArbiDataLib.Models
 {
-    public class ExchangeInfo
+    public class ExchangeUrlInfo
     {
-        [JsonPropertyName("ExchangeId")]
+        [JsonPropertyName("id")]
         public string ExchangeId { get; set; } = string.Empty;
 
-        [JsonPropertyName("HomeURL")]
+        [JsonPropertyName("home")]
         public string HomeURL { get; set; } = string.Empty;
 
-        [JsonPropertyName("TradeURL")]
+        [JsonPropertyName("trade")]
         public string TradeURL { get; set; } = string.Empty;
 
-        [JsonPropertyName("DepositURL")]
+        [JsonPropertyName("deposit")]
         public string DepositURL { get; set; } = string.Empty;
 
-        [JsonPropertyName("WithdrawalURL")]
+        [JsonPropertyName("withdraw")]
         public string WithdrawalURL { get; set; } = string.Empty;
     }
 }
