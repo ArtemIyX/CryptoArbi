@@ -9,10 +9,11 @@ namespace ArbiBlazor.Services
 {
     public interface IExchangeService
     {
-        public Task<List<ExchangeEntityResponse>> GetExchanges();
-        public Task<List<ExchangeEntityResponse>> GetWorkingExchanges();
+        public Task<IList<ExchangeEntityResponse>> GetExchanges();
+        public Task<IList<ExchangeEntityResponse>> GetWorkingExchanges();
         public Task<ExchangeEntityResponse?> GetExchange(string exchangeId);
         public Task<ExchangeUrlInfo?> GetExchangeUrlInfo(string exchangeId);
+        public Task<IList<ExchangeUrlInfo>> GetExchangeUrlInfos();
     }
 
     public class ExchangeService(HttpClient httpClient) : IExchangeService
@@ -35,7 +36,21 @@ namespace ArbiBlazor.Services
             }
         }
 
-        public async Task<List<ExchangeEntityResponse>> GetExchanges()
+        public async Task<IList<ExchangeUrlInfo>> GetExchangeUrlInfos()
+        {
+            try
+            {
+                BasicResponse? response = await _http.GetBasicAsync(ExchangesInfoUrl);
+                return response.TryParseContent<List<ExchangeUrlInfo>>() ?? [];
+            }
+            catch (Exception)
+            {
+                return [];
+            }
+        }
+
+
+        public async Task<IList<ExchangeEntityResponse>> GetExchanges()
         {
             try
             {
@@ -64,7 +79,8 @@ namespace ArbiBlazor.Services
             }
         }
 
-        public async Task<List<ExchangeEntityResponse>> GetWorkingExchanges()
+
+        public async Task<IList<ExchangeEntityResponse>> GetWorkingExchanges()
         {
             try
             {
@@ -78,5 +94,7 @@ namespace ArbiBlazor.Services
                 return [];
             }
         }
+
+
     }
 }

@@ -6,7 +6,7 @@ namespace ArbiBlazor.Pages
 {
     public partial class Exchanges : ComponentBase
     {
-        public List<ExchangeEntityResponse> ExchangeEntities { get; set; } = [];
+        public IList<ExchangeEntityResponse> ExchangeEntities { get; set; } = [];
         protected override async Task OnInitializedAsync()
         {
             ExchangeEntities = await exchangeService.GetExchanges();
