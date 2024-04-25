@@ -1,9 +1,10 @@
 using ArbiBlazor.Services;
 using ArbiDataLib.Models;
+using Microsoft.AspNetCore.Components;
 
 namespace ArbiBlazor.Pages
 {
-    public partial class Exchanges
+    public partial class Exchanges : ComponentBase
     {
         public List<ExchangeEntityResponse> ExchangeEntities { get; set; } = [];
         protected override async Task OnInitializedAsync()

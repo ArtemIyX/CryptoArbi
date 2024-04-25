@@ -1,5 +1,7 @@
 ﻿using ArbiDataLib.Data;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,17 +11,24 @@ namespace ArbiBlazor.Pages
 
     public partial class ArbiTokens : ComponentBase
     {
-        public List<ArbiItem> Tokens { get; set; } = [];
+        private readonly string CardDefaultStyle = "bg-light";
+        private readonly string CardHoveredStyle = "bg-primary";
+        public string CardCssStyle { get; set; } = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
-            await UpdateTokens();
+            CardCssStyle = CardDefaultStyle;
+            if (arbiContainer.Items is null ||
+                arbiContainer.Items?.Count == 0)
+            {
+                await UpdateTokens();
+            }
         }
 
         public async Task UpdateTokens()
         {
-            Tokens.Clear();
-            Tokens = await tokenService.GetArbiItems(new ArbiFilter());
+            var res = await arbiService.GetArbiItems(new ArbiFilter());
+            arbiContainer.Items = res;
         }
     }
 }

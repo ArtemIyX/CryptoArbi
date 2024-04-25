@@ -74,6 +74,36 @@ namespace ArbiDataLib.Data
         [JsonPropertyName("updated")]
         public DateTime Updated { get; set; } = DateTime.MinValue;
 
+    }
 
+    public class ArbiItemVisual : ArbiItem
+    {
+        public ArbiItemVisual() : base()
+        { 
+
+        }
+
+        public ArbiItemVisual(ArbiItem arbi,
+            string buyName, 
+            string buyUrl, 
+            string withdrawUrl, 
+            string sellName, 
+            string depositUrl,
+            string sellUrl) : base(arbi)
+        {
+            BuyName = buyName;
+            BuyUrl = buyUrl;
+            WithdrawUrl = withdrawUrl;
+            SellName = sellName;
+            DepositUrl = depositUrl;
+            SellUrl = sellUrl;
+        }
+
+        public string BuyName { get; set; } = string.Empty;
+        public string BuyUrl { get; set; } = string.Empty;
+        public string WithdrawUrl { get; set;} = string.Empty;
+        public string SellName { get; set; } = string.Empty;
+        public string DepositUrl { get; set;} = string.Empty;
+        public string SellUrl { get; set;} = string.Empty;
     }
 }

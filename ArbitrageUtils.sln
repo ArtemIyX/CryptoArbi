@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiDataLib", "ArbiDataLib\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiReader", "ArbiReader\ArbiReader.csproj", "{66678AAB-4F32-4C2D-A564-D57707A5F883}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArbiBlazor", "ArbiBlazor\ArbiBlazor.csproj", "{CE1A00BF-5037-4451-A239-2A38CB411715}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ArbiBlazor", "ArbiBlazor\ArbiBlazor.csproj", "{CE1A00BF-5037-4451-A239-2A38CB411715}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,19 +12,21 @@ namespace ArbiBlazor.Services
         public Task<List<ExchangeEntityResponse>> GetExchanges();
         public Task<List<ExchangeEntityResponse>> GetWorkingExchanges();
         public Task<ExchangeEntityResponse?> GetExchange(string exchangeId);
+        public Task<ExchangeUrlInfo?> GetExchangeUrlInfo(string exchangeId);
     }
 
     public class ExchangeService(HttpClient httpClient) : IExchangeService
     {
         private readonly HttpClient _http = httpClient;
         private readonly string WorkingExchangesUrl = "api/exchanges/working";
-        private readonly string ExchangesUrl = "api/exchanges";
+        private readonly string ExchangesUrl = "api/exchanges/";
+        private readonly string ExchangesInfoUrl = "api/exchanges/u/";
 
         public async Task<ExchangeEntityResponse?> GetExchange(string exchangeId)
         {
             try
             {
-                BasicResponse? response = await _http.GetBasicAsync($"{ExchangesUrl}/{exchangeId}");
+                BasicResponse? response = await _http.GetBasicAsync($"{ExchangesUrl}{exchangeId}");
                 return response.TryParseContent<ExchangeEntityResponse>();
             }
             catch(Exception)
@@ -45,6 +47,20 @@ namespace ArbiBlazor.Services
             catch (Exception)
             {
                 return [];
+            }
+        }
+
+        public async Task<ExchangeUrlInfo?> GetExchangeUrlInfo(string exchangeId)
+        {
+            try
+            {
+                BasicResponse? response = await _http.GetBasicAsync($"{ExchangesInfoUrl}{exchangeId}") ;
+                ExchangeUrlInfo? content = response.TryParseContent<ExchangeUrlInfo>();
+                return content;
+            }
+            catch (Exception)
+            {
+                return null;
             }
         }
 

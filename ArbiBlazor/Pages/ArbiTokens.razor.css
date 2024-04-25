@@ -1,0 +1,11 @@
+﻿
+.link-primary {
+    text-decoration: none;
+}
+.link-danger {
+    text-decoration: none;
+}
+
+.card-token :hover {
+    background-color: var(--bs-gray-400);
+}

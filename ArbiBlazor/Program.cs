@@ -12,4 +12,8 @@ builder.Services.AddScoped<IAppSettingsService, AppSettingsService>();
 builder.Services.AddScoped<IExchangeService, ExchangeService>();
 builder.Services.AddScoped<IAppStatusService, AppStatusService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IArbiService, ArbiService>();
+builder.Services.AddScoped<IDisplaySerivce, DisplayService>();
+builder.Services.AddSingleton<IArbiContainer, ArbiContainer>();
+
 await builder.Build().RunAsync();
