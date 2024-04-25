@@ -7,10 +7,12 @@ namespace ArbiBlazor.Services
         public string Volume(double price);
         public string Percent(double percent);
         public string Price(double price);
+        public string Trade(string url, string symbolName);
     }
 
     public class DisplayService : IDisplaySerivce
     {
+
         private string ConvertDoubleToString(double value)
         {
             // Define suffixes for thousands, millions, billions, etc.
@@ -37,5 +39,8 @@ namespace ArbiBlazor.Services
 
         public string Volume(double price)
             => ConvertDoubleToString(price);
+
+        public string Trade(string url, string symbolName)
+            => url.Replace("btc", symbolName);
     }
 }

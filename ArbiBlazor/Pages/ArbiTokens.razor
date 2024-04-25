@@ -3,7 +3,7 @@
 @inject ArbiBlazor.Services.IArbiService arbiService
 @inject ArbiBlazor.Services.IArbiContainer arbiContainer
 @inject ArbiBlazor.Services.IDisplaySerivce dS
-<pagetitle>Tokens</pagetitle>
+<PageTitle>Tokens</PageTitle>
 
 <div class="container-fluid arbi-container">
   <div class="row">
@@ -95,21 +95,22 @@
                   </div>
                 </div>
               </div>
-                                      <div class="row table-header-row">
-                                  <a href="@arbi.BuyUrl" target="_blank" class="a-ex">
-                            <button class="btn btn-outline-primary btn-ex">
-                              <p class="table-p">
-                                <strong>
-                                                        @arbi.BuyName
-                                </strong>
-                              </p>
-                            </button>
-                          </a>
-                        </div>
+              <div class="row table-header-row">
+                <a href="@dS.Trade(arbi.BuyUrl, arbi.DisplayName)"
+                  target="_blank" class="a-ex">
+                  <button class="btn btn-outline-primary btn-ex">
+                    <p class="table-p">
+                      <strong>
+                        @arbi.BuyName
+                      </strong>
+                    </p>
+                  </button>
+                </a>
+              </div>
             </td>
             <td>
               <div class="container">
-                
+
                 <div class="row">
                   <div class="col volume-col">
                     <strong>
@@ -149,17 +150,18 @@
                       src="svg/day_volume.svg" />
                   </div>
                 </div>
-                        <div class="row table-header-row">
-                                                    <a href="@arbi.SellUrl" target="_blank" class="a-ex">
-                                            <button class="btn btn-outline-danger btn-ex">
-                                      <p class="table-p">
-                                        <strong>
-                                                            @arbi.SellName
-                                        </strong>
-                                      </p>
-                                    </button>
-                                  </a>
-                        </div>
+                <div class="row table-header-row">
+                  <a href="@dS.Trade(arbi.SellUrl, arbi.DisplayName)"
+                    target="_blank" class="a-ex">
+                    <button class="btn btn-outline-danger btn-ex">
+                      <p class="table-p">
+                        <strong>
+                          @arbi.SellName
+                        </strong>
+                      </p>
+                    </button>
+                  </a>
+                </div>
               </div>
             </td>
           </tr>
