@@ -5,76 +5,175 @@
 @inject ArbiBlazor.Services.IDisplaySerivce dS
 <pagetitle>Tokens</pagetitle>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th scope="col">Token</th>
-      <th scope="col"></th>
-      <th scope="col">AskVolume</th>
-      <th scope="col">BidVolume</th>
-      <th scope="col">Profit</th>
-    </tr>
-  </thead>
-  <tbody>
-    @if (arbiContainer.Items is null)
-    {
-    <div>
-      <h5>Loading...</h5>
+<div class="container-fluid arbi-container">
+  <div class="row">
+    <div class="col">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="table-h">Diff</th>
+            <th scope="col" class="table-h">Buy From</th>
+            <th scope="col" class="table-h">Sell At</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (arbiContainer.Items is null)
+          {
+          <div>
+            <h5>Loading...</h5>
+          </div>
+          }
+          else if (arbiContainer.Items.Count == 0)
+          {
+          <div>
+            <h5>No tokens :C</h5>
+          </div>
+          }
+          else
+          {
+
+          @foreach (var arbi in arbiContainer.Items)
+          {
+          <tr>
+            <td>
+              <div class="container">
+                <div class="row table-header-row ">
+                  <p class="table-p">
+                    <strong
+                      class="percent-text">@dS.Percent(arbi.PriceDifferencePercentage)
+                    </strong>
+                  </p>
+                </div>
+                <div class="row">
+                  <p class="text-secondary table-p">
+                    <strong>@arbi.DisplayName</strong>
+                    <small class="text-muted font-weight-light">/USDT</small>
+                  </p>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="container arbi-container">
+
+                <div class="row">
+                  <div class="col volume-col">
+                    <strong>
+                      <p class="table-p text-dark">
+                        @dS.Price(arbi.Ask)
+                      </p>
+                    </strong>
+                  </div>
+                  <div class="col volume-img">
+                    <img class="img-fluid" width="16" height="16"
+                      src="svg/usdt.svg" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col volume-col">
+                    <p class="table-p">
+                      <small class="text-secondary">
+                        @dS.Volume(arbi.AskVolumeUSDT)
+                      </small>
+                    </p>
+                  </div>
+                  <div class="col volume-img">
+                    <img class="img-fluid" width="16" height="16"
+                      src="svg/volume.svg" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col volume-col">
+                    <p class="table-p">
+                      <small class="text-secondary">
+                        @dS.Volume(arbi.AskDayVolumeUSDT)
+                      </small>
+                    </p>
+                  </div>
+                  <div class="col volume-img">
+                    <img class="img-fluid" width="16" height="16"
+                      src="svg/day_volume.svg" />
+                  </div>
+                </div>
+              </div>
+                                      <div class="row table-header-row">
+                                  <a href="@arbi.BuyUrl" target="_blank" class="a-ex">
+                            <button class="btn btn-outline-primary btn-ex">
+                              <p class="table-p">
+                                <strong>
+                                                        @arbi.BuyName
+                                </strong>
+                              </p>
+                            </button>
+                          </a>
+                        </div>
+            </td>
+            <td>
+              <div class="container">
+                
+                <div class="row">
+                  <div class="col volume-col">
+                    <strong>
+                      <p class="table-p text-dark">
+                        @dS.Price(arbi.Bid)
+                      </p>
+                    </strong>
+                  </div>
+                  <div class="col volume-img">
+                    <img class="img-fluid" width="16" height="16"
+                      src="svg/usdt.svg" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col volume-col">
+                    <p class="table-p">
+                      <small class="text-secondary">
+                        @dS.Volume(arbi.BidVolumeUSDT)
+                      </small>
+                    </p>
+                  </div>
+                  <div class="col volume-img">
+                    <img class="img-fluid" width="16" height="16"
+                      src="svg/volume.svg" />
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col volume-col">
+                    <p class="table-p">
+                      <small class="text-secondary">
+                        @dS.Volume(arbi.BidDayVolumeUSDT)
+                      </small>
+                    </p>
+                  </div>
+                  <div class="col volume-img">
+                    <img class="img-fluid" width="16" height="16"
+                      src="svg/day_volume.svg" />
+                  </div>
+                </div>
+                        <div class="row table-header-row">
+                                                    <a href="@arbi.SellUrl" target="_blank" class="a-ex">
+                                            <button class="btn btn-outline-danger btn-ex">
+                                      <p class="table-p">
+                                        <strong>
+                                                            @arbi.SellName
+                                        </strong>
+                                      </p>
+                                    </button>
+                                  </a>
+                        </div>
+              </div>
+            </td>
+          </tr>
+          }
+          }
+        </tbody>
+      </table>
     </div>
-    }
-    else if (arbiContainer.Items.Count == 0)
-    {
-    <div>
-      <h5>No tokens :C</h5>
+    <div class="col-3">
+      <div class="table-filters">
+        <p>Paragraph 1</p>
+        <p>Paragraph 2</p>
+        <p>Paragraph 3</p>
+      </div>
     </div>
-    }
-    else
-    {
-
-    @foreach (var arbi in arbiContainer.Items)
-    {
-    <tr>
-        <th scope="row">
-        <div class="col">
-          <div class="row">
-            <p>@arbi.FullSymbolName</p>
-          </div>
-          <div class="row">
-            <small class="text-muted">@arbi.Updated.ToString("HH:mm",CultureInfo.InvariantCulture)</small>
-          </div>
-
-        </div>
-      </th>
-        <td class="align-middle">
-          <div class="card">
-          <div class="row">
-            <div
-              class="col text-center">
-              <a href=@arbi.BuyUrl target="_blank" class="link-primary">
-                @arbi.BuyName
-              </a>
-            </div>
-            <div
-              class="col text-center">
-              <a href=@arbi.SellUrl target="_blank" class="link-danger">
-                @arbi.SellName
-              </a>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col text-center"><italic
-                class="text-secondary">@dS.Price(@arbi.Ask)</italic></div>
-            <div class="col text-center"><italic
-                class="text-secondary">@dS.Price(@arbi.Bid)</italic></div>
-          </div>
-        </div>
-      </td>
-
-              <td class="align-middle">@dS.Volume(arbi.AskVolumeUSDT)</td>
-              <td class="align-middle">@dS.Volume(arbi.BidVolumeUSDT)</td>
-              <td class="align-middle">@dS.Percent(arbi.PriceDifferencePercentage)</td>
-    </tr>
-    }
-    }
-  </tbody>
-</table>
+  </div>
+</div>

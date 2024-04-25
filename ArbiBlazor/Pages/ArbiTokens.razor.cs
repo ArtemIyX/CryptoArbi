@@ -11,13 +11,9 @@ namespace ArbiBlazor.Pages
 
     public partial class ArbiTokens : ComponentBase
     {
-        private readonly string CardDefaultStyle = "bg-light";
-        private readonly string CardHoveredStyle = "bg-primary";
-        public string CardCssStyle { get; set; } = string.Empty;
 
         protected override async Task OnInitializedAsync()
         {
-            CardCssStyle = CardDefaultStyle;
             if (arbiContainer.Items is null ||
                 arbiContainer.Items?.Count == 0)
             {

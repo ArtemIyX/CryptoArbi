@@ -9,3 +9,70 @@
 .card-token :hover {
     background-color: var(--bs-gray-400);
 }
+.table-filters {
+    
+}
+.table-p {
+    margin-bottom: 0;
+    text-align: center;
+}
+.table-header-row {
+    display:flex;
+    align-items:flex-end;
+    height: 2.2rem;
+    text-align:center;
+    margin-right:0;
+}
+.card {
+    width:100px;
+}
+.a-ex {
+    height: 100%;
+    width: 100%;
+    padding-right: 0px;
+}
+.btn-ex {
+    height:100%;
+    width:100%;
+    font-size: 0.6rem;
+}
+.container-fluid {
+    padding-left: 0.5rem;
+}
+
+.percent-text {
+    color: var(--bs-green);
+}
+.table-h {
+    text-align: center;
+}
+.volume-col {
+    padding-right:2px;
+}
+.volume-img {
+    margin:0;
+    padding:0;
+    max-width:18px;
+}
+.table {
+    max-width: 50%
+}
+.arbi-container {
+
+}
+@media (max-width: 641px) {
+    .container {
+        padding-left:12px;
+        padding-right:12px;
+    }
+    .td {
+        padding: 4px;
+    }
+    .arbi-container {
+        padding-left: 0;
+        padding-right:0;
+    }
+    .table {
+        max-width: 400px;
+    }
+}

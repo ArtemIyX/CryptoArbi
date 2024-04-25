@@ -60,10 +60,12 @@ namespace ArbiReader.Services
                                                         Ask = t1.Ask ?? 0.0,
                                                         AskVolume = t1.AskVolume ?? 0.0,
                                                         AskVolumeUSDT = t1.AskVolume * t1.Ask ?? 0.0,
+                                                        AskDayVolumeUSDT = t1.DayVolumeUSDT?? 0.0,
                                                         BidId = t2.Id,
                                                         Bid = t2.Bid ?? 0.0,
                                                         BidVolume = t2.BidVolume ?? 0.0,
                                                         BidVolumeUSDT = t2.BidVolume * t2.Bid ?? 0.0,
+                                                        BidDayVolumeUSDT = t2.DayVolumeUSDT ?? 0.0,
                                                         FullSymbolName = t1.FullSymbolName,
                                                         PriceDifferencePercentage = diff ?? 0.0,
                                                         Updated = t1.Updated,
@@ -94,13 +96,15 @@ namespace ArbiReader.Services
                                                     Ask = t1.Ask ?? 0.0,
                                                     AskVolume = t1.AskVolume ?? 0.0,
                                                     AskVolumeUSDT = t1.AskVolume * t1.Ask ?? 0.0,
+                                                    AskDayVolumeUSDT = t1.DayVolumeUSDT ?? 0.0,
                                                     BidId = t2.Id,
                                                     Bid = t2.Bid ?? 0.0,
                                                     BidVolume = t2.BidVolume ?? 0.0,
                                                     BidVolumeUSDT = t2.BidVolume * t2.Bid ?? 0.0,
+                                                    BidDayVolumeUSDT = t2.DayVolumeUSDT ?? 0.0,
                                                     FullSymbolName = t1.FullSymbolName,
                                                     PriceDifferencePercentage = diff ?? 0.0,
-                                                    Updated = t1.Updated,
+                                                    Updated = t1.Updated
                                                 };
 
             return await rankedTokens.ToListAsync();
