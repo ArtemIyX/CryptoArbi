@@ -1,4 +1,5 @@
 ﻿using ArbiDataLib.Models;
+using Nethereum.Util;
 
 namespace ArbiReader.Services
 {
@@ -11,15 +12,17 @@ namespace ArbiReader.Services
     public class ExchangeInfoService(IConfiguration configuration) : IExchangeInfoService
     {
         private readonly IConfiguration _configuration = configuration;
-
+        private readonly string InfoSection = "ExUrls";
         public ExchangeUrlInfo? GetExchangeInfo(string exchangeId)
         {
-            throw new NotImplementedException();
+            ExchangeUrlInfo[]? res = _configuration.GetSection(InfoSection).Get<ExchangeUrlInfo[]>();
+            if (res is null) return null;
+            return res.FirstOrDefault(x => x.ExchangeId == exchangeId);
         }
 
         public ExchangeUrlInfo[] GetExchangeInfos()
         {
-            ExchangeUrlInfo[]? res = _configuration.GetSection("Exchanges").Get<ExchangeUrlInfo[]>();
+            ExchangeUrlInfo[]? res = _configuration.GetSection(InfoSection).Get<ExchangeUrlInfo[]>();
             return res is null ? [] : res;
         }
     }

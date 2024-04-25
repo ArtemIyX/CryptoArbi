@@ -12,6 +12,52 @@ namespace ArbiReader.Controllers
     {
         private readonly IServiceScopeFactory _serviceScopeFactory = serviceScopeFactory;
 
+        [HttpGet("u")]
+        public async Task<IActionResult> GetInfo()
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using IServiceScope scope = _serviceScopeFactory.CreateScope();
+                    IExchangeInfoService exInfoService = scope.ServiceProvider.GetRequiredService<IExchangeInfoService>();
+                    var res = exInfoService.GetExchangeInfos();
+                    if (res.Length <= 0)
+                    {
+                        return this.NotFoundData($"No exchange info");
+                    }
+                    return this.OkData(res);
+                }
+                catch (Exception ex)
+                {
+                    return this.InteralServerErrorData(ex);
+                }
+            });
+        }
+
+        [HttpGet("u/{id}")]
+        public async Task<IActionResult> GetInfo(string id)
+        {
+            return await Task.Run(() =>
+            {
+                try
+                {
+                    using IServiceScope scope = _serviceScopeFactory.CreateScope();
+                    IExchangeInfoService exInfoService = scope.ServiceProvider.GetRequiredService<IExchangeInfoService>();
+                    var res = exInfoService.GetExchangeInfo(id);
+                    if (res is null)
+                    {
+                        return this.NotFoundData($"Exchange information with id '{id}' not found");
+                    }
+                    return this.OkData(res);
+                }
+                catch (Exception ex)
+                {
+                    return this.InteralServerErrorData(ex);
+                }
+            });
+        }
+
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -19,8 +65,14 @@ namespace ArbiReader.Controllers
             {
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
                 IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
-                IList<ArbiDataLib.Models.ExchangeEntityResponse> exchanges = await exchangeService.Get();
-                if(exchanges.Count <= 0)
+                IExchangeInfoService exInfoService = scope.ServiceProvider.GetRequiredService<IExchangeInfoService>();
+                List<ArbiDataLib.Models.ExchangeEntityResponse> exchanges = (await exchangeService.Get())
+                    .Select(item =>
+                    {
+                        item.Url = exInfoService.GetExchangeInfo(item.Id)?.HomeURL;
+                        return item;
+                    }).ToList();
+                if (exchanges.Count <= 0)
                 {
                     return this.NotFoundData($"No exchanges");
                 }
@@ -40,10 +92,13 @@ namespace ArbiReader.Controllers
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
                 IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
                 ArbiDataLib.Models.ExchangeEntityResponse? ex = await exchangeService.Get(id);
+
                 if (ex is null)
                 {
                     return this.NotFoundData($"Exchange with id '{id}' not found");
                 }
+                IExchangeInfoService exInfoService = scope.ServiceProvider.GetRequiredService<IExchangeInfoService>();
+                ex.Url = exInfoService.GetExchangeInfo(ex.Id)?.HomeURL;
                 return this.OkData(ex);
             }
             catch(Exception ex)
@@ -59,8 +114,14 @@ namespace ArbiReader.Controllers
             {
                 using IServiceScope scope = _serviceScopeFactory.CreateScope();
                 IExchangeService exchangeService = scope.ServiceProvider.GetRequiredService<IExchangeService>();
-                IList<ArbiDataLib.Models.ExchangeEntityResponse> working = await exchangeService.Working();
-                if(working.Count <= 0)
+                IExchangeInfoService exInfoService = scope.ServiceProvider.GetRequiredService<IExchangeInfoService>();
+                List<ArbiDataLib.Models.ExchangeEntityResponse> working = (await exchangeService.Working())
+                    .Select(item =>
+                    {
+                        item.Url = exInfoService.GetExchangeInfo(item.Id)?.HomeURL;
+                        return item;
+                    }).ToList();
+                if (working.Count <= 0)
                 {
                     return this.NotFoundData($"No working exchanges");
                 }

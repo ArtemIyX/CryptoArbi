@@ -9,6 +9,7 @@ namespace ArbiReader.Services
         public Task<IList<ExchangeEntityResponse>> Get();
         public Task<ExchangeEntityResponse?> Get(string id);
         public Task<IList<ExchangeEntityResponse>> Working();
+
     }
     public class ExchangeService(IRepository<ExchangeEntity, string> exchangeRepository) : IExchangeService
     {
