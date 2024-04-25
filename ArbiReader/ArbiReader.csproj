@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ArbiDataLib\ArbiDataLib.csproj" />
-    <ProjectReference Include="..\ArbiLib\ArbiLib.csproj" />
   </ItemGroup>
 
 </Project>

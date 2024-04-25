@@ -14,11 +14,9 @@ namespace ArbiBlazor.Services
         public Task<ExchangeEntityResponse?> GetExchange(string exchangeId);
     }
 
-    public class ExchangeService(HttpClient httpClient,
-        IAppSettingsService appSettingsService) : IExchangeService
+    public class ExchangeService(HttpClient httpClient) : IExchangeService
     {
         private readonly HttpClient _http = httpClient;
-
         private readonly string WorkingExchangesUrl = "api/exchanges/working";
         private readonly string ExchangesUrl = "api/exchanges";
 
@@ -44,7 +42,7 @@ namespace ArbiBlazor.Services
                     .TryParseContent<List<ExchangeEntityResponse>>();
                 return list ?? [];
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return [];
             }
@@ -59,7 +57,7 @@ namespace ArbiBlazor.Services
                     .TryParseContent<List<ExchangeEntityResponse>>();
                 return list ?? [];
             }
-            catch(Exception ex)
+            catch(Exception)
             {
                 return [];
             }

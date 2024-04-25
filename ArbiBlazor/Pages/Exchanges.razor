@@ -1,6 +1,6 @@
 ﻿@page "/exchanges"
 @inject ArbiBlazor.Services.IExchangeService exchangeService
-<PageTitle>Exchanges</PageTitle>
+<pagetitle>Exchanges</pagetitle>
 
 <h3 class="display-3">Exchanges</h3>
 @if (ExchangeEntities.Count == 0)
@@ -17,11 +17,21 @@ else
     @foreach (var ex in ExchangeEntities)
     {
     <div class="col">
-        <div class="card h-100">
+        <div class="card">
             <div class="card-body">
+                @if (ex.Working)
+                {
+                <a href="@ex.Url" target="_blank" class="card-link">
+                    <h5 class="card-title">@ex.Name</h5>
+                </a>
+                }
+                else
+                {
                 <h5 class="card-title">@ex.Name</h5>
+                }
+
                 <h6 class="card-subtitle mb-2 text-body-secondary">@ex.Id</h6>
-                <a href="@ex.Url" class="card-link">Link</a>
+
                 @if(!ex.Working)
                 {
                 <div class="card-footer">
