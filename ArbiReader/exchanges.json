@@ -3,14 +3,14 @@
     {
       "ExchangeId": "bybit",
       "HomeURL": "https://www.bybit.com/en/dashboard",
-      "TradeURL": "https://www.bybit.com/en/trade/spot/btc/usdt",
+      "TradeURL": "https://www.bybit.com/en/trade/spot/BTC/USDT",
       "DepositURL": "https://www.bybit.com/user/assets/deposit",
       "WithdrawalURL": "https://www.bybit.com/user/assets/withdraw"
     },
     {
       "ExchangeId": "bitget",
       "HomeURL": "https://www.bitget.com/",
-      "TradeURL": "https://www.bitget.com/spot/btcusdt",
+      "TradeURL": "https://www.bitget.com/spot/BTCUSDT",
       "DepositURL": "https://www.bitget.com/asset/recharge",
       "WithdrawalURL": "https://www.bitget.com/asset/withdraw"
     },
@@ -24,7 +24,7 @@
     {
       "ExchangeId": "kucoin",
       "HomeURL": "https://www.kucoin.com/",
-      "TradeURL": "https://www.kucoin.com/trade/btc-usdt",
+      "TradeURL": "https://www.kucoin.com/trade/BTC-USDT",
       "DepositURL": "https://www.kucoin.com/assets/coin/USDT",
       "WithdrawalURL": "https://www.kucoin.com/assets/withdraw"
     },
@@ -38,10 +38,9 @@
     {
       "ExchangeId": "gateio",
       "HomeURL": "https://www.gate.io/",
-      "TradeURL": "https://www.gate.io/trade/btc_usdt",
+      "TradeURL": "https://www.gate.io/trade/BTC_USDT",
       "DepositURL": "https://www.gate.io/myaccount/deposit/USDT",
       "WithdrawalURL": "https://www.gate.io/myaccount/withdraw/USDT"
     }
-
   ]
 }

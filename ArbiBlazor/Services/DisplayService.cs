@@ -40,7 +40,20 @@ namespace ArbiBlazor.Services
         public string Volume(double price)
             => ConvertDoubleToString(price);
 
-        public string Trade(string url, string symbolName)
-            => url.Replace("btc", symbolName);
+        public string Trade(string str, string symbolName)
+        {
+            string lower = "btc";
+            string upper = "BTC";
+
+            if (str.Contains(lower))
+            {
+                return str.Replace(lower, symbolName.ToLower()).Replace("USDT", "usdt");
+            }
+            else if(str.Contains(upper))
+            {
+                return str.Replace(upper, symbolName.ToUpper()).Replace("usdt", "USDT");
+            }
+            return str;
+        }
     }
 }
