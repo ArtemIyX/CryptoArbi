@@ -64,10 +64,18 @@ namespace ArbiWriter.Services
             using (IServiceScope scope = serviceScopeFactory.CreateScope())
             {
                 ITokenService tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
-                await tokenService.UpdateTokens(exchange, stoppingToken);
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-                _logger.LogInformation($"{exchange.id} fetching finished");
+                try
+                {
+                    await tokenService.UpdateTokens(exchange, stoppingToken);
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    _logger.LogInformation($"{exchange.id} fetching finished");
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"{exchange.id} fetching error: {ex.Message}");
+                }
+               
             }
         }
 

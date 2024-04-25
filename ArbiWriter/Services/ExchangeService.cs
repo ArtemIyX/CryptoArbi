@@ -17,13 +17,14 @@ namespace ArbiWriter.Services
     {
         public static readonly ICollection<Exchange> ExchangeObjects =
             [
-                new Binance(),
+                //new Binance(),  - adress verification 
                 new Mexc(),
                 new Kucoin(),
                 new Bybit(),
                 new Huobi(),
-                new Okx(),
+                //new Okx(), - adress verification 
                 new Bitget(),
+                //new Gateio(), - no bid/ask volume
             ];
 
         protected readonly IRepository<ExchangeEntity, string> _exchangeRepo = exchangeRepository;
