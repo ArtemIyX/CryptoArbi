@@ -101,3 +101,16 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.table-p {
+    margin-bottom: 0;
+    text-align: center;
+}
+
+.table-header-row {
+    display: flex;
+    align-items: flex-end;
+    height: 2.2rem;
+    text-align: center;
+    margin-right: 0;
+}

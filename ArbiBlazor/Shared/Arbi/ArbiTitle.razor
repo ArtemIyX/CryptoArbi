@@ -1,0 +1,23 @@
+﻿<div class="container">
+    <div class="row table-header-row">
+        <p class="table-p">
+            <strong class="percent-text">
+                @Diff
+            </strong>
+        </p>
+    </div>
+    <div class="row">
+        <p class="text-secondary table-p">
+        <strong>@Sym</strong>
+        <small class="text-muted font-weight-light">/USDT</small>
+        </p>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Diff { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Sym { get; set; } = string.Empty;
+}

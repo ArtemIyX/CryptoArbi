@@ -1,5 +1,6 @@
 ﻿@page "/tokens"
 @using System.Globalization
+@using ArbiBlazor.Shared.Arbi
 @inject ArbiBlazor.Services.IArbiService arbiService
 @inject ArbiBlazor.Services.IArbiContainer arbiContainer
 @inject ArbiBlazor.Services.IDisplaySerivce dS
@@ -11,7 +12,9 @@
       <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
-            <th scope="col" class="table-h">Diff</th>
+            <th scope="col" class="table-h">
+                Profit
+            </th>
             <th scope="col" class="table-h">Buy From</th>
             <th scope="col" class="table-h">Sell At</th>
           </tr>
@@ -36,21 +39,10 @@
           {
           <tr>
             <td>
-              <div class="container">
-                <div class="row table-header-row ">
-                  <p class="table-p">
-                    <strong
-                      class="percent-text">@dS.Percent(arbi.PriceDifferencePercentage)
-                    </strong>
-                  </p>
-                </div>
-                <div class="row">
-                  <p class="text-secondary table-p">
-                    <strong>@arbi.DisplayName</strong>
-                    <small class="text-muted font-weight-light">/USDT</small>
-                  </p>
-                </div>
-              </div>
+              <ArbiTitle 
+                  Diff="@dS.Percent(arbi.PriceDifferencePercentage)"
+                  Sym="@arbi.DisplayName"
+                  />
             </td>
             <td>
               <div class="container">
@@ -172,9 +164,13 @@
     </div>
     <div class="col-3">
       <div class="table-filters">
-        <p>Paragraph 1</p>
-        <p>Paragraph 2</p>
-        <p>Paragraph 3</p>
+        <div class="input-group mb-3">
+          <div class="input-group-text">
+            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
+            <span class="input-group-text" id="basic-addon1">gg</span>
+          </div>
+          <input type="text" class="form-control" aria-label="Text input with checkbox">
+        </div>
       </div>
     </div>
   </div>

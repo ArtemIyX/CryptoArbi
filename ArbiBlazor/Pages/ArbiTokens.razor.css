@@ -12,17 +12,7 @@
 .table-filters {
     
 }
-.table-p {
-    margin-bottom: 0;
-    text-align: center;
-}
-.table-header-row {
-    display:flex;
-    align-items:flex-end;
-    height: 2.2rem;
-    text-align:center;
-    margin-right:0;
-}
+
 .card {
     width:100px;
 }
@@ -40,9 +30,6 @@
     padding-left: 0.5rem;
 }
 
-.percent-text {
-    color: var(--bs-green);
-}
 .table-h {
     text-align: center;
 }
