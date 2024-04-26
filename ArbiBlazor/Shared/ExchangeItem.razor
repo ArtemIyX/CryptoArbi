@@ -1,0 +1,29 @@
+﻿@using ArbiDataLib.Models
+<div class="card">
+    <div class="card-body">
+        @if (Model.Working)
+        {
+        <a href="@Model.Url" target="_blank" class="card-link">
+            <h5 class="card-title">@Model.Name</h5>
+        </a>
+        }
+        else
+        {
+        <h5 class="card-title">@Model.Name</h5>
+        }
+
+        <h6 class="card-subtitle mb-2 text-body-secondary">@Model.Id</h6>
+
+        @if (!Model.Working)
+        {
+        <div class="card-footer">
+            <small class="text-body-secondary">Not working</small>
+        </div>
+        }
+
+    </div>
+</div>
+@code {
+    [Parameter]
+    public ExchangeEntityResponse Model { get; set; }
+}
