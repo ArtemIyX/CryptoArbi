@@ -1,0 +1,20 @@
+﻿.a-ex {
+    height: 100%;
+    width: 100%;
+    padding-right: 0px;
+}
+
+.btn-ex {
+    height: 100%;
+    width: 100%;
+    font-size: 0.6rem;
+}
+.volume-col {
+    padding-right: 2px;
+}
+
+.volume-img {
+    margin: 0;
+    padding: 0;
+    max-width: 18px;
+}

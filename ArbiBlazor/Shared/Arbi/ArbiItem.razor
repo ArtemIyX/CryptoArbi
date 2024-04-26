@@ -1,0 +1,74 @@
+﻿<div>
+  <div class="row">
+    <div class="col volume-col">
+      <strong>
+        <p class="table-p text-dark">
+          @Price
+        </p>
+      </strong>
+    </div>
+    <div class="col volume-img">
+      <img class="img-fluid" width="16" height="16"
+        src="svg/usdt.svg" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col volume-col mr-0">
+      <p class="table-p">
+        <small class="text-secondary">
+          @Volume
+        </small>
+      </p>
+    </div>
+    <div class="col volume-img mr-0">
+      <img class="img-fluid" width="16" height="16"
+        src="svg/volume.svg" />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col volume-col">
+      <p class="table-p">
+        <small class="text-secondary">
+          @DayVolume
+        </small>
+      </p>
+    </div>
+    <div class="col volume-img mr-0">
+      <img class="img-fluid" width="16" height="16"
+        src="svg/day_volume.svg" />
+    </div>
+  </div>
+  <div class="row table-header-row mr-0">
+    <a href="ref"
+      target="_blank" class="a-ex">
+      <button class="btn @BtnClass btn-ex">
+        <p class="table-p">
+          <strong>
+            @Name
+          </strong>
+        </p>
+      </button>
+    </a>
+  </div>
+
+</div>
+
+@code {
+[Parameter]
+public string Price { get; set; } = string.Empty;
+
+[Parameter]
+public string Volume { get; set; } = string.Empty;
+
+[Parameter]
+public string DayVolume { get; set; } = string.Empty;
+
+[Parameter]
+public string Url { get; set; } = string.Empty;
+
+[Parameter]
+public string Name { get; set; } = string.Empty;
+
+[Parameter]
+public string BtnClass { get; set; } = string.Empty;
+}

@@ -6,26 +6,6 @@
     text-decoration: none;
 }
 
-.card-token :hover {
-    background-color: var(--bs-gray-400);
-}
-.table-filters {
-    
-}
-
-.card {
-    width:100px;
-}
-.a-ex {
-    height: 100%;
-    width: 100%;
-    padding-right: 0px;
-}
-.btn-ex {
-    height:100%;
-    width:100%;
-    font-size: 0.6rem;
-}
 .container-fluid {
     padding-left: 0.5rem;
 }
@@ -33,20 +13,11 @@
 .table-h {
     text-align: center;
 }
-.volume-col {
-    padding-right:2px;
-}
-.volume-img {
-    margin:0;
-    padding:0;
-    max-width:18px;
-}
+
 .table {
     max-width: 50%
 }
-.arbi-container {
 
-}
 @media (max-width: 641px) {
     .container {
         padding-left:12px;

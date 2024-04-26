@@ -45,116 +45,24 @@
                   />
             </td>
             <td>
-              <div class="container">
-
-                <div class="row">
-                  <div class="col volume-col">
-                    <strong>
-                      <p class="table-p text-dark">
-                        @dS.Price(arbi.Ask)
-                      </p>
-                    </strong>
-                  </div>
-                  <div class="col volume-img">
-                    <img class="img-fluid" width="16" height="16"
-                      src="svg/usdt.svg" />
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col volume-col">
-                    <p class="table-p">
-                      <small class="text-secondary">
-                        @dS.Volume(arbi.AskVolumeUSDT)
-                      </small>
-                    </p>
-                  </div>
-                  <div class="col volume-img">
-                    <img class="img-fluid" width="16" height="16"
-                      src="svg/volume.svg" />
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col volume-col">
-                    <p class="table-p">
-                      <small class="text-secondary">
-                        @dS.Volume(arbi.AskDayVolumeUSDT)
-                      </small>
-                    </p>
-                  </div>
-                  <div class="col volume-img">
-                    <img class="img-fluid" width="16" height="16"
-                      src="svg/day_volume.svg" />
-                  </div>
-                </div>
-              </div>
-              <div class="row table-header-row">
-                <a href="@dS.Trade(arbi.BuyUrl, arbi.DisplayName)"
-                  target="_blank" class="a-ex">
-                  <button class="btn btn-outline-primary btn-ex">
-                    <p class="table-p">
-                      <strong>
-                        @arbi.BuyName
-                      </strong>
-                    </p>
-                  </button>
-                </a>
-              </div>
+                <ArbiItem
+                    BtnClass="btn-outline-primary"
+                    Name="@arbi.BuyName"
+                    Url="@dS.Trade(arbi.BuyUrl, arbi.DisplayName)"
+                    Price="@dS.Price(arbi.Ask)"
+                    Volume="@dS.Volume(arbi.AskVolumeUSDT)"
+                    DayVolume="@dS.Volume(arbi.AskDayVolumeUSDT)"
+                    />
             </td>
             <td>
-              <div class="container">
-
-                <div class="row">
-                  <div class="col volume-col">
-                    <strong>
-                      <p class="table-p text-dark">
-                        @dS.Price(arbi.Bid)
-                      </p>
-                    </strong>
-                  </div>
-                  <div class="col volume-img">
-                    <img class="img-fluid" width="16" height="16"
-                      src="svg/usdt.svg" />
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col volume-col">
-                    <p class="table-p">
-                      <small class="text-secondary">
-                        @dS.Volume(arbi.BidVolumeUSDT)
-                      </small>
-                    </p>
-                  </div>
-                  <div class="col volume-img">
-                    <img class="img-fluid" width="16" height="16"
-                      src="svg/volume.svg" />
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col volume-col">
-                    <p class="table-p">
-                      <small class="text-secondary">
-                        @dS.Volume(arbi.BidDayVolumeUSDT)
-                      </small>
-                    </p>
-                  </div>
-                  <div class="col volume-img">
-                    <img class="img-fluid" width="16" height="16"
-                      src="svg/day_volume.svg" />
-                  </div>
-                </div>
-                <div class="row table-header-row">
-                  <a href="@dS.Trade(arbi.SellUrl, arbi.DisplayName)"
-                    target="_blank" class="a-ex">
-                    <button class="btn btn-outline-danger btn-ex">
-                      <p class="table-p">
-                        <strong>
-                          @arbi.SellName
-                        </strong>
-                      </p>
-                    </button>
-                  </a>
-                </div>
-              </div>
+                    <ArbiItem
+                            BtnClass="btn-outline-danger"
+                            Name="@arbi.SellName"
+                            Url="@dS.Trade(arbi.SellUrl, arbi.DisplayName)"
+                            Price="@dS.Price(arbi.Bid)"
+                            Volume="@dS.Volume(arbi.BidVolumeUSDT)"
+                            DayVolume="@dS.Volume(arbi.BidDayVolumeUSDT)"
+                            />
             </td>
           </tr>
           }
