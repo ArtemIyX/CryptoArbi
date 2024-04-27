@@ -13,24 +13,3 @@
 .table-h {
     text-align: center;
 }
-
-.table {
-    max-width: 50%
-}
-
-@media (max-width: 641px) {
-    .container {
-        padding-left:12px;
-        padding-right:12px;
-    }
-    .td {
-        padding: 4px;
-    }
-    .arbi-container {
-        padding-left: 0;
-        padding-right:0;
-    }
-    .table {
-        max-width: 400px;
-    }
-}

@@ -15,5 +15,6 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IArbiService, ArbiService>();
 builder.Services.AddScoped<IDisplaySerivce, DisplayService>();
 builder.Services.AddSingleton<IArbiContainer, ArbiContainer>();
+builder.Services.AddSingleton<IFilterContainer, FilterContainer>();
 
 await builder.Build().RunAsync();

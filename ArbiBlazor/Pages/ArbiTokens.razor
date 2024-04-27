@@ -2,13 +2,24 @@
 @using System.Globalization
 @using ArbiBlazor.Shared.Arbi
 @inject ArbiBlazor.Services.IArbiService arbiService
+@inject ArbiBlazor.Services.IExchangeService exchangeService
 @inject ArbiBlazor.Services.IArbiContainer arbiContainer
+@inject ArbiBlazor.Services.IFilterContainer filterContainer
 @inject ArbiBlazor.Services.IDisplaySerivce dS
+
 <PageTitle>Tokens</PageTitle>
 
 <div class="container-fluid arbi-container">
   <div class="row">
     <div class="col">
+            @if (arbiContainer.Items is null)
+            {
+            <div class="d-flex justify-content-center">
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+            }
       <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
@@ -20,19 +31,14 @@
           </tr>
         </thead>
         <tbody>
-          @if (arbiContainer.Items is null)
-          {
-          <div>
-            <h5>Loading...</h5>
-          </div>
-          }
-          else if (arbiContainer.Items.Count == 0)
-          {
-          <div>
-            <h5>No tokens :C</h5>
-          </div>
-          }
-          else
+         
+                    @if (arbiContainer.Items is not null && arbiContainer.Items.Count == 0)
+            {
+              <div>
+                <h5>No tokens :C</h5>
+              </div>
+            }
+                    else if (arbiContainer.Items is not null)
           {
 
           @foreach (var arbi in arbiContainer.Items)
@@ -70,16 +76,6 @@
         </tbody>
       </table>
     </div>
-    <div class="col-3">
-      <div class="table-filters">
-        <div class="input-group mb-3">
-          <div class="input-group-text">
-            <input class="form-check-input mt-0" type="checkbox" value="" aria-label="Checkbox for following text input">
-            <span class="input-group-text" id="basic-addon1">gg</span>
-          </div>
-          <input type="text" class="form-control" aria-label="Text input with checkbox">
-        </div>
-      </div>
-    </div>
+    
   </div>
 </div>

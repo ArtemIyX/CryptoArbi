@@ -1,6 +1,7 @@
 using ArbiDataLib.Data;
 using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
+using ArbiReader.ModelBinders;
 using ArbiReader.Services;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -21,7 +22,7 @@ try
     string conString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
     MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
     builder.Services.AddDbContext<ArbiDbContext>(options =>
-        options.UseMySql(conString, serverVersion));
+        options.UseMySql(conString, serverVersion), ServiceLifetime.Scoped);
 
     builder.WebHost.UseKestrel(x =>
     {
@@ -49,7 +50,10 @@ try
         .Enrich.FromLogContext()
         .WriteTo.Console());
 
-    builder.Services.AddControllers();
+    builder.Services.AddControllers(o =>
+    {
+        o.ModelBinderProviders.Insert(0, new ArbiFilterModelBinderProvider());
+    });
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
     builder.Services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();

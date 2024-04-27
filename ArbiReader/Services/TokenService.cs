@@ -30,24 +30,27 @@ namespace ArbiReader.Services
             .Select(x => x.ToResponse())
             .ToListAsync();
 
-
         public async Task<IList<ArbiItem>> GetArbi(ArbiFilter filter)
         {
             return await Task.Run(() =>
             {
+                string[] buy_ban = filter.MakerForbiddenBuy();
+                string[] sell_ban = filter.MakerForbiddenSell();
                 IQueryable<ArbiItem> rankedTokens = from t1 in _tokenRepo.AsQueryable()
                                                     join t2 in _tokenRepo.AsQueryable() on t1.DisplayName equals t2.DisplayName
                                                     let diff = ((t2.Bid - t1.Ask) / t1.Ask) * 100
                                                     where t1.ExchangeId != t2.ExchangeId && // different exchanges
+                                                          !buy_ban.Contains(t1.ExchangeId) &&
+                                                          !sell_ban.Contains(t2.ExchangeId) &&
                                                           t1.Exchange!.Working &&
                                                           t2.Exchange!.Working &&
-                                                          t1.Ask < t2.Bid &&               // spread
-                                                          t1.Ask > filter.MinAsk &&      // ask filter
-                                                          t2.Bid > filter.MinBid &&      // bid filter
+                                                          t1.Ask < t2.Bid &&              // spread
+                                                          t1.Ask > filter.MinPrice &&      // ask filter
+                                                          t2.Bid > filter.MinPrice &&      // bid filter
                                                           t1.AskVolume * t1.Ask > filter.MinAskVolumeUSDT && // ask volume filter
                                                           t2.BidVolume * t2.Bid > filter.MinBidVolumeUSDT && // bid volume filter
-                                                          t1.DayVolumeUSDT > filter.MinDayVolumeUSDT && // dayvolume ask filter
-                                                          t2.DayVolumeUSDT > filter.MinDayVolumeUSDT &&
+                                                          t1.DayVolumeUSDT > filter.MinAskDayVolumeUSDT && // dayvolume ask filter
+                                                          t2.DayVolumeUSDT > filter.MinBidDayVolumeUSDT &&
                                                           diff > filter.MinPercent &&
                                                           diff < filter.MaxPercent
                                                     orderby diff descending
@@ -71,7 +74,11 @@ namespace ArbiReader.Services
                                                         Updated = t1.Updated,
                                                     };
 
-                return rankedTokens.AsEnumerable().DistinctBy(x => x.DisplayName).Take(filter.Amount).ToList();
+
+                var numerable = rankedTokens.AsEnumerable();
+                var distinct = numerable.DistinctBy(x => x.DisplayName);
+                var taken = distinct.Take(filter.Amount);
+                return taken.ToList();
             });
         }
 

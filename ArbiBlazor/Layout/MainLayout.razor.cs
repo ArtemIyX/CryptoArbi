@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Components;
+
 namespace ArbiBlazor.Layout
 {
     public partial class MainLayout

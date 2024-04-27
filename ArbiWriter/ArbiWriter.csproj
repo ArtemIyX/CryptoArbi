@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ccxt" Version="4.3.3" />
+    <PackageReference Include="ccxt" Version="4.3.9" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.4" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Analyzers" Version="8.0.4" />

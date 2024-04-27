@@ -11,10 +11,12 @@ namespace ArbiReader.Controllers
         private readonly ITokenService _tokenService = tokenService;
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] ArbiFilter filter)
+        public async Task<IActionResult> Get([FromQuery] ArbiFilter? filter)
         {
             try
             {
+                filter ??= new ArbiFilter();
+
                 if (!string.IsNullOrEmpty(filter.ForbiddenBuy))
                 {
                     if (!filter.IsValidForbiddenBuy())

@@ -6,6 +6,7 @@ namespace ArbiBlazor.Services
     {
         public IList<ArbiItemVisual>? Items { get; set; }
     }
+
     public class ArbiContainer : IArbiContainer
     {
         private IList<ArbiItemVisual>? _items = null;

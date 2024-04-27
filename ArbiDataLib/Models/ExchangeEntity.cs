@@ -1,8 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
+using System.Xml.Linq;
 
 namespace ArbiDataLib.Models
 {
@@ -35,16 +37,47 @@ namespace ArbiDataLib.Models
 
     public class ExchangeEntityResponse
     {
+        public ExchangeEntityResponse() { }
+   
+        public ExchangeEntityResponse(string id, string name, string? url, bool working)
+        {
+            Id = id;
+            Name = name;
+            Url = url;
+            Working = working;
+        }
+
+        public ExchangeEntityResponse(ExchangeEntityResponse other) 
+            : this(other.Id, other.Name, other.Url, other.Working) { }
+
         [JsonPropertyName("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = string.Empty;
 
         [JsonPropertyName("name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [JsonPropertyName("url")]
         public string? Url { get; set; } = null;
 
         [JsonPropertyName("working")]
         public bool Working { get; set; } = true;
+    }
+
+    public class ExchangeEntityVisual
+    {
+        public ExchangeEntityResponse? Item { get; set; } = null;
+        public bool Flag { get; set; } = true;
+
+        public ExchangeEntityVisual() 
+        {
+            Item = null;
+            Flag = false;
+        }
+
+        public ExchangeEntityVisual(ExchangeEntityResponse item, bool flag)
+        {
+            Item = item;
+            Flag = flag;
+        }
     }
 }
