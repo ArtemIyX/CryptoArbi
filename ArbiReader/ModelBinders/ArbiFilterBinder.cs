@@ -28,27 +28,15 @@ namespace ArbiReader.ModelBinders
                 parsed = true;
             }
 
-            if (TryParseDoubleValue(bindingContext.ValueProvider, "askVol", out double askVol))
+            if (TryParseDoubleValue(bindingContext.ValueProvider, "vol", out double vol))
             {
-                model.MinAskVolumeUSDT = askVol;
+                model.MinVolumeUSDT = vol;
                 parsed = true;
             }
 
-            if (TryParseDoubleValue(bindingContext.ValueProvider, "bidVol", out double bidVol))
+            if (TryParseDoubleValue(bindingContext.ValueProvider, "dayVol", out double dayVol))
             {
-                model.MinBidVolumeUSDT = bidVol;
-                parsed = true;
-            }
-
-            if (TryParseDoubleValue(bindingContext.ValueProvider, "askDayVol", out double askDayVol))
-            {
-                model.MinAskDayVolumeUSDT = askDayVol;
-                parsed = true;
-            }
-
-            if (TryParseDoubleValue(bindingContext.ValueProvider, "bidDayVol", out double bidDayVol))
-            {
-                model.MinBidDayVolumeUSDT = bidDayVol;
+                model.MinBidDayVolumeUSDT = dayVol;
                 parsed = true;
             }
 

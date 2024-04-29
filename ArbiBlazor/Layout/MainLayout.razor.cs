@@ -1,3 +1,7 @@
+
+using ArbiBlazor.Data;
+using ArbiBlazor.Services;
+using ArbiDataLib.Models;
 using Microsoft.AspNetCore.Components;
 
 namespace ArbiBlazor.Layout
@@ -12,9 +16,24 @@ namespace ArbiBlazor.Layout
         {
             WorkingStatus = UpdateWorkingStatus();
             IsWorking = await appStatusService.Ping();
+            if (filterContainer.Exchanges is null ||
+    filterContainer.Exchanges?.Count == 0)
+            {
+                await UpdateExchangs();
+            }
+           
             WorkingStatus = UpdateWorkingStatus();
             ImagePath = UpdateImagePath();
         }
+        public async Task UpdateExchangs()
+        {
+            IList<ExchangeEntityResponse> res = await exchangeService.GetWorkingExchanges();
+            filterContainer.Exchanges = res;
+            filterContainer.BuyExchanges = filterContainer.Exchanges.Select(x => new ExchangeEntityVisual(x, true)).ToList();
+            filterContainer.SellExchanges = filterContainer.Exchanges.Select(x => new ExchangeEntityVisual(x, true)).ToList();
+        }
+
+
         protected string UpdateImagePath()
         {
             if (IsWorking == null)

@@ -16,11 +16,6 @@ namespace ArbiBlazor.Pages
         {
             List<Task> tasks = [];
 
-            if (filterContainer.Exchanges is null ||
-                filterContainer.Exchanges?.Count == 0)
-            {
-                tasks.Add(UpdateExchangs());
-            }
             if (arbiContainer.Items is null ||
                 arbiContainer.Items?.Count == 0)
             {
@@ -32,22 +27,15 @@ namespace ArbiBlazor.Pages
         public async Task RefreshAll()
         {
             List<Task> tasks = [];
-            tasks.Add(UpdateExchangs());
             tasks.Add(UpdateTokens());
             await Task.WhenAll(tasks);
-        }
-
-        public async Task UpdateExchangs()
-        {
-            IList<ExchangeEntityResponse> res = await exchangeService.GetWorkingExchanges();
-            filterContainer.Exchanges = res;
-            filterContainer.BuyExchanges = filterContainer.Exchanges.Select(x => new ExchangeEntityVisual(x, true)).ToList();
-            filterContainer.SellExchanges = filterContainer.Exchanges.Select(x => new ExchangeEntityVisual(x, true)).ToList();
         }
 
         public async Task UpdateTokens()
         {
             ArbiFilter filter = filterContainer.CurrentFilter;
+            var buys = filterContainer.BuyExchanges;
+            arbiContainer.Items = null;
             IList<ArbiItemVisual> items = await arbiService.GetArbiItems(filter);
             arbiContainer.Items = items;
         }

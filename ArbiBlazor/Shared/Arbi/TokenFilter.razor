@@ -1,6 +1,5 @@
 ﻿
-
-    <div class="container">
+ <div class="container">
   <!--Amount-->
   <div class="row mb-1">
     <div class="row">
@@ -13,71 +12,48 @@
       </div>
     </div>
   </div>
-  <!--Price-->
+
   <div class="row mb-1">
     <div class="col">
       <div class="form-floating">
-        <input type="number" class="form-control" id="ask"
+        <input type="number" class="form-control" id="price"
           placeholder="1.0" value="1.0">
-        <label for="ask">Ask</label>
-      </div>
-    </div>
-    <div class="col">
-      <div class="form-floating">
-        <input type="number" class="form-control" id="bid"
-          placeholder="1.0" value="1.0">
-        <label for="bid">Bid</label>
+        <label for="price">Price</label>
       </div>
     </div>
   </div>
-  <!--Volume-->
+
+
   <div class="row mb-1">
     <div class="col">
       <div class="form-floating">
-        <input type="number" class="form-control" id="ask_vol"
-          placeholder="10.0" value="10.0">
-        <label for="ask_vol">Ask Vol</label>
+        <input type="number" class="form-control" id="vol"
+          placeholder="1000.0" value="1000.0">
+        <label for="vol">Vol</label>
       </div>
     </div>
     <div class="col">
       <div class="form-floating">
-        <input type="number" class="form-control" id="bid_vol"
-          placeholder="10.0" value="10.0">
-        <label for="bid_vol">Bid Vol</label>
+        <input type="number" class="form-control" id="vol_day"
+          placeholder="1000.0" value="1000.0">
+        <label for="vol_day">Day vol</label>
       </div>
     </div>
   </div>
-  <!--Day Volume-->
-  <div class="row mb-1">
-    <div class="col">
-      <div class="form-floating">
-        <input type="number" class="form-control" id="ask_vol_day"
-          placeholder="1000.0" value="1000.0">
-        <label for="ask_vol">Ask DayVol</label>
-      </div>
-    </div>
-    <div class="col">
-      <div class="form-floating">
-        <input type="number" class="form-control" id="bid_vol_day"
-          placeholder="1000.0" value="1000.0">
-        <label for="bid_vol">Bid DayVol</label>
-      </div>
-    </div>
-  </div>
-  <!--Profit-->
+
   <div class="row mb-1">
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="min_percent"
           placeholder="0.0" value="0.0">
-        <label for="ask_vol">Min Profit</label>
+        <label for="min_percent">Min Profit</label>
       </div>
     </div>
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="max_percent"
           placeholder="100.0" value="100.0">
-        <label for="bid_vol">Max Profit</label>
+        <label for="max_percent">Max Profit</label>
       </div>
     </div>
   </div>
@@ -92,7 +68,7 @@
           aria-label="Basic checkbox toggle button group">
                     @foreach (var ex in BuyItems)
                     {
-              <input type="checkbox" class="btn-check"
+                                      <input type="checkbox" class="btn-check" checked="@ex.Flag" @onchange="ex.FlagChanged"
                 id="@MakeBuyId(ex.Item?.Id!)" autocomplete="off">
               <label class="btn btn-outline-primary"
                 for="@MakeBuyId(ex.Item?.Id!)">@ex.Item?.Name</label>
@@ -100,9 +76,9 @@
         </div>
             <div class="btn-group" role="group"
           aria-label="Basic checkbox toggle button group">
-                    @foreach (var ex in BuyItems)
+                    @foreach (var ex in SellItems)
                     {
-              <input type="checkbox" class="btn-check"
+                      <input type="checkbox" class="btn-check" checked="@ex.Flag" @onchange="ex.FlagChanged"
                 id="@MakeSellId(ex.Item?.Id!)" autocomplete="off">
               <label class="btn btn-outline-danger"
                 for="@MakeSellId(ex.Item?.Id!)">@ex.Item?.Name</label>

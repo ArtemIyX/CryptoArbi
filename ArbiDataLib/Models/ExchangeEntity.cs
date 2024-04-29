@@ -63,21 +63,4 @@ namespace ArbiDataLib.Models
         public bool Working { get; set; } = true;
     }
 
-    public class ExchangeEntityVisual
-    {
-        public ExchangeEntityResponse? Item { get; set; } = null;
-        public bool Flag { get; set; } = true;
-
-        public ExchangeEntityVisual() 
-        {
-            Item = null;
-            Flag = false;
-        }
-
-        public ExchangeEntityVisual(ExchangeEntityResponse item, bool flag)
-        {
-            Item = item;
-            Flag = flag;
-        }
-    }
 }

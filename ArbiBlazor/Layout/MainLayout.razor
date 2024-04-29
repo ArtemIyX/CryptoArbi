@@ -1,34 +1,38 @@
 ﻿@inherits LayoutComponentBase
 @inject ArbiBlazor.Services.IAppStatusService appStatusService
-
+@inject ArbiBlazor.Services.IFilterContainer filterContainer
+@inject ArbiBlazor.Services.IExchangeService exchangeService
 <div class="page">
     <div class="sidebar">
         <NavMenu />
     </div>
 
     <main>
-        <div class="top-row px-4 ">
+        <div class="top-row px-4">
            <div class="text-center">
                <p class="mt-0 mb-0">
                     @WorkingStatus
                </p>
            </div>
-           <img src ="@ImagePath" width=32 height =32 class="ps-2"/>
+           <img src ="@ImagePath" width="32" height="32" class="ps-2 pe-2"/>
+           <button class="btn btn-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+               <img src="svg/more.svg" width="32" height="32" class="ps-2"/>
+           </button>
         </div>
 
         <article class="content px-4">
-            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasBottom" aria-controls="offcanvasBottom">Toggle bottom offcanvas</button>
-
-<div class="offcanvas offcanvas-bottom" tabindex="-1" id="offcanvasBottom" aria-labelledby="offcanvasBottomLabel">
-  <div class="offcanvas-header">
-    <h5 class="offcanvas-title" id="offcanvasBottomLabel">Offcanvas bottom</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-  </div>
-  <div class="offcanvas-body small">
-    ...
-  </div>
-</div>
             @Body
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+              <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasRightLabel">Token Filters</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+              </div>
+              <div class="offcanvas-body">
+                <ArbiBlazor.Shared.Arbi.TokenFilter
+                 BuyItems="filterContainer.BuyExchanges"
+                 SellItems="filterContainer.SellExchanges"/>
+              </div>
+            </div>
         </article>
     </main>
 </div>

@@ -9,16 +9,10 @@ namespace ArbiDataLib.Data
         [JsonPropertyName("price")]
         public double MinPrice { get; set; } = 0.0;
 
-        [JsonPropertyName("askVol")]
-        public double MinAskVolumeUSDT { get; set; } = 0.0;
+        [JsonPropertyName("vol")]
+        public double MinVolumeUSDT { get; set; } = 0.0;
 
-        [JsonPropertyName("bidVol")]
-        public double MinBidVolumeUSDT { get; set; } = 0.0;
-
-        [JsonPropertyName("askDayVol")]
-        public double MinAskDayVolumeUSDT { get; set; } = 0.0;
-
-        [JsonPropertyName("bidDayVol")]
+        [JsonPropertyName("dayVol")]
         public double MinBidDayVolumeUSDT { get; set; } = 0.0;
 
         [JsonPropertyName("minP")]
