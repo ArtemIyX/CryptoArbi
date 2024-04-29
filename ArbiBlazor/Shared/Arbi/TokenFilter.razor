@@ -4,11 +4,11 @@
   <div class="row mb-1">
     <div class="row">
       <div class="col">
-        <input type="range" class="form-range" min="1" max="100" value="1"
+        <input type="range" class="form-range" min="1" max="100" value="@Filter.Amount" @oninput="OnAmountChange"
           id="result_num">
       </div>
       <div class="col-3">
-        <span class="input-group-text">20</span>
+        <span class="input-group-text">@Filter.Amount</span>
       </div>
     </div>
   </div>
@@ -17,7 +17,7 @@
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="price"
-          placeholder="1.0" value="1.0">
+          placeholder="1.0" value="@Filter.MinPrice" @oninput="OnMinPriceChange">
         <label for="price">Price</label>
       </div>
     </div>
@@ -28,14 +28,14 @@
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="vol"
-          placeholder="1000.0" value="1000.0">
+          placeholder="1000.0" value="@Filter.MinVolumeUSDT" @oninput="OnVolumeChange">
         <label for="vol">Vol</label>
       </div>
     </div>
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="vol_day"
-          placeholder="1000.0" value="1000.0">
+          placeholder="1000.0" value="@Filter.MinDayVolumeUSDT" @oninput="OnDayVolumeChange">
         <label for="vol_day">Day vol</label>
       </div>
     </div>
@@ -45,14 +45,14 @@
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="min_percent"
-          placeholder="0.0" value="0.0">
+          placeholder="0.0" value="@Filter.MinPercent" @oninput="OnMinPercent">
         <label for="min_percent">Min Profit</label>
       </div>
     </div>
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="max_percent"
-          placeholder="100.0" value="100.0">
+          placeholder="100.0" value="@Filter.MaxPercent" @oninput="OnMaxPercent">
         <label for="max_percent">Max Profit</label>
       </div>
     </div>

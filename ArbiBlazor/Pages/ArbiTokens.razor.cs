@@ -34,7 +34,6 @@ namespace ArbiBlazor.Pages
         public async Task UpdateTokens()
         {
             ArbiFilter filter = filterContainer.CurrentFilter;
-            var buys = filterContainer.BuyExchanges;
             arbiContainer.Items = null;
             IList<ArbiItemVisual> items = await arbiService.GetArbiItems(filter);
             arbiContainer.Items = items;

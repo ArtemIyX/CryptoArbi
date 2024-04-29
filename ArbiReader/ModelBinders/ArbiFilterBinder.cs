@@ -36,7 +36,7 @@ namespace ArbiReader.ModelBinders
 
             if (TryParseDoubleValue(bindingContext.ValueProvider, "dayVol", out double dayVol))
             {
-                model.MinBidDayVolumeUSDT = dayVol;
+                model.MinDayVolumeUSDT = dayVol;
                 parsed = true;
             }
 

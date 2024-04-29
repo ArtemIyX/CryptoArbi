@@ -34,8 +34,8 @@ namespace ArbiReader.Services
         {
             return await Task.Run(() =>
             {
-                string[] buy_ban = filter.MakerForbiddenBuy();
-                string[] sell_ban = filter.MakerForbiddenSell();
+                string[] buy_ban = filter.MakeForbiddenBuy();
+                string[] sell_ban = filter.MakeForbiddenSell();
                 IQueryable<ArbiItem> rankedTokens = from t1 in _tokenRepo.AsQueryable()
                                                     join t2 in _tokenRepo.AsQueryable() on t1.DisplayName equals t2.DisplayName
                                                     let diff = ((t2.Bid - t1.Ask) / t1.Ask) * 100
@@ -47,10 +47,10 @@ namespace ArbiReader.Services
                                                           t1.Ask < t2.Bid &&              // spread
                                                           t1.Ask > filter.MinPrice &&      // ask filter
                                                           t2.Bid > filter.MinPrice &&      // bid filter
-                                                          t1.AskVolume * t1.Ask > filter.MinAskVolumeUSDT && // ask volume filter
-                                                          t2.BidVolume * t2.Bid > filter.MinBidVolumeUSDT && // bid volume filter
-                                                          t1.DayVolumeUSDT > filter.MinAskDayVolumeUSDT && // dayvolume ask filter
-                                                          t2.DayVolumeUSDT > filter.MinBidDayVolumeUSDT &&
+                                                          t1.AskVolume * t1.Ask > filter.MinVolumeUSDT && // ask volume filter
+                                                          t2.BidVolume * t2.Bid > filter.MinVolumeUSDT && // bid volume filter
+                                                          t1.DayVolumeUSDT > filter.MinDayVolumeUSDT && // dayvolume ask filter
+                                                          t2.DayVolumeUSDT > filter.MinDayVolumeUSDT &&
                                                           diff > filter.MinPercent &&
                                                           diff < filter.MaxPercent
                                                     orderby diff descending

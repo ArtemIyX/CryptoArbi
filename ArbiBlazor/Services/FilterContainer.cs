@@ -10,6 +10,8 @@ namespace ArbiBlazor.Services
         IList<ExchangeEntityResponse>? Exchanges { get; set; }
         IList<ExchangeEntityVisual> BuyExchanges { get; set; }
         IList<ExchangeEntityVisual> SellExchanges { get; set; }
+
+        public string MakeForbiddenString(IList<ExchangeEntityVisual> entities);
     }
 
     public class FilterContainer : IFilterContainer
@@ -25,5 +27,15 @@ namespace ArbiBlazor.Services
 
         private IList<ExchangeEntityVisual> _sellExchanges = [];
         public IList<ExchangeEntityVisual> SellExchanges { get => _sellExchanges; set => _sellExchanges = value; }
+
+        public string MakeForbiddenString(IList<ExchangeEntityVisual> entities)
+        {
+            IEnumerable<ExchangeEntityVisual> banned = entities.Where(x => !x.Flag);
+            if (banned.Any())
+            {
+                return string.Join(',', banned.Select(x => x.Item?.Id));
+            }
+            return string.Empty;
+        }
     }
 }

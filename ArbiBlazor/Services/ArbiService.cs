@@ -1,6 +1,7 @@
 ﻿using ArbiBlazor.Extensions;
 using ArbiDataLib.Data;
 using ArbiDataLib.Models;
+using Microsoft.AspNetCore.WebUtilities;
 using System.Collections.Concurrent;
 
 namespace ArbiBlazor.Services
@@ -10,10 +11,12 @@ namespace ArbiBlazor.Services
         public Task<IList<ArbiItemVisual>> GetArbiItems(ArbiFilter filter);
     }
     public class ArbiService(HttpClient http,
-        IExchangeService exchangeService) : IArbiService
+        IExchangeService exchangeService,
+        IFilterContainer filterContainer) : IArbiService
     {
         private readonly HttpClient _http = http;
         private readonly IExchangeService _exchangeService = exchangeService;
+        private readonly IFilterContainer _filterContainer = filterContainer;
         private readonly string ArbiUrl = "/api/arbi";
 
 
@@ -41,7 +44,10 @@ namespace ArbiBlazor.Services
                 // Get arbi situatiins
                 globalTasks.Add(Task.Run(async () =>
                 {
-                    BasicResponse? response = await _http.GetBasicAsync(ArbiUrl);
+                    _filterContainer.CurrentFilter.ForbiddenBuy = _filterContainer.MakeForbiddenString(_filterContainer.BuyExchanges);
+                    _filterContainer.CurrentFilter.ForbiddenSell = _filterContainer.MakeForbiddenString(_filterContainer.SellExchanges);
+                    string url = QueryHelpers.AddQueryString(ArbiUrl, _filterContainer.CurrentFilter.ToArgsDictionary());
+                    BasicResponse? response = await _http.GetBasicAsync(url);
                     list = response.TryParseContent<List<ArbiItem>>() ?? [];
 
                 }));
