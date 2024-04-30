@@ -32,12 +32,13 @@ namespace ArbiReader.Services
 
         public async Task<IList<ArbiItem>> GetArbi(ArbiFilter filter)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 string[] buy_ban = filter.MakeForbiddenBuy();
                 string[] sell_ban = filter.MakeForbiddenSell();
-                IQueryable<ArbiItem> rankedTokens = from t1 in _tokenRepo.AsQueryable()
-                                                    join t2 in _tokenRepo.AsQueryable() on t1.DisplayName equals t2.DisplayName
+                var querable = _tokenRepo.AsQueryable();
+                IQueryable<ArbiItem> rankedTokens = from t1 in querable
+                                                    join t2 in querable on t1.DisplayName equals t2.DisplayName
                                                     let diff = ((t2.Bid - t1.Ask) / t1.Ask) * 100
                                                     where t1.ExchangeId != t2.ExchangeId && // different exchanges
                                                           !buy_ban.Contains(t1.ExchangeId) &&
@@ -78,7 +79,20 @@ namespace ArbiReader.Services
                 var numerable = rankedTokens.AsEnumerable();
                 var distinct = numerable.DistinctBy(x => x.DisplayName);
                 var taken = distinct.Take(filter.Amount);
-                return taken.ToList();
+                while(true)
+                {
+                    try
+                    {
+                        var result = taken.ToList();
+
+                        return result;
+                    }
+                    catch(Exception)
+                    {
+                        await Task.Delay(50);
+                    }
+                }
+                
             });
         }
 
