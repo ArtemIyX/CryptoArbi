@@ -1,0 +1,29 @@
+{
+  "ExApi": [
+    {
+      "ExchangeId": "bybit",
+      "Api": "",
+      "Secret": ""
+    },
+    {
+      "ExchangeId": "bitget",
+      "Api": "",
+      "Secret": ""
+    },
+    {
+      "ExchangeId": "huobi",
+      "Api": "",
+      "Secret": ""
+    },
+    {
+      "ExchangeId": "kucoin",
+      "Api": "",
+      "Secret": ""
+    },
+    {
+      "ExchangeId": "mexc",
+      "Api": "",
+      "Secret": ""
+    }
+  ]
+}

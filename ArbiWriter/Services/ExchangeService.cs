@@ -13,8 +13,12 @@ namespace ArbiWriter.Services
         public Task UploadData(CancellationToken stoppingToken = default);
     }
 
-    public class ExchangeService(IRepository<ExchangeEntity, string> exchangeRepository) : IExchangeService
+    public class ExchangeService(IRepository<ExchangeEntity, string> exchangeRepository,
+        IExchangeApiService apiService) : IExchangeService
     {
+        protected readonly IRepository<ExchangeEntity, string> _exchangeRepo = exchangeRepository;
+        protected readonly IExchangeApiService _apiService = apiService;
+
         public static readonly ICollection<Exchange> ExchangeObjects =
             [
                 //new Binance(),  - adress verification 
@@ -27,7 +31,7 @@ namespace ArbiWriter.Services
                 //new Gateio(), - no bid/ask volume
             ];
 
-        protected readonly IRepository<ExchangeEntity, string> _exchangeRepo = exchangeRepository;
+
 
         public ExchangeEntity CreateExchangeEntity(Exchange exchange) => new()
         {
@@ -37,7 +41,7 @@ namespace ArbiWriter.Services
             Working = true
         };
 
-        public ICollection<Exchange> GetSupportedExchanges() => ExchangeObjects;
+        public ICollection<Exchange> GetSupportedExchanges() => ExchangeObjects.Select(_apiService.Fill).ToList();
 
         public async Task MarkAllAsWorkingAsync(bool bWorking = true, CancellationToken stoppingToken = default)
         {
@@ -53,7 +57,7 @@ namespace ArbiWriter.Services
         public async Task UploadData(CancellationToken stoppingToken = default)
         {
             // Get all supported exchanges
-            List<Exchange> _exchangeObjects = GetSupportedExchanges().ToList();
+            IList<Exchange> _exchangeObjects = [.. GetSupportedExchanges()];
             foreach (Exchange _exchangeObject in _exchangeObjects)
             {
                 // Try to find exchange

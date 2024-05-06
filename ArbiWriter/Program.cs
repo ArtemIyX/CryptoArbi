@@ -26,6 +26,7 @@ class Program
             .ConfigureAppConfiguration((hostingContext, config) =>
             {
                 config.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+                config.AddJsonFile("exchanges.json", optional: false, reloadOnChange: true);
             })
             .ConfigureServices((context, services) =>
             {
@@ -43,5 +44,6 @@ class Program
                 services.AddScoped<ITokenService, TokenService>();
                 services.AddScoped<IExchangeService, ExchangeService>();
                 services.AddScoped<ITokenCollector, TokenCollectorService>();
+                services.AddScoped<IExchangeApiService, ExchangeApiService>();
             });
 }
