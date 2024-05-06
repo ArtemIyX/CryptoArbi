@@ -1,4 +1,5 @@
 ﻿using ArbiDataLib.Data;
+using ArbiDataLib.Models;
 
 namespace ArbiBlazor.Services
 {

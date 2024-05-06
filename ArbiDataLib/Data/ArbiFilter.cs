@@ -50,7 +50,7 @@ namespace ArbiDataLib.Data
             {
                 {"price", MinPrice.ToString(CultureInfo.InvariantCulture)},
                 {"vol", MinVolumeUSDT.ToString(CultureInfo.InvariantCulture)},
-                {"dayVol", MinPrice.ToString(CultureInfo.InvariantCulture)},
+                {"dayVol", MinDayVolumeUSDT.ToString(CultureInfo.InvariantCulture)},
                 {"minP", MinPercent.ToString(CultureInfo.InvariantCulture)},
                 {"maxP", MaxPercent.ToString(CultureInfo.InvariantCulture)},
                 {"num", Amount.ToString(CultureInfo.InvariantCulture)}

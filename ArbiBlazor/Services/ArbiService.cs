@@ -2,13 +2,14 @@
 using ArbiDataLib.Data;
 using ArbiDataLib.Models;
 using Microsoft.AspNetCore.WebUtilities;
-using System.Collections.Concurrent;
 
 namespace ArbiBlazor.Services
 {
+
     public interface IArbiService
     {
         public Task<IList<ArbiItemVisual>> GetArbiItems(ArbiFilter filter);
+        public Task<IList<ExchangeTokenVisual>> GetArbiSituation(string symbol);
     }
     public class ArbiService(HttpClient http,
         IExchangeService exchangeService,
@@ -18,28 +19,83 @@ namespace ArbiBlazor.Services
         private readonly IExchangeService _exchangeService = exchangeService;
         private readonly IFilterContainer _filterContainer = filterContainer;
         private readonly string ArbiUrl = "/api/arbi";
+        private readonly string TokenUrl = "api/tokens/sym/";
 
+        private async Task<ExchangeInfoData> GetExchangeDataAsync()
+        {
+            IList<Task> tasks = [];
+            ExchangeInfoData res = new ExchangeInfoData();
+            IList<ExchangeEntityResponse> exchanges = [];
+            IList<ExchangeUrlInfo> exchangeUrls = [];
+            // Get exchanges (with names)
+            tasks.Add(Task.Run(async () =>
+            {
+                res.Exchanges = await _exchangeService.GetExchanges();
+            }));
+            // Get exchange urls 
+            tasks.Add(Task.Run(async () =>
+            {
+                res.ExchangeUrls = await _exchangeService.GetExchangeUrlInfos();
+            }));
+            await Task.WhenAll(tasks);
+            return res;
+        }
+
+        public async Task<IList<ExchangeTokenVisual>> GetArbiSituation(string symbol)
+        {
+            try
+            {
+                IList<Task> globalTasks = [];
+                ExchangeInfoData exchangeData = new();
+                IList<ExchangeTokenResponse> tokens = [];
+                globalTasks.Add(Task.Run(async () =>
+                {
+                    exchangeData = await GetExchangeDataAsync();
+                }));
+                // Get arbi situatiins
+                globalTasks.Add(Task.Run(async () =>
+                {
+                    BasicResponse? response = await _http.GetBasicAsync($"{TokenUrl}{symbol}");
+                    tokens = response.TryParseContent<List<ExchangeTokenResponse>>() ?? [];
+                }));
+                await Task.WhenAll(globalTasks);
+
+                IList<ExchangeTokenVisual> visual = [];
+                foreach (ExchangeTokenResponse token in tokens)
+                {
+                    ExchangeTokenResponse savedItem = token;
+
+                    ExchangeEntityResponse? exchange = exchangeData.Exchanges.FirstOrDefault(x => x.Id == savedItem.ExchangeId);
+                    if (exchange is null) continue;
+                    ExchangeUrlInfo? exchangeInfo = exchangeData.ExchangeUrls.FirstOrDefault(x => x.ExchangeId == savedItem.ExchangeId);
+                    if(exchangeInfo is null) continue;
+
+                    visual.Add(new ExchangeTokenVisual(token,
+                        exchange.Name,
+                        exchangeInfo.TradeURL,
+                        exchangeInfo.DepositURL,
+                        exchangeInfo.WithdrawalURL));
+                }
+
+                return visual;
+            }
+            catch (Exception)
+            {
+                return [];
+            }
+        }
 
         public async Task<IList<ArbiItemVisual>> GetArbiItems(ArbiFilter filter)
         {
             try
             {
                 // Get arbi situations
-                List<ArbiItem> list = [];
-                IList<ExchangeEntityResponse> exchanges = [];
-                IList<ExchangeUrlInfo> exchangeUrls = [];
-                List<Task> globalTasks = [];
-
-                // Get exchanges (with names)
+                IList<ArbiItem> arbiList = [];
+                IList<Task> globalTasks = [];
+                ExchangeInfoData exchangeData = new ExchangeInfoData();
                 globalTasks.Add(Task.Run(async () =>
                 {
-                    exchanges = await _exchangeService.GetExchanges();
-                }));
-                // Get exchange urls 
-                globalTasks.Add(Task.Run(async () =>
-                {
-                    exchangeUrls = await _exchangeService.GetExchangeUrlInfos();
-
+                    exchangeData = await GetExchangeDataAsync();
                 }));
                 // Get arbi situatiins
                 globalTasks.Add(Task.Run(async () =>
@@ -48,19 +104,17 @@ namespace ArbiBlazor.Services
                     _filterContainer.CurrentFilter.ForbiddenSell = _filterContainer.MakeForbiddenString(_filterContainer.SellExchanges);
                     string url = QueryHelpers.AddQueryString(ArbiUrl, _filterContainer.CurrentFilter.ToArgsDictionary());
                     BasicResponse? response = await _http.GetBasicAsync(url);
-                    list = response.TryParseContent<List<ArbiItem>>() ?? [];
-
+                    arbiList = response.TryParseContent<List<ArbiItem>>() ?? [];
                 }));
                 await Task.WhenAll(globalTasks);
-                ConcurrentBag<ArbiItemVisual> visal = [];
+                IList<ArbiItemVisual> visal = [];
 
 
                 // For each arbi
-                foreach (var item in list)
+                foreach (ArbiItem item in arbiList)
                 {
-
                     ArbiItem savedItem = item;
-                    List<Task> localTasks = [];
+                    IList<Task> localTasks = [];
                     string buyName = string.Empty;
                     string buyUrl = string.Empty;
                     string withdrawUrl = string.Empty;
@@ -71,8 +125,8 @@ namespace ArbiBlazor.Services
                     // Get buy exchange info
                     localTasks.Add(Task.Run(() =>
                     {
-                        ExchangeEntityResponse? buyExchange = exchanges.FirstOrDefault(x => x.Id == item.ExchangeId1);
-                        ExchangeUrlInfo? buyInfo = exchangeUrls.FirstOrDefault(x => x.ExchangeId == item.ExchangeId1);
+                        ExchangeEntityResponse? buyExchange = exchangeData.Exchanges.FirstOrDefault(x => x.Id == savedItem.ExchangeId1);
+                        ExchangeUrlInfo? buyInfo = exchangeData.ExchangeUrls.FirstOrDefault(x => x.ExchangeId == savedItem.ExchangeId1);
                         if (buyInfo is null) return;
                         buyName = buyExchange?.Name ?? "Unknown";
                         buyUrl = buyInfo.TradeURL;
@@ -81,8 +135,8 @@ namespace ArbiBlazor.Services
                     // Get sell exchange info
                     localTasks.Add(Task.Run(() =>
                     {
-                        ExchangeEntityResponse? sellExchange = exchanges.FirstOrDefault(x => x.Id == item.ExchangeId2);
-                        ExchangeUrlInfo? sellInfo = exchangeUrls.FirstOrDefault(x => x.ExchangeId == item.ExchangeId2);
+                        ExchangeEntityResponse? sellExchange = exchangeData.Exchanges.FirstOrDefault(x => x.Id == savedItem.ExchangeId2);
+                        ExchangeUrlInfo? sellInfo = exchangeData.ExchangeUrls.FirstOrDefault(x => x.ExchangeId == savedItem.ExchangeId2);
                         if (sellInfo is null) return;
                         sellName = sellExchange?.Name ?? "Unknown";
                         sellUrl = sellInfo.TradeURL;
@@ -99,7 +153,7 @@ namespace ArbiBlazor.Services
                         depositUrl,
                         sellUrl));
                 }
-                return [.. visal.AsEnumerable().OrderByDescending(x => x.PriceDifferencePercentage)];
+                return visal.OrderByDescending(x => x.PriceDifferencePercentage).ToList();
             }
             catch (Exception)
             {

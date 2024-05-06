@@ -6,70 +6,83 @@
 @inject ArbiBlazor.Services.IArbiContainer arbiContainer
 @inject ArbiBlazor.Services.IFilterContainer filterContainer
 @inject ArbiBlazor.Services.IDisplaySerivce dS
+@inject NavigationManager navManager
 
 <PageTitle>Tokens</PageTitle>
 
 <div class="container-fluid arbi-container">
-      <button type="button" class="btn btn-secondary p-2 m-2" @onclick="RefreshAll">Refresh</button>
+
+  <button type="button" class="btn btn-secondary p-2 m-2"
+    @onclick="RefreshAll">Refresh</button>
   <div class="row">
-    <div class="col">
-            @if (arbiContainer.Items is null)
-            {
-            <div class="d-flex justify-content-center">
-              <div class="spinner-border" role="status">
-                <span class="visually-hidden">Loading...</span>
-              </div>
-            </div>
-            }
+    <div class="col col-auto">
+
       <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
             <th scope="col" class="table-h">
-                Profit
+              Profit
             </th>
             <th scope="col" class="table-h">Buy From</th>
             <th scope="col" class="table-h">Sell At</th>
           </tr>
         </thead>
         <tbody>
-         
-                    @if (arbiContainer.Items is not null && arbiContainer.Items.Count == 0)
-            {
-              <div>
-                <h5>No tokens :C</h5>
+          @if (arbiContainer.Items is null)
+          {
+          <tr>
+            <td></td>
+            <td>
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
               </div>
-            }
-                    else if (arbiContainer.Items is not null)
+            </td>
+            <td></td>
+          </tr>
+
+          }
+
+          else if (arbiContainer.Items is not null && arbiContainer.Items.Count
+          == 0)
+          {
+          <div>
+            <h5>No tokens :C</h5>
+          </div>
+          }
+          else if (arbiContainer.Items is not null)
           {
 
           @foreach (var arbi in arbiContainer.Items)
           {
-          <tr>
+          <tr @onclick="() => OnArbiClicked(arbi)">
             <td>
-              <ArbiTitle 
-                  Diff="@dS.Percent(arbi.PriceDifferencePercentage)"
-                  Sym="@arbi.DisplayName"
-                  />
+              <ArbiTitle
+                Diff="@dS.Percent(arbi.PriceDifferencePercentage)"
+                Sym="@arbi.DisplayName" />
+            </td>
+            <td>
+              <ArbiItem
+                BtnClass="btn-outline-primary"
+                Name="@arbi.BuyName"
+                TradeUrl="@dS.Trade(arbi.BuyUrl, arbi.DisplayName)"
+                FundsUrl="@dS.Depo(arbi.WithdrawUrl, arbi.DisplayName)"
+                FundsName="Withrdaw"
+                Price="@dS.Price(arbi.Ask)"
+                Volume="@dS.Volume(arbi.AskVolumeUSDT)"
+                DayVolume="@dS.Volume(arbi.AskDayVolumeUSDT)" />
             </td>
             <td>
                 <ArbiItem
-                    BtnClass="btn-outline-primary"
-                    Name="@arbi.BuyName"
-                    Url="@dS.Trade(arbi.BuyUrl, arbi.DisplayName)"
-                    Price="@dS.Price(arbi.Ask)"
-                    Volume="@dS.Volume(arbi.AskVolumeUSDT)"
-                    DayVolume="@dS.Volume(arbi.AskDayVolumeUSDT)"
-                    />
-            </td>
-            <td>
-                    <ArbiItem
-                            BtnClass="btn-outline-danger"
-                            Name="@arbi.SellName"
-                            Url="@dS.Trade(arbi.SellUrl, arbi.DisplayName)"
-                            Price="@dS.Price(arbi.Bid)"
-                            Volume="@dS.Volume(arbi.BidVolumeUSDT)"
-                            DayVolume="@dS.Volume(arbi.BidDayVolumeUSDT)"
-                            />
+                BtnClass="btn-outline-danger"
+                Name="@arbi.SellName"
+                TradeUrl="@dS.Trade(arbi.SellUrl, arbi.DisplayName)"
+                FundsUrl="@dS.Depo(arbi.DepositUrl, arbi.DisplayName)"
+                FundsName="Deposit"
+                Price="@dS.Price(arbi.Bid)"
+                Volume="@dS.Volume(arbi.BidVolumeUSDT)"
+                DayVolume="@dS.Volume(arbi.BidDayVolumeUSDT)" />
             </td>
           </tr>
           }
@@ -77,6 +90,6 @@
         </tbody>
       </table>
     </div>
-    
+
   </div>
 </div>

@@ -32,7 +32,7 @@ namespace ArbiReader.Services
 
         public async Task<IList<ArbiItem>> GetArbi(ArbiFilter filter)
         {
-            return await Task.Run(async () =>
+            return await Task.Run(() =>
             {
                 string[] buy_ban = filter.MakeForbiddenBuy();
                 string[] sell_ban = filter.MakeForbiddenSell();
@@ -79,20 +79,8 @@ namespace ArbiReader.Services
                 var numerable = rankedTokens.AsEnumerable();
                 var distinct = numerable.DistinctBy(x => x.DisplayName);
                 var taken = distinct.Take(filter.Amount);
-                while(true)
-                {
-                    try
-                    {
-                        var result = taken.ToList();
 
-                        return result;
-                    }
-                    catch(Exception)
-                    {
-                        await Task.Delay(50);
-                    }
-                }
-                
+                return taken.ToList();
             });
         }
 

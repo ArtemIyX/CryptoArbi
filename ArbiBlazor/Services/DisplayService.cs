@@ -8,6 +8,7 @@ namespace ArbiBlazor.Services
         public string Percent(double percent);
         public string Price(double price);
         public string Trade(string url, string symbolName);
+        public string Depo(string url, string symbolName);
     }
 
     public class DisplayService : IDisplaySerivce
@@ -52,6 +53,22 @@ namespace ArbiBlazor.Services
             else if(str.Contains(upper))
             {
                 return str.Replace(upper, symbolName.ToUpper()).Replace("usdt", "USDT");
+            }
+            return str;
+        }
+
+        public string Depo(string str, string symbolName)
+        {
+            string lower = "btc";
+            string upper = "BTC";
+
+            if (str.Contains(lower))
+            {
+                return str.Replace(lower, symbolName.ToLower());
+            }
+            else if (str.Contains(upper))
+            {
+                return str.Replace(upper, symbolName.ToUpper());
             }
             return str;
         }

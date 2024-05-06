@@ -18,29 +18,29 @@
       "ExchangeId": "huobi",
       "HomeURL": "https://www.htx.com/",
       "TradeURL": "https://www.htx.com/trade/btc_usdt?type=spot",
-      "DepositURL": "https://www.htx.com/en-us/finance/deposit/",
-      "WithdrawalURL": "https://www.htx.com/en-us/finance/withdraw/"
+      "DepositURL": "https://www.htx.com/en-us/finance/deposit/btc",
+      "WithdrawalURL": "https://www.htx.com/en-us/finance/withdraw/btc"
     },
     {
       "ExchangeId": "kucoin",
       "HomeURL": "https://www.kucoin.com/",
       "TradeURL": "https://www.kucoin.com/trade/BTC-USDT",
-      "DepositURL": "https://www.kucoin.com/assets/coin/USDT",
-      "WithdrawalURL": "https://www.kucoin.com/assets/withdraw"
+      "DepositURL": "https://www.kucoin.com/assets/coin/BTC",
+      "WithdrawalURL": "https://www.kucoin.com/assets/withdraw/BTC"
     },
     {
       "ExchangeId": "mexc",
       "HomeURL": "https://mexc.com/",
       "TradeURL": "https://www.mexc.com/exchange/btc_usdt",
-      "DepositURL": "https://www.mexc.com/assets/deposit/USDT",
-      "WithdrawalURL": "https://www.mexc.com/assets/withdraw"
+      "DepositURL": "https://www.mexc.com/assets/deposit/BTC",
+      "WithdrawalURL": "https://www.mexc.com/assets/withdraw/BTC"
     },
     {
       "ExchangeId": "gateio",
       "HomeURL": "https://www.gate.io/",
       "TradeURL": "https://www.gate.io/trade/BTC_USDT",
-      "DepositURL": "https://www.gate.io/myaccount/deposit/USDT",
-      "WithdrawalURL": "https://www.gate.io/myaccount/withdraw/USDT"
+      "DepositURL": "https://www.gate.io/myaccount/deposit/BTC",
+      "WithdrawalURL": "https://www.gate.io/myaccount/withdraw/BTC"
     }
   ]
 }

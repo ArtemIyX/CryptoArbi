@@ -42,22 +42,21 @@ namespace ArbiDataLib.Models
         public double? BidVolumeUsdt => AskVolume is not null ? BidVolume * Bid : null;
 
         public ExchangeTokenResponse ToResponse() =>
-            new ExchangeTokenResponse
-            {
-                Id = this.Id,
-                FullSymbolName = this.FullSymbolName,
-                DisplayName = this.DisplayName,
-                Ask = this.Ask,
-                Bid = this.Bid,
-                DayVolumeUSDT = this.DayVolumeUSDT,
-                AskVolume = this.AskVolume,
-                BidVolume = this.BidVolume,
-                Updated = this.Updated,
-                ExchangeId = this.ExchangeId
-            };
+            new(
+                Id,
+                FullSymbolName,
+                DisplayName,
+                Ask,
+                Bid,
+                DayVolumeUSDT,
+                AskVolume,
+                BidVolume,
+                Updated,
+                ExchangeId
+            );
     }
 
-    public class ExchangeTokenResponse()
+    public class ExchangeTokenResponse
     {
         [JsonPropertyName("id")]
         public long Id { get; set; } = 0;
@@ -88,5 +87,60 @@ namespace ArbiDataLib.Models
 
         [JsonPropertyName("exchangeId")]
         public string ExchangeId { get; set; } = string.Empty;
+
+        // Empty constructor
+        public ExchangeTokenResponse()
+        {
+        }
+
+        // Full constructor
+        public ExchangeTokenResponse(long id, string fullSymbolName,
+            string displayName, double? ask, double? bid, double? dayVolumeUSDT,
+            double? askVolume, double? bidVolume, DateTime updated, string exchangeId)
+        {
+            Id = id;
+            FullSymbolName = fullSymbolName;
+            DisplayName = displayName;
+            Ask = ask;
+            Bid = bid;
+            DayVolumeUSDT = dayVolumeUSDT;
+            AskVolume = askVolume;
+            BidVolume = bidVolume;
+            Updated = updated;
+            ExchangeId = exchangeId;
+        }
+        // Copy constructor
+        public ExchangeTokenResponse(ExchangeTokenResponse other)
+        {
+            Id = other.Id;
+            FullSymbolName = other.FullSymbolName;
+            DisplayName = other.DisplayName;
+            Ask = other.Ask;
+            Bid = other.Bid;
+            DayVolumeUSDT = other.DayVolumeUSDT;
+            AskVolume = other.AskVolume;
+            BidVolume = other.BidVolume;
+            Updated = other.Updated;
+            ExchangeId = other.ExchangeId;
+        }
+    }
+
+    public class ExchangeTokenVisual : ExchangeTokenResponse
+    {
+        public ExchangeTokenVisual() : base() { }
+
+        public ExchangeTokenVisual(ExchangeTokenResponse item,
+            string exchangeName, string tradeUrl, string depositUrl, string withdrawUrl) : base(item)
+        {
+            ExchangeName = exchangeName;
+            TradeUrl = tradeUrl;
+            WithdrawUrl = withdrawUrl;
+            DepositUrl = depositUrl;
+        }
+
+        public string ExchangeName { get; set; } = string.Empty;
+        public string TradeUrl { get; set; } = string.Empty;
+        public string DepositUrl { get; set; } = string.Empty;
+        public string WithdrawUrl { get; set; } = string.Empty;
     }
 }

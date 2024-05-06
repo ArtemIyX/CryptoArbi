@@ -8,6 +8,12 @@ using System.Xml.Linq;
 
 namespace ArbiDataLib.Models
 {
+    public class ExchangeInfoData
+    {
+        public IList<ExchangeEntityResponse> Exchanges { get; set; } = [];
+        public IList<ExchangeUrlInfo> ExchangeUrls { get; set; } = [];
+    }
+
     [Table("Exchanges")]
     public class ExchangeEntity
     {

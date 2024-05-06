@@ -29,12 +29,15 @@
     <!-- Button -->
     <div class="row">
       <div class="d-grid mx-auto">
-        <a href="@Url" class="btn btn-ex @BtnClass">@Name</a>
+        <a href="@TradeUrl" class="btn btn-ex @BtnClass m-1">@Name</a>
+        <a href="@FundsUrl" class="btn btn-ex @BtnClass m-1">@FundsName</a>
       </div>
     </div>
   </div>
 
 @code {
+
+
     [Parameter]
     public string Price { get; set; } = string.Empty;
 
@@ -45,7 +48,13 @@
     public string DayVolume { get; set; } = string.Empty;
 
     [Parameter]
-    public string Url { get; set; } = string.Empty;
+    public string TradeUrl { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FundsUrl { get; set; } = string.Empty;
+
+    [Parameter]
+    public string FundsName { get; set; } = string.Empty;
 
     [Parameter]
     public string Name { get; set; } = string.Empty;

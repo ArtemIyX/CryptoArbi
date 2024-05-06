@@ -1,0 +1,83 @@
+﻿@page "/tokens/{Sym}"
+@using ArbiBlazor.Shared.Arbi
+@inject ArbiBlazor.Services.IArbiService arbiService
+@inject ArbiBlazor.Services.IDisplaySerivce dS
+@inject NavigationManager navManager
+
+<PageTitle>@Sym</PageTitle>
+
+<div class="container-fluid arbi-container">
+  <button type="button" class="btn btn-secondary p-2 m-2" @onclick="Back">Back</button>
+  <button type="button" class="btn btn-secondary p-2 m-2" @onclick="Refresh">Refresh</button>
+  <div class="row">
+    <div class="col col-auto">
+      <table class="table table-hover">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col" class="table-h">Ask</th>
+            <th scope="col" class="table-h">Bid</th>
+          </tr>
+        </thead>
+        <tbody>
+          @if (Total is null)
+          {
+          <tr>
+            <td></td>
+            <td>
+              <div class="d-flex justify-content-center">
+                <div class="spinner-border" role="status">
+                  <span class="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            </td>
+            <td></td>
+          </tr>
+
+          }
+
+          else if (Total is not null && Total.Count
+          == 0)
+          {
+          <div>
+            <h5>Not found '@Sym'</h5>
+          </div>
+          }
+          else if (Total is not null && Ask is not null && Bid is not null)
+          {
+          for(int i = 0; i < Total.Count; ++i)
+          {
+          <tr>
+            <td>
+              <ArbiItem
+                BtnClass="btn-outline-primary"
+                Name="@Ask[i].ExchangeName"
+                TradeUrl="@dS.Trade(Ask[i].TradeUrl, Ask[i].DisplayName)"
+                FundsUrl="@dS.Depo(Ask[i].WithdrawUrl, Ask[i].DisplayName)"
+                FundsName="Withrdaw"
+                Price="@dS.Price(Ask[i].Ask ?? 0.0)"
+                Volume="@dS.Volume(Ask[i].AskVolume * Ask[i].Ask ?? 0.0)"
+                DayVolume="@dS.Volume(Ask[i].DayVolumeUSDT ?? 0.0)" />
+            </td>
+            <td>
+                <ArbiItem
+                BtnClass="btn-outline-danger"
+                Name="@Bid[i].ExchangeName"
+                TradeUrl="@dS.Trade(Bid[i].TradeUrl, Bid[i].DisplayName)"
+                FundsUrl="@dS.Depo(Bid[i].DepositUrl, Bid[i].DisplayName)"
+                FundsName="Deposit"
+                Price="@dS.Price(Bid[i].Ask ?? 0.0)"
+                Volume="@dS.Volume(Bid[i].AskVolume * Bid[i].Ask ?? 0.0)"
+                DayVolume="@dS.Volume(Bid[i].DayVolumeUSDT ?? 0.0)" />
+
+            </td>
+          </tr>
+          }
+
+          }
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
