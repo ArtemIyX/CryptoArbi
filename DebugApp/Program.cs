@@ -1,16 +1,30 @@
 ﻿using ArbiLib.Services;
 using ccxt;
 using DebugApp;
+using Newtonsoft.Json;
 using System.Globalization;
 
 internal class Program
 {
     private static async Task Main(string[] args)
     {
-        HttpClient client = new HttpClient();
-        var res = await client.GetAsync("http://localhost:5000/api/token/arbi");
-        await Console.Out.WriteLineAsync(await res.Content.ReadAsStringAsync());
-        return;
+        Exchange ex = new Bitget();
+        ex.apiKey = "";
+        ex.secret = "";
+        await Console.Out.WriteLineAsync("Loading...");
+        var res = await ex.FetchCurrencies();
+        foreach(var item in res.currencies)
+        {
+            if(item.Value.active == false || item.Value.active is null)
+            {
+                await Console.Out.WriteLineAsync(item.Value.id);
+            }
+        }
+        //await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+    }
+
+    static async Task Work()
+    {
         CultureInfo culture = new CultureInfo("en-US");
         culture.NumberFormat.NumberDecimalSeparator = ".";
         System.Threading.Thread.CurrentThread.CurrentCulture = culture;
@@ -45,7 +59,6 @@ internal class Program
         await Console.Out.WriteLineAsync("Press line");
         Console.ReadLine();
     }
-
     static async Task Display(LocalArbiService service)
     {
         while (true)
