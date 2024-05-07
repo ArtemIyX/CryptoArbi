@@ -1,17 +1,15 @@
-﻿using ArbiLib.Libs;
+﻿using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
+using ArbiLib.Libs;
 using ccxt;
 using Microsoft.EntityFrameworkCore;
-using Nethereum.Util;
-using System.Data;
-using ArbiDataLib.Data.Repo;
 
 namespace ArbiWriter.Services
 {
     public interface ITokenService
     {
         Task UpdateTokens(Exchange owner, CancellationToken stoppingToken = default);
-        ExchangeToken? CreateTokenEntity(Exchange owner, in Ticker ticker);
+        ExchangeToken? CreateTokenEntity(Exchange owner, in ccxt.Ticker ticker, in ccxt.Currency currency);
         Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default);
     }
 
@@ -19,7 +17,7 @@ namespace ArbiWriter.Services
     {
         private readonly IRepository<ExchangeToken, long> _tokenRepo = tokenRepository;
 
-        public ExchangeToken? CreateTokenEntity(Exchange exchange, in Ticker ticker)
+        public ExchangeToken? CreateTokenEntity(Exchange exchange, in ccxt.Ticker ticker, in ccxt.Currency currency)
         {
             string tickerName = TickerLib.RemoveSemiColon(ticker.symbol ?? "");
 
@@ -40,7 +38,10 @@ namespace ArbiWriter.Services
                 Bid = ticker.bid,
                 AskVolume = ticker.askVolume,
                 BidVolume = ticker.bidVolume,
-                DayVolumeUSDT = ticker.quoteVolume
+                DayVolumeUSDT = ticker.quoteVolume,
+                Active = currency.active ?? false,
+                Deposit = currency.deposit ?? false,
+                Withdraw = currency.withdraw ?? false
             };
         }
 
@@ -52,9 +53,22 @@ namespace ArbiWriter.Services
 
         public async Task UpdateTokens(Exchange owner, CancellationToken stoppingToken = default)
         {
-            Tickers container = await owner.FetchTickers();
-            foreach (KeyValuePair<string, Ticker> x in container.tickers)
+            Currencies currenciesContainer = await owner.FetchCurrencies();
+            Tickers tickersContainer = await owner.FetchTickers();
+            foreach (KeyValuePair<string, Ticker> x in tickersContainer.tickers)
             {
+                if (string.IsNullOrEmpty(x.Value.symbol))
+                    continue;
+
+                if (!TickerLib.IsUsdtPair(x.Value.symbol))
+                    continue;
+                string friendlySymbol = TickerLib.GetPureTicker(x.Value.symbol);
+
+                if (!currenciesContainer.currencies.ContainsKey(friendlySymbol.ToUpper()))
+                    continue;
+
+                KeyValuePair<string, Currency> currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
+
                 ExchangeToken? tokenInDb = await FindToken(owner.id, x.Value.symbol ?? "", stoppingToken);
 
                 if (tokenInDb is not null)
@@ -64,17 +78,18 @@ namespace ArbiWriter.Services
                     tokenInDb.AskVolume = x.Value.askVolume;
                     tokenInDb.BidVolume = x.Value.bidVolume;
                     tokenInDb.DayVolumeUSDT = x.Value.quoteVolume;
+                    tokenInDb.Active = currency.Value.active ?? false;
+                    tokenInDb.Deposit = currency.Value.deposit ?? false;
+                    tokenInDb.Withdraw = currency.Value.withdraw ?? false;
                     _tokenRepo.Update(tokenInDb, stoppingToken);
                 }
                 else
                 {
-                    if (x.Value.symbol is not null && TickerLib.IsUsdtPair(x.Value.symbol))
+
+                    ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value, currency.Value);
+                    if (tokenEntity is not null)
                     {
-                        ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value);
-                        if (tokenEntity is not null)
-                        {
-                            await _tokenRepo.Add(tokenEntity, stoppingToken);
-                        }
+                        await _tokenRepo.Add(tokenEntity, stoppingToken);
                     }
 
                 }

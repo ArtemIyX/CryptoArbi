@@ -36,7 +36,7 @@ class Program
                 MySqlServerVersion serverVersion = new MySqlServerVersion(new Version(8, 0, 36));
 
                 services.AddDbContext<ArbiDbContext>(options =>
-                    options.UseMySql(conString, serverVersion));
+                    options.UseMySql(conString, serverVersion, b => b.MigrationsAssembly("ArbiWriter")));
 
                 services.AddHostedService<TokenCollectorService>();
                 services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();

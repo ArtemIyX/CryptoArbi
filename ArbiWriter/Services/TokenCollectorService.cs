@@ -58,7 +58,6 @@ namespace ArbiWriter.Services
             }
         }
 
-
         private async Task HandleExchangeAsync(Exchange exchange, CancellationToken stoppingToken = default)
         {
             using (IServiceScope scope = serviceScopeFactory.CreateScope())
@@ -75,7 +74,6 @@ namespace ArbiWriter.Services
                 {
                     _logger.LogError($"{exchange.id} fetching error: {ex.Message}");
                 }
-               
             }
         }
 

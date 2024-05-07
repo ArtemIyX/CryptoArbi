@@ -7,13 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\**" />
     <Compile Remove="Services\Interfaces\**" />
-    <Content Remove="Migrations\**" />
     <Content Remove="Services\Interfaces\**" />
-    <EmbeddedResource Remove="Migrations\**" />
     <EmbeddedResource Remove="Services\Interfaces\**" />
-    <None Remove="Migrations\**" />
     <None Remove="Services\Interfaces\**" />
   </ItemGroup>
 
@@ -40,6 +36,10 @@
   <ItemGroup>
     <ProjectReference Include="..\ArbiDataLib\ArbiDataLib.csproj" />
     <ProjectReference Include="..\ArbiLib\ArbiLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

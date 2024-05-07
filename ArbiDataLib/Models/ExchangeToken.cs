@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
@@ -35,7 +36,16 @@ namespace ArbiDataLib.Models
 
         public DateTime Updated { get; set; }
 
-        public required string ExchangeId { get; set; }
+        [NotNull, DefaultValue(false)]
+        public bool Active { get; set; }
+
+        [NotNull, DefaultValue(false)]
+        public bool Deposit { get; set; }
+
+        [NotNull, DefaultValue(false)]
+        public bool Withdraw { get; set; }
+
+        public string ExchangeId { get; set; }
         public virtual ExchangeEntity? Exchange { get; set; }
 
         public double? AskVolumeUsdt => AskVolume is not null ? AskVolume * Ask : null;
@@ -52,7 +62,10 @@ namespace ArbiDataLib.Models
                 AskVolume,
                 BidVolume,
                 Updated,
-                ExchangeId
+                ExchangeId,
+                Active,
+                Deposit,
+                Withdraw
             );
     }
 
@@ -88,6 +101,15 @@ namespace ArbiDataLib.Models
         [JsonPropertyName("exchangeId")]
         public string ExchangeId { get; set; } = string.Empty;
 
+        [JsonPropertyName("active")]
+        public bool Active { get; set; } = false;
+
+        [JsonPropertyName("deposit")]
+        public bool Deposit { get; set; } = false;
+
+        [JsonPropertyName("withdraw")]
+        public bool Withdraw { get; set; } = false;
+
         // Empty constructor
         public ExchangeTokenResponse()
         {
@@ -96,7 +118,8 @@ namespace ArbiDataLib.Models
         // Full constructor
         public ExchangeTokenResponse(long id, string fullSymbolName,
             string displayName, double? ask, double? bid, double? dayVolumeUSDT,
-            double? askVolume, double? bidVolume, DateTime updated, string exchangeId)
+            double? askVolume, double? bidVolume, DateTime updated, string exchangeId,
+            bool active, bool deposit, bool withdraw)
         {
             Id = id;
             FullSymbolName = fullSymbolName;
@@ -108,6 +131,9 @@ namespace ArbiDataLib.Models
             BidVolume = bidVolume;
             Updated = updated;
             ExchangeId = exchangeId;
+            Active = active;
+            Deposit = deposit;
+            Withdraw = withdraw;
         }
         // Copy constructor
         public ExchangeTokenResponse(ExchangeTokenResponse other)
@@ -122,6 +148,9 @@ namespace ArbiDataLib.Models
             BidVolume = other.BidVolume;
             Updated = other.Updated;
             ExchangeId = other.ExchangeId;
+            Active = other.Active;
+            Deposit = other.Deposit;
+            Withdraw = other.Withdraw;
         }
     }
 

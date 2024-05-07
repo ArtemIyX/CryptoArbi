@@ -8,19 +8,13 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        Exchange ex = new Bitget();
+        Exchange ex = new Huobi();
         ex.apiKey = "";
         ex.secret = "";
         await Console.Out.WriteLineAsync("Loading...");
-        var res = await ex.FetchCurrencies();
-        foreach(var item in res.currencies)
-        {
-            if(item.Value.active == false || item.Value.active is null)
-            {
-                await Console.Out.WriteLineAsync(item.Value.id);
-            }
-        }
-        //await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(res, Formatting.Indented));
+        Tickers tickersContainer = await ex.FetchTickers();
+        Currencies currenciesContainer = await ex.FetchCurrencies();
+        await Console.Out.WriteLineAsync("Finished");
     }
 
     static async Task Work()
