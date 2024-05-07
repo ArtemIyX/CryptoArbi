@@ -9,26 +9,80 @@ namespace ArbiReader.Services
 {
     public interface ITokenService
     {
+        public bool HasSameNetworks(IList<TokenNetworkResponse> from, IList<TokenNetworkResponse> to);
+        public bool IsNetworkEqual(string first, string second);
         public Task<IList<ExchangeTokenResponse>> GetTokens(string symbol);
         public Task<ExchangeTokenResponse?> GetToken(long tokenId);
         public Task<IList<ArbiItem>> GetArbi(ArbiFilter filter);
         public Task<IList<ArbiItem>> GetArbiBySymbol(string symbol);
     }
+
     public class TokenService(IRepository<ExchangeToken, long> tokenRepository) : ITokenService
     {
         private readonly IRepository<ExchangeToken, long> _tokenRepo = tokenRepository;
+        private readonly Dictionary<string, string[]> networkSynonyms = new()
+        {
+            { "ERC20", new string[] { "ERC-20", "ETH", "ERC 20" } },
+            { "BEP20", new string[] { "BEP-20, BEP", "BSC", "ERC 20"} },
+            { "SOL", new string[] {"SOLANA"} }
+        };
 
         public async Task<ExchangeTokenResponse?> GetToken(long tokenId) =>
             (await _tokenRepo
-            .AsQueryable()
+            .AsQueryable().Include(x => x.Networks)
             .FirstOrDefaultAsync(x => x.Id == tokenId && x.Active))?
             .ToResponse();
 
         public async Task<IList<ExchangeTokenResponse>> GetTokens(string symbol) =>
-            await _tokenRepo.AsQueryable()
+            await _tokenRepo.AsQueryable().Include(x => x.Networks)
             .Where(x => x.DisplayName == symbol && x.Active)
             .Select(x => x.ToResponse())
             .ToListAsync();
+
+        public bool IsNetworkEqual(string first, string second)
+        {
+            first = first.ToUpper();
+            second = second.ToUpper();
+            // Going through all the synonyms of the first word
+            foreach (var synonym in networkSynonyms.GetValueOrDefault(first, new string[0]))
+            {
+                // If the second word matches any synonym of the first word, return true
+                if (synonym.Equals(second, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            // Going through all the synonyms of the second word
+            foreach (var synonym in networkSynonyms.GetValueOrDefault(second, new string[0]))
+            {
+                // If the first word matches any synonym of the second word, return true
+                if (synonym.Equals(first, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return first.Equals(second, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public bool HasSameNetworks(IList<TokenNetworkResponse> from, IList<TokenNetworkResponse> to)
+        {
+            foreach (var net1 in from)
+            {
+                foreach (var net2 in to)
+                {
+                    if (IsNetworkEqual(net1.Code, net2.Code))
+                    {
+                        if(net1.Active && net1.Withdraw
+                            && net2.Active && net2.Deposit)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
 
         public async Task<IList<ArbiItem>> GetArbi(ArbiFilter filter)
         {
@@ -77,12 +131,18 @@ namespace ArbiReader.Services
                                                         FullSymbolName = t1.FullSymbolName,
                                                         PriceDifferencePercentage = diff ?? 0.0,
                                                         Updated = t1.Updated,
+                                                        AskNetworks = t1.Networks.Select(x => x.ToResponse()).ToList(),
+                                                        BidNetworks = t2.Networks.Select(x => x.ToResponse()).ToList()
                                                     };
 
 
-                var numerable = rankedTokens.AsEnumerable();
-                var distinct = numerable.DistinctBy(x => x.DisplayName);
-                var taken = distinct.Take(filter.Amount);
+                var numerable = rankedTokens;
+                var distinct = numerable.AsEnumerable().DistinctBy(x => x.DisplayName);
+
+                var taken = distinct.Where(x => HasSameNetworks(
+                    x.AskNetworks,
+                    x.BidNetworks))
+                    .Take(filter.Amount);
 
                 return taken.ToList();
             });
@@ -121,11 +181,15 @@ namespace ArbiReader.Services
                                                     BidDayVolumeUSDT = t2.DayVolumeUSDT ?? 0.0,
                                                     FullSymbolName = t1.FullSymbolName,
                                                     PriceDifferencePercentage = diff ?? 0.0,
-                                                    Updated = t1.Updated
+                                                    Updated = t1.Updated,
+                                                    AskNetworks = t1.Networks.Select(x => x.ToResponse()).ToList(),
+                                                    BidNetworks = t2.Networks.Select(x => x.ToResponse()).ToList()
                                                 };
 
             return await rankedTokens.ToListAsync();
 
         }
+
+
     }
 }

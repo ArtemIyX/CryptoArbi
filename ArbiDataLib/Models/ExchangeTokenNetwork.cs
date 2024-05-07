@@ -28,7 +28,46 @@ namespace ArbiDataLib.Models
         [NotNull, DefaultValue(false)]
         public bool Withdraw { get; set; }
 
+        [NotNull, DefaultValue(null)]
+        public double? Fee { get; set; } = null;
+
         public long ExchangeTokenId { get; set; }
         public virtual ExchangeToken Token { get; set; }
+
+        public TokenNetworkResponse ToResponse() => 
+            new(Code, Active, Deposit, Withdraw, Fee);
+    }
+
+    public class TokenNetworkResponse
+    {
+        public string Code { get; set; } = string.Empty;
+
+        public bool Active { get; set; } = false;
+
+        public bool Deposit { get; set; } = false;
+
+        public bool Withdraw { get; set; } = false;
+
+        public double? Fee { get; set; } = null;
+
+        // Empty Constructor
+        public TokenNetworkResponse()
+        {
+            Code = string.Empty;
+            Active = false;
+            Deposit = false;
+            Withdraw = false;
+        }
+
+        // Full Constructor
+        public TokenNetworkResponse(string code, bool active, bool deposit, bool withdraw,
+            double? fee)
+        {
+            Code = code;
+            Active = active;
+            Deposit = deposit;
+            Withdraw = withdraw;
+            Fee = fee;
+        }
     }
 }

@@ -20,6 +20,7 @@ namespace ArbiWriter.Services
         private readonly IRepository<ExchangeToken, long> _tokenRepo = tokenRepository;
         private readonly IRepository<ExchangeTokenNetwork, long> _networkRepo = networkRepository;
 
+
         public ExchangeToken? CreateTokenEntity(Exchange exchange, in ccxt.Ticker ticker, in ccxt.Currency currency)
         {
             string tickerName = TickerLib.RemoveSemiColon(ticker.symbol ?? "");
@@ -55,7 +56,8 @@ namespace ArbiWriter.Services
                 Code = code,
                 Deposit = network.deposit ?? false,
                 Withdraw = network.withdraw ?? false,
-                Active = network.active ?? false
+                Active = network.active ?? false,
+                Fee = network.fee
             };
 
         public async Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default)
@@ -99,6 +101,7 @@ namespace ArbiWriter.Services
                         networkInDb.Active = net.Value.active ?? false;
                         networkInDb.Deposit = net.Value.deposit ?? false;
                         networkInDb.Withdraw = net.Value.withdraw ?? false;
+                        networkInDb.Fee = net.Value.fee;
                     }
                 }
                 await Task.WhenAll(addTasks);
@@ -151,5 +154,6 @@ namespace ArbiWriter.Services
             }
             await _tokenRepo.SaveChangesAsync(stoppingToken);
         }
+
     }
 }

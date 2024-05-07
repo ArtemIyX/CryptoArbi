@@ -13,7 +13,7 @@ namespace ArbiDataLib.Data
         public ArbiDbContext(DbContextOptions<ArbiDbContext> options) : base(options)
         {
             Database.EnsureCreated();
-            Database.Migrate();
+            //Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

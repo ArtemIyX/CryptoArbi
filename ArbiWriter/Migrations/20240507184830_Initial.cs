@@ -67,6 +67,37 @@ namespace ArbiWriter.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "Networks",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Code = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Deposit = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Withdraw = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Fee = table.Column<double>(type: "double", nullable: true),
+                    ExchangeTokenId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Networks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Networks_Tokens_ExchangeTokenId",
+                        column: x => x.ExchangeTokenId,
+                        principalTable: "Tokens",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Networks_ExchangeTokenId",
+                table: "Networks",
+                column: "ExchangeTokenId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Tokens_ExchangeId",
                 table: "Tokens",
@@ -76,6 +107,9 @@ namespace ArbiWriter.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Networks");
+
             migrationBuilder.DropTable(
                 name: "Tokens");
 

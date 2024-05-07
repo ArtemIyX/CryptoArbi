@@ -6,6 +6,12 @@ using System.Globalization;
 
 internal class Program
 {
+    private static readonly Dictionary<string, string[]> NetworkSynonyms = new()
+        {
+            { "ERC20", new string[] { "ERC-20", "ETH", "ERC 20" } },
+            { "BEP20", new string[] { "BEP-20, BEP", "BSC", "ERC 20"} },
+            { "SOL", new string[] {"SOLANA"} }
+        };
     private static async Task Main(string[] args)
     {
         Exchange ex = new Bingx();
@@ -23,12 +29,39 @@ internal class Program
             {
                 foreach (var network in item.Value.networks)
                 {
-                    networks.Add(network.Key);
+                    await Console.Out.WriteLineAsync($"[{item.Key}]{network.Key} {(network.Value.fee ?? 0.0).ToString()}");
+                    //await Console.Out.WriteLineAsync($"[{item.Key}]{network.Key} {}");
                 }
             }
         }
-        await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(networks, formatting: Formatting.Indented));
+        //await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(currenciesContainer, formatting: Formatting.Indented));
         await Console.Out.WriteLineAsync("Finished");
+    }
+
+    public static bool IsNetworkEqual(string first, string second)
+    {
+        first = first.ToUpper();
+        second = second.ToUpper();
+        // Перебираем все синонимы первого слова
+        foreach (var synonym in NetworkSynonyms.GetValueOrDefault(first, new string[0]))
+        {
+            // Если второе слово совпадает с каким-либо синонимом первого слова, возвращаем true
+            if (synonym.Equals(second, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        // Перебираем все синонимы второго слова
+        foreach (var synonym in NetworkSynonyms.GetValueOrDefault(second, new string[0]))
+        {
+            // Если первое слово совпадает с каким-либо синонимом второго слова, возвращаем true
+            if (synonym.Equals(first, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+        return first.Equals(second, StringComparison.OrdinalIgnoreCase);
     }
 
     static async Task Work()

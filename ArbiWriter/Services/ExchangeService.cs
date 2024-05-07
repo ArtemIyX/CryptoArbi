@@ -27,7 +27,7 @@ namespace ArbiWriter.Services
                 new Bybit(),
                 new Huobi(),
                 new Bingx(),
-                new Bitmart(),
+                //new Bitmart(), - no network info
                 new Bitmex(),
                 //new Okx(), - adress verification 
                 new Bitget(),

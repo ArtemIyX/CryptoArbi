@@ -122,6 +122,9 @@ namespace ArbiWriter.Migrations
                     b.Property<long>("ExchangeTokenId")
                         .HasColumnType("bigint");
 
+                    b.Property<double?>("Fee")
+                        .HasColumnType("double");
+
                     b.Property<bool>("Withdraw")
                         .HasColumnType("tinyint(1)");
 

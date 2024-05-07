@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using ArbiDataLib.Models;
+using System.Text.Json.Serialization;
 
 namespace ArbiDataLib.Data
 {
@@ -74,6 +75,11 @@ namespace ArbiDataLib.Data
         [JsonPropertyName("updated")]
         public DateTime Updated { get; set; } = DateTime.MinValue;
 
+        [JsonPropertyName("askNet")]
+        public IList<TokenNetworkResponse> AskNetworks { get; set; }
+
+        [JsonPropertyName("bidNet")]
+        public IList<TokenNetworkResponse> BidNetworks { get; set; }
     }
 
     public class ArbiItemVisual : ArbiItem

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArbiWriter.Migrations
 {
     [DbContext(typeof(ArbiDbContext))]
-    [Migration("20240507142848_Networks")]
-    partial class Networks
+    [Migration("20240507184830_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -124,6 +124,9 @@ namespace ArbiWriter.Migrations
 
                     b.Property<long>("ExchangeTokenId")
                         .HasColumnType("bigint");
+
+                    b.Property<double?>("Fee")
+                        .HasColumnType("double");
 
                     b.Property<bool>("Withdraw")
                         .HasColumnType("tinyint(1)");

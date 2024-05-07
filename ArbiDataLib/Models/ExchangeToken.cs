@@ -67,7 +67,8 @@ namespace ArbiDataLib.Models
                 ExchangeId,
                 Active,
                 Deposit,
-                Withdraw
+                Withdraw,
+                Networks.Select(x => x.ToResponse()).ToList()
             );
     }
 
@@ -112,6 +113,9 @@ namespace ArbiDataLib.Models
         [JsonPropertyName("withdraw")]
         public bool Withdraw { get; set; } = false;
 
+        [JsonPropertyName("networks")]
+        public IList<TokenNetworkResponse> Networks { get; set; } = [];
+
         // Empty constructor
         public ExchangeTokenResponse()
         {
@@ -121,7 +125,8 @@ namespace ArbiDataLib.Models
         public ExchangeTokenResponse(long id, string fullSymbolName,
             string displayName, double? ask, double? bid, double? dayVolumeUSDT,
             double? askVolume, double? bidVolume, DateTime updated, string exchangeId,
-            bool active, bool deposit, bool withdraw)
+            bool active, bool deposit, bool withdraw,
+            IList<TokenNetworkResponse> networks)
         {
             Id = id;
             FullSymbolName = fullSymbolName;
@@ -136,6 +141,7 @@ namespace ArbiDataLib.Models
             Active = active;
             Deposit = deposit;
             Withdraw = withdraw;
+            Networks = networks;
         }
         // Copy constructor
         public ExchangeTokenResponse(ExchangeTokenResponse other)
@@ -153,6 +159,7 @@ namespace ArbiDataLib.Models
             Active = other.Active;
             Deposit = other.Deposit;
             Withdraw = other.Withdraw;
+            Networks = other.Networks;
         }
     }
 
