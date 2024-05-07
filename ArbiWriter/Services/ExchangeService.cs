@@ -26,6 +26,9 @@ namespace ArbiWriter.Services
                 new Kucoin(),
                 new Bybit(),
                 new Huobi(),
+                new Bingx(),
+                new Bitmart(),
+                new Bitmex(),
                 //new Okx(), - adress verification 
                 new Bitget(),
                 //new Gateio(), - no bid/ask volume

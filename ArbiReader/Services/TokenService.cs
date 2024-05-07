@@ -21,12 +21,12 @@ namespace ArbiReader.Services
         public async Task<ExchangeTokenResponse?> GetToken(long tokenId) =>
             (await _tokenRepo
             .AsQueryable()
-            .FirstOrDefaultAsync(x => x.Id == tokenId))?
+            .FirstOrDefaultAsync(x => x.Id == tokenId && x.Active))?
             .ToResponse();
 
         public async Task<IList<ExchangeTokenResponse>> GetTokens(string symbol) =>
             await _tokenRepo.AsQueryable()
-            .Where(x => x.DisplayName == symbol)
+            .Where(x => x.DisplayName == symbol && x.Active)
             .Select(x => x.ToResponse())
             .ToListAsync();
 
@@ -45,6 +45,10 @@ namespace ArbiReader.Services
                                                           !sell_ban.Contains(t2.ExchangeId) &&
                                                           t1.Exchange!.Working &&
                                                           t2.Exchange!.Working &&
+                                                          t1.Active &&
+                                                          t2.Active &&
+                                                          t1.Withdraw &&
+                                                          t2.Deposit &&
                                                           t1.Ask < t2.Bid &&              // spread
                                                           t1.Ask > filter.MinPrice &&      // ask filter
                                                           t2.Bid > filter.MinPrice &&      // bid filter
@@ -92,6 +96,10 @@ namespace ArbiReader.Services
                                                 where t1.ExchangeId != t2.ExchangeId && // different exchanges
                                                       t1.Exchange!.Working &&
                                                       t2.Exchange!.Working &&
+                                                      t1.Active &&
+                                                      t2.Active &&
+                                                      t1.Withdraw &&
+                                                      t2.Deposit &&
                                                       t1.Ask < t2.Bid && // spread 
                                                       t1.DisplayName == symbol &&
                                                       t2.DisplayName == symbol
