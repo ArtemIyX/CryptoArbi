@@ -48,6 +48,8 @@ namespace ArbiDataLib.Models
         public string ExchangeId { get; set; }
         public virtual ExchangeEntity? Exchange { get; set; }
 
+        public virtual IList<ExchangeTokenNetwork> Networks { get; set; }
+
         public double? AskVolumeUsdt => AskVolume is not null ? AskVolume * Ask : null;
         public double? BidVolumeUsdt => AskVolume is not null ? BidVolume * Bid : null;
 

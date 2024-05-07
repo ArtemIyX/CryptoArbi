@@ -8,11 +8,12 @@ namespace ArbiDataLib.Data
     {
         public DbSet<ExchangeEntity> Exchanges { get; set; }
         public DbSet<ExchangeToken> ExchangeTokens { get; set; }
+        public DbSet<ExchangeTokenNetwork> TokenNetworks { get; set; }
 
         public ArbiDbContext(DbContextOptions<ArbiDbContext> options) : base(options)
         {
             Database.EnsureCreated();
-            //Database.Migrate();
+            Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -28,6 +29,10 @@ namespace ArbiDataLib.Data
                 .Property(b => b.Updated)
                 .HasDefaultValueSql("current_timestamp(6)");
 
+            modelBuilder.Entity<ExchangeToken>()
+               .HasMany(e => e.Networks)
+               .WithOne(n => n.Token)
+               .HasForeignKey(n => n.ExchangeTokenId);
         }
     }
 }

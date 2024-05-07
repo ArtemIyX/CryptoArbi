@@ -41,6 +41,27 @@
       "TradeURL": "https://www.gate.io/trade/BTC_USDT",
       "DepositURL": "https://www.gate.io/myaccount/deposit/BTC",
       "WithdrawalURL": "https://www.gate.io/myaccount/withdraw/BTC"
+    },
+    {
+      "ExchangeId": "bingx",
+      "HomeURL": "https://bingx.com/",
+      "TradeURL": "https://bingx.com/spot/BTCUSDT/",
+      "DepositURL": "https://bingx.com/assets/recharge/",
+      "WithdrawalURL": "https://bingx.com/assets/withdraw/"
+    },
+    {
+      "ExchangeId": "bitmart",
+      "HomeURL": "https://www.bitmart.com/",
+      "TradeURL": "https://www.bitmart.com/trade/en-US?symbol=BTC_USDT",
+      "DepositURL": "https://www.bitmart.com/asset-deposit/en-US",
+      "WithdrawalURL": "https://www.bitmart.com/asset-withdrawal/en-US"
+    },
+    {
+      "ExchangeId": "bitmex",
+      "HomeURL": "https://www.bitmex.com/",
+      "TradeURL": "https://www.bitmex.com/app/trade/TRXUSDT",
+      "DepositURL": "https://www.bitmex.com/wallet?action=deposit",
+      "WithdrawalURL": "https://www.bitmex.com/wallet?action=withdraw"
     }
   ]
 }

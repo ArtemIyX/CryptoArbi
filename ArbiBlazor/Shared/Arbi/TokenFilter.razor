@@ -1,10 +1,11 @@
 ﻿
- <div class="container">
+<div class="container">
   <!--Amount-->
   <div class="row mb-1">
     <div class="row">
       <div class="col">
-        <input type="range" class="form-range" min="1" max="100" value="@Filter.Amount" @oninput="OnAmountChange"
+        <input type="range" class="form-range" min="1" max="100"
+          value="@Filter.Amount" @oninput="OnAmountChange"
           id="result_num">
       </div>
       <div class="col-3">
@@ -17,25 +18,27 @@
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="price"
-          placeholder="1.0" value="@Filter.MinPrice" @oninput="OnMinPriceChange">
+          placeholder="1.0" value="@Filter.MinPrice"
+          @oninput="OnMinPriceChange">
         <label for="price">Price</label>
       </div>
     </div>
   </div>
 
-
   <div class="row mb-1">
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="vol"
-          placeholder="1000.0" value="@Filter.MinVolumeUSDT" @oninput="OnVolumeChange">
+          placeholder="1000.0" value="@Filter.MinVolumeUSDT"
+          @oninput="OnVolumeChange">
         <label for="vol">Vol</label>
       </div>
     </div>
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="vol_day"
-          placeholder="1000.0" value="@Filter.MinDayVolumeUSDT" @oninput="OnDayVolumeChange">
+          placeholder="1000.0" value="@Filter.MinDayVolumeUSDT"
+          @oninput="OnDayVolumeChange">
         <label for="vol_day">Day vol</label>
       </div>
     </div>
@@ -52,39 +55,85 @@
     <div class="col">
       <div class="form-floating">
         <input type="number" class="form-control" id="max_percent"
-          placeholder="100.0" value="@Filter.MaxPercent" @oninput="OnMaxPercent">
+          placeholder="100.0" value="@Filter.MaxPercent"
+          @oninput="OnMaxPercent">
         <label for="max_percent">Max Profit</label>
       </div>
     </div>
   </div>
   <div class="container">
-            @if (BuyItems.Count == 0)
-            {
-        <p>Loading...</p>
-            }
-            else
-            {
-        <div class="btn-group" role="group"
-          aria-label="Basic checkbox toggle button group">
-                    @foreach (var ex in BuyItems)
-                    {
-                                      <input type="checkbox" class="btn-check" checked="@ex.Flag" @onchange="ex.FlagChanged"
-                id="@MakeBuyId(ex.Item?.Id!)" autocomplete="off">
-              <label class="btn btn-outline-primary"
-                for="@MakeBuyId(ex.Item?.Id!)">@ex.Item?.Name</label>
-                    }
+    @if (BuyItems.Count == 0)
+    {
+    <p>Loading...</p>
+    }
+    else
+    {
+        <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <h4 class="text-center text-primary">Buy</h4>
+            <div class="row">
+              @foreach(var ex in BuyItems) 
+              {
+                    <div class="col form-group">
+                      <input class="form-check-input" type="checkbox" autocomplete="off"
+                        id="@MakeBuyId(ex.Item?.Id!)"
+                        checked="@ex.Flag"
+                        @onchange="ex.FlagChanged">
+                      <label class="form-check-label" for="@MakeBuyId(ex.Item?.Id!)">
+                                            @ex.Item?.Name
+                      </label>
+                    </div>
+              }
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <h4 class="text-center text-danger">Sell</h4>
+            <div class="row">
+              @foreach(var ex in SellItems) {
+                    <div class="col form-group">
+                      <input class="form-check-input" type="checkbox" autocomplete="off"
+                        id="@MakeBuyId(ex.Item?.Id!)"
+                        checked="@ex.Flag"
+                        @onchange="ex.FlagChanged">
+                      <label class="form-check-label" for="@MakeBuyId(ex.Item?.Id!)">
+                                            @ex.Item?.Name
+                      </label>
+                    </div>
+              }
+            </div>
+          </div>
         </div>
-            <div class="btn-group" role="group"
-          aria-label="Basic checkbox toggle button group">
-                    @foreach (var ex in SellItems)
-                    {
-                      <input type="checkbox" class="btn-check" checked="@ex.Flag" @onchange="ex.FlagChanged"
-                id="@MakeSellId(ex.Item?.Id!)" autocomplete="off">
-              <label class="btn btn-outline-danger"
-                for="@MakeSellId(ex.Item?.Id!)">@ex.Item?.Name</label>
-                    }
-        </div>
+      </div>
+    @* <div class="container">
+      <div class="row">
+        <div class="col">
+
+            @foreach (var ex in BuyItems)
+            {
+
             }
+
+        </div>
+      </div>
+      <div class="col">
+
+          @foreach (var ex in SellItems)
+          {
+          <div class="form-group">
+            <input class="form-check-input" type="checkbox" autocomplete="off"
+              id="@MakeBuyId(ex.Item?.Id!)"
+              checked="@ex.Flag"
+              @onchange="ex.FlagChanged">
+            <label class="form-check-label" for="@MakeBuyId(ex.Item?.Id!)">
+              @ex.Item?.Name
+            </label>
+          </div>
+          }
+      </div>
+    </div> *@
+
+    }
 
   </div>
 </div>

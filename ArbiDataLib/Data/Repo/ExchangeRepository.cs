@@ -10,7 +10,7 @@ namespace ArbiDataLib.Data.Repo
         public DbSet<ExchangeEntity> GetDbSet() => _context.Exchanges;
 
         public async Task SaveChangesAsync(CancellationToken stoppingToken = default)
-            => await _context.SaveChangesAsync();
+            => await _context.SaveChangesAsync(stoppingToken);
 
         public async Task Add(ExchangeEntity entity, CancellationToken stoppingToken = default)
             => await _context.Exchanges.AddAsync(entity, stoppingToken);

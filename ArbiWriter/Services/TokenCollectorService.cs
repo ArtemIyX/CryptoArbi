@@ -66,6 +66,7 @@ namespace ArbiWriter.Services
                 try
                 {
                     await tokenService.UpdateTokens(exchange, stoppingToken);
+                    await tokenService.UpdateNetworks(exchange, stoppingToken);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
                     _logger.LogInformation($"{exchange.id} fetching finished");

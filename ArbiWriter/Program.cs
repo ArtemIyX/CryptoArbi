@@ -40,6 +40,7 @@ class Program
 
                 services.AddHostedService<TokenCollectorService>();
                 services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
+                services.AddScoped<IRepository<ExchangeTokenNetwork, long>, TokenNetworkRepository>();
                 services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
                 services.AddScoped<ITokenService, TokenService>();
                 services.AddScoped<IExchangeService, ExchangeService>();
