@@ -8,12 +8,26 @@ internal class Program
 {
     private static async Task Main(string[] args)
     {
-        Exchange ex = new Huobi();
-        ex.apiKey = "";
-        ex.secret = "";
+        Exchange ex = new Bingx();
+        ex.apiKey = "NjzKvnwsHxfy3VoMw5qygtCYiGhU7Q4BkvZLGmdWzxKv2ydcwAVRCmzQSkw5YIicGqq0oJ1ETocBkNH8ntd6Sg";
+        ex.secret = "3OUqZGZnx6xedw9zQUC78MqmOa1ZcE4v3S7hZ026SibWB2JFErcHjMJc7u6Gow2rp74qreAyMuGBiGfxjw";
         await Console.Out.WriteLineAsync("Loading...");
-        Tickers tickersContainer = await ex.FetchTickers();
+        await Console.Out.WriteLineAsync(ex.id);
+        //Tickers tickersContainer = await ex.FetchTickers();
+        //await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(tickersContainer, formatting: Formatting.Indented));
         Currencies currenciesContainer = await ex.FetchCurrencies();
+        HashSet<string> networks = new HashSet<string>();
+        foreach (var item in currenciesContainer.currencies)
+        {
+            if(item.Value.networks is not null)
+            {
+                foreach (var network in item.Value.networks)
+                {
+                    networks.Add(network.Key);
+                }
+            }
+        }
+        await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(networks, formatting: Formatting.Indented));
         await Console.Out.WriteLineAsync("Finished");
     }
 
