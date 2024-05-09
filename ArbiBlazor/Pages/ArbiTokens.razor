@@ -13,7 +13,9 @@
 <div class="container-fluid arbi-container">
 
   <button type="button" class="btn btn-secondary p-2 m-2"
-    @onclick="RefreshAll">Refresh</button>
+    @onclick="RefreshAll">
+    Refresh
+</button>
   <div class="row">
     <div class="col col-auto">
 
@@ -56,7 +58,7 @@
 
           @foreach (var arbi in arbiContainer.Items)
           {
-          <tr @onclick="() => OnArbiClicked(arbi)">
+          <tr>
             <td>
               <ArbiTitle
                 Diff="@dS.Percent(arbi.PriceDifferencePercentage)"
