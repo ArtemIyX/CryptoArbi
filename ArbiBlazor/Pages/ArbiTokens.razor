@@ -77,28 +77,24 @@
             </td>
             <td>
                 <div class="container">
-                    @if(arbi.AskNetworks is not null) 
+                    @if(arbi.BestNetwork is not null
+                        && arbi.BestNetwork.Ask is not null) 
                     {
-                        @foreach(var net in arbi.AskNetworks) 
-                        {
                             <div>
-                                <strong>@net.Code</strong>
-                                <p class="network-p text-muted">@dS.Fee(net.Fee * arbi.Ask)$</p>
+                                <strong>@arbi.BestNetwork.Ask.Code.ToUpper()</strong>
+                                <p class="network-p text-muted">@dS.Fee(arbi.BestNetwork.Ask.Fee * arbi.Ask)$</p>
                             </div>
-                        }
                     }
                 </div>
             </td>
             <td>
                 <div class="container">
-                    @if(arbi.AskNetworks is not null) 
+                    @if(arbi.BestNetwork is not null
+                        && arbi.BestNetwork.Bid is not null) 
                     {
-                        @foreach(var net in arbi.BidNetworks)
-                        {
                             <div>
-                                <strong>@net.Code</strong>
+                                <strong>@arbi.BestNetwork.Bid.Code.ToUpper()</strong>
                             </div>
-                        }
                     }
                 </div>
             </td>

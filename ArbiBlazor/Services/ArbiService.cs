@@ -144,14 +144,24 @@ namespace ArbiBlazor.Services
                     }));
                     // Wait until both exchanges are finished
                     await Task.WhenAll(localTasks);
-                    // Add to arbi item
-                    visal.Add(new ArbiItemVisual(item,
-                        buyName,
-                        buyUrl,
-                        withdrawUrl,
-                        sellName,
-                        depositUrl,
-                        sellUrl));
+                    IList<ArbiSameNetwork> sameNetworks = ArbiItem.HasSameNetworks(item.AskNetworks, item.BidNetworks);
+                    if(sameNetworks.Count > 0)
+                    {
+                        ArbiSameNetwork? bestNet = sameNetworks.OrderBy(x => x.Ask.Fee).FirstOrDefault();
+                        if(bestNet is not null)
+                        {
+                            // Add to arbi item
+                            visal.Add(new ArbiItemVisual(item,
+                                buyName,
+                                buyUrl,
+                                withdrawUrl,
+                                sellName,
+                                depositUrl,
+                                sellUrl,
+                                bestNet));
+                        }
+                    }
+                    
                 }
                 return visal.OrderByDescending(x => x.PriceDifferencePercentage).ToList();
             }

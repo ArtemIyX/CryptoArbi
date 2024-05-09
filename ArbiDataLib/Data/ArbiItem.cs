@@ -1,8 +1,10 @@
 ﻿using ArbiDataLib.Models;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace ArbiDataLib.Data
 {
+
     public class ArbiItem
     {
         public ArbiItem() { }
@@ -82,6 +84,65 @@ namespace ArbiDataLib.Data
 
         [JsonPropertyName("bidNet")]
         public List<TokenNetworkResponse> BidNetworks { get; set; } = [];
+
+        public static readonly Dictionary<string, string[]> networkSynonyms = new()
+        {
+            { "ERC20", new string[] { "ERC-20", "ETH", "ERC 20" } },
+            { "BEP20", new string[] { "BEP-20, BEP", "BSC", "ERC 20"} },
+            { "SOL", new string[] {"SOLANA"} }
+        };
+
+        public static bool IsNetworkEqual(string first, string second)
+        {
+            first = first.ToUpper();
+            second = second.ToUpper();
+            // Going through all the synonyms of the first word
+            foreach (var synonym in networkSynonyms.GetValueOrDefault(first, new string[0]))
+            {
+                // If the second word matches any synonym of the first word, return true
+                if (synonym.Equals(second, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+
+            // Going through all the synonyms of the second word
+            foreach (var synonym in networkSynonyms.GetValueOrDefault(second, new string[0]))
+            {
+                // If the first word matches any synonym of the second word, return true
+                if (synonym.Equals(first, StringComparison.OrdinalIgnoreCase))
+                {
+                    return true;
+                }
+            }
+            return first.Equals(second, StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static IList<ArbiSameNetwork> HasSameNetworks(IList<TokenNetworkResponse> from, IList<TokenNetworkResponse> to)
+        {
+            IList<ArbiSameNetwork> res = [];
+            foreach (var net1 in from)
+            {
+                foreach (var net2 in to)
+                {
+                    if (IsNetworkEqual(net1.Code, net2.Code))
+                    {
+                        if (net1.Active && net1.Withdraw
+                            && net2.Active && net2.Deposit)
+                        {
+                            res.Add(new ArbiSameNetwork() { Ask = net1, Bid = net2 });
+                        }
+                    }
+                }
+            }
+            return res;
+        }
+    }
+
+    public class ArbiSameNetwork
+    {
+        public required TokenNetworkResponse Ask { get; set; }
+        public required TokenNetworkResponse Bid { get; set; }
     }
 
     public class ArbiItemVisual : ArbiItem
@@ -97,7 +158,8 @@ namespace ArbiDataLib.Data
             string withdrawUrl, 
             string sellName, 
             string depositUrl,
-            string sellUrl) : base(arbi)
+            string sellUrl,
+            ArbiSameNetwork net) : base(arbi)
         {
             BuyName = buyName;
             BuyUrl = buyUrl;
@@ -105,6 +167,7 @@ namespace ArbiDataLib.Data
             SellName = sellName;
             DepositUrl = depositUrl;
             SellUrl = sellUrl;
+            BestNetwork = net;
         }
 
         public string BuyName { get; set; } = string.Empty;
@@ -113,5 +176,7 @@ namespace ArbiDataLib.Data
         public string SellName { get; set; } = string.Empty;
         public string DepositUrl { get; set;} = string.Empty;
         public string SellUrl { get; set;} = string.Empty;
+
+        public ArbiSameNetwork? BestNetwork { get; set; } = null;
     }
 }
