@@ -20,10 +20,10 @@
       <table class="table table-hover">
         <thead class="thead-dark">
           <tr>
-            <th scope="col" class="table-h">
-              Profit
-            </th>
+            <th scope="col" class="table-h">Profit</th>
             <th scope="col" class="table-h">Buy From</th>
+            <th scope="col" class="table-h">Buy Net</th>
+            <th scope="col" class="table-h">Sell Net</th>
             <th scope="col" class="table-h">Sell At</th>
           </tr>
         </thead>
@@ -72,6 +72,33 @@
                 Price="@dS.Price(arbi.Ask)"
                 Volume="@dS.Volume(arbi.AskVolumeUSDT)"
                 DayVolume="@dS.Volume(arbi.AskDayVolumeUSDT)" />
+            </td>
+            <td>
+                <div class="container">
+                    @if(arbi.AskNetworks is not null) 
+                    {
+                        @foreach(var net in arbi.AskNetworks) 
+                        {
+                            <div>
+                                <strong>@net.Code</strong>
+                                <p class="network-p text-muted">@dS.Fee(net.Fee * arbi.Ask)$</p>
+                            </div>
+                        }
+                    }
+                </div>
+            </td>
+            <td>
+                <div class="container">
+                    @if(arbi.AskNetworks is not null) 
+                    {
+                        @foreach(var net in arbi.BidNetworks)
+                        {
+                            <div>
+                                <strong>@net.Code</strong>
+                            </div>
+                        }
+                    }
+                </div>
             </td>
             <td>
                 <ArbiItem

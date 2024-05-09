@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json.Serialization;
 
 namespace ArbiDataLib.Models
 {
@@ -40,14 +41,19 @@ namespace ArbiDataLib.Models
 
     public class TokenNetworkResponse
     {
+        [JsonPropertyName("code")]
         public string Code { get; set; } = string.Empty;
 
+        [JsonPropertyName("active")]
         public bool Active { get; set; } = false;
 
+        [JsonPropertyName("deposit")]
         public bool Deposit { get; set; } = false;
 
+        [JsonPropertyName("withdraw")]
         public bool Withdraw { get; set; } = false;
 
+        [JsonPropertyName("fee")]
         public double? Fee { get; set; } = null;
 
         // Empty Constructor

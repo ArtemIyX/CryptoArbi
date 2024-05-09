@@ -7,6 +7,7 @@ namespace ArbiBlazor.Services
         public string Volume(double price);
         public string Percent(double percent);
         public string Price(double price);
+        public string Fee(double? fee);
         public string Trade(string url, string symbolName);
         public string Depo(string url, string symbolName);
     }
@@ -72,5 +73,7 @@ namespace ArbiBlazor.Services
             }
             return str;
         }
+
+        public string Fee(double? fee) => fee is null ? "???" : fee.Value.ToString("0.##", CultureInfo.InvariantCulture);
     }
 }

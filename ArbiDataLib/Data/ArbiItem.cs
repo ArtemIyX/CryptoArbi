@@ -25,6 +25,8 @@ namespace ArbiDataLib.Data
             BidDayVolumeUSDT = other.BidDayVolumeUSDT;
             PriceDifferencePercentage = other.PriceDifferencePercentage;
             Updated = other.Updated;
+            AskNetworks = other.AskNetworks;
+            BidNetworks = other.BidNetworks;
         }
 
         [JsonPropertyName("displayName")]
@@ -76,10 +78,10 @@ namespace ArbiDataLib.Data
         public DateTime Updated { get; set; } = DateTime.MinValue;
 
         [JsonPropertyName("askNet")]
-        public IList<TokenNetworkResponse> AskNetworks { get; set; }
+        public List<TokenNetworkResponse> AskNetworks { get; set; } = [];
 
         [JsonPropertyName("bidNet")]
-        public IList<TokenNetworkResponse> BidNetworks { get; set; }
+        public List<TokenNetworkResponse> BidNetworks { get; set; } = [];
     }
 
     public class ArbiItemVisual : ArbiItem
