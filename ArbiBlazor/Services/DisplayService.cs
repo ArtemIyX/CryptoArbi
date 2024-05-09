@@ -8,13 +8,13 @@ namespace ArbiBlazor.Services
         public string Percent(double percent);
         public string Price(double price);
         public string Fee(double? fee);
+        public string Profit(double profit);
         public string Trade(string url, string symbolName);
         public string Depo(string url, string symbolName);
     }
 
     public class DisplayService : IDisplaySerivce
     {
-
         private string ConvertDoubleToString(double value)
         {
             // Define suffixes for thousands, millions, billions, etc.
@@ -75,5 +75,15 @@ namespace ArbiBlazor.Services
         }
 
         public string Fee(double? fee) => fee is null ? "???" : fee.Value.ToString("0.##", CultureInfo.InvariantCulture);
+
+        public string Profit(double profit)
+        {
+            var res = profit.ToString("0.##", CultureInfo.InvariantCulture);
+            if(profit > 0.0)
+            {
+                res = "+" + res;
+            }
+            return res;
+        }
     }
 }

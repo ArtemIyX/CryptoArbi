@@ -12,12 +12,14 @@ namespace ArbiBlazor.Pages
             await UpdateIfEmpty();
         }
 
-/*        public async Task OnArbiClicked(ArbiItemVisual? arbiItem)
-        {
-            if (arbiItem is null)
-                return;
-            navManager.NavigateTo($"/tokens/{arbiItem.DisplayName}");
-        }*/
+        /*        public async Task OnArbiClicked(ArbiItemVisual? arbiItem)
+                {
+                    if (arbiItem is null)
+                        return;
+                    navManager.NavigateTo($"/tokens/{arbiItem.DisplayName}");
+                }*/
+
+        public string GetProfitTextClass(double profit) => profit > 0.0 ? "text-success" : "text-danger";
 
         public async Task UpdateIfEmpty()
         {

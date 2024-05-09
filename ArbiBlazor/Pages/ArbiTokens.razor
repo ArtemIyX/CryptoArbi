@@ -11,11 +11,21 @@
 <PageTitle>Tokens</PageTitle>
 
 <div class="container-fluid arbi-container">
+    <div class="d-flex flex-row pb-2">
+        <button type="button" class="btn btn-secondary p-1"
+            @onclick="RefreshAll">
+            Refresh
+        </button>
+        <div class="input-group p-1" style="max-width:10rem;">
+          <span class="input-group-text">$</span>
+          <input type="number" class="form-control" aria-label="Amount"
+            value=@arbiContainer.ProfitUsdt
+            @onchange=arbiContainer.ProfitChanged
+            placeholder="1000"
+            pattern="\d*">
+        </div>
 
-  <button type="button" class="btn btn-secondary p-2 m-2"
-    @onclick="RefreshAll">
-    Refresh
-</button>
+    </div>
   <div class="row">
     <div class="col col-auto">
 
@@ -61,6 +71,8 @@
           <tr>
             <td>
               <ArbiTitle
+                Profit="@dS.Profit(arbi.CalculateProfit(arbiContainer.ProfitUsdt))"
+                ProfitTextClass = "@GetProfitTextClass(arbi.CalculateProfit(arbiContainer.ProfitUsdt))"
                 Diff="@dS.Percent(arbi.PriceDifferencePercentage)"
                 Sym="@arbi.DisplayName" />
             </td>

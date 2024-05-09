@@ -4,7 +4,6 @@ using System.Text.Json.Serialization;
 
 namespace ArbiDataLib.Data
 {
-
     public class ArbiItem
     {
         public ArbiItem() { }
@@ -178,5 +177,14 @@ namespace ArbiDataLib.Data
         public string SellUrl { get; set;} = string.Empty;
 
         public ArbiSameNetwork? BestNetwork { get; set; } = null;
+
+        public double CalculateProfit(double balance)
+        {
+            double boughtAmount = balance / Ask;
+            double sold = boughtAmount * Bid;
+            double feeUsdt = BestNetwork?.Ask.Fee * Ask ?? 0.0;
+            double afterFee = sold - feeUsdt;
+            return afterFee - balance;
+        }
     }
 }

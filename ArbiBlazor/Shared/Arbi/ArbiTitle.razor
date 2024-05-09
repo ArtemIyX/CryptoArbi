@@ -8,16 +8,29 @@
     </div>
     <div class="row">
         <p class="text-secondary table-p">
+        <strong class="@ProfitTextClass">@Profit</strong>
+        <small class="text-muted font-weight-light">USDT</small>
+        </p>
+    </div>
+    <div class="row">
+        <p class="text-secondary table-p">
         <NavLink class="link-success" href=@MakeHref(Sym) >
             <strong>@Sym</strong>
         </NavLink>
         <small class="text-muted font-weight-light">/USDT</small>
         </p>
     </div>
+
 </div>
 
 @code {
     public string MakeHref(string sym) => $"tokens/{sym}";
+
+    [Parameter]
+    public string ProfitTextClass { get; set; } = string.Empty;
+
+    [Parameter]
+    public string Profit { get; set; } = string.Empty;
 
     [Parameter]
     public string Diff { get; set; } = string.Empty;
