@@ -1,29 +1,22 @@
-﻿using ArbiDataLib.Data;
-using ArbiDataLib.Models;
-using ccxt;
-using Microsoft.EntityFrameworkCore;
-using Nethereum.Util;
+﻿using ccxt;
 
 namespace ArbiWriter.Services
 {
-    public interface ITokenCollector
+    public interface IOrderBookCollector
     {
-        public Task PrepareExchanges(CancellationToken stoppingToken = default);
         public Task HandleExchangeAsync(Exchange exchange, CancellationToken stoppingToken = default);
     }
 
-    public class TokenCollectorService(
-        ILogger<TokenCollectorService> logger,
-        IServiceScopeFactory serviceScopeFactory) : BackgroundService, ITokenCollector
+    public class OrderBookCollectorService(
+        ILogger<OrderBookCollectorService> logger,
+        IServiceScopeFactory serviceScopeFactory) : BackgroundService, IOrderBookCollector
     {
         private const string ClassName = nameof(TokenCollectorService);
-        private readonly ILogger<TokenCollectorService> _logger = logger;
+        private readonly ILogger<OrderBookCollectorService> _logger = logger;
         private readonly IServiceScopeFactory serviceScopeFactory = serviceScopeFactory;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            await PrepareExchanges(stoppingToken);
-            await Task.Delay(1000, stoppingToken);
             List<Exchange> exchanges = [];
             using (IServiceScope scope = serviceScopeFactory.CreateScope())
             {
@@ -54,7 +47,7 @@ namespace ArbiWriter.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 await HandleExchangeAsync(exchange, stoppingToken);
-                await Task.Delay(150, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
         }
 
@@ -65,31 +58,16 @@ namespace ArbiWriter.Services
                 ITokenService tokenService = scope.ServiceProvider.GetRequiredService<ITokenService>();
                 try
                 {
-                    await tokenService.UpdateTokensNetworks(exchange, stoppingToken);
+                    await tokenService.UpdateTokensOrderBook(exchange, stoppingToken);
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
-                    _logger.LogInformation($"{exchange.id} fetching finished");
+                    _logger.LogInformation($"{exchange.id} order book finished");
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"{exchange.id} fetching error: {ex.Message}");
+                    _logger.LogError($"{exchange.id} order book error: {ex.Message}");
                 }
             }
-        }
-
-        public async Task PrepareExchanges(CancellationToken stoppingToken = default)
-        {
-            _logger.LogInformation($"Preparing exchanges...");
-            using (IServiceScope scope = serviceScopeFactory.CreateScope())
-            {
-                IExchangeService exchangeService =
-                    scope.ServiceProvider.GetRequiredService<IExchangeService>();
-                // Stop all work
-                await exchangeService.MarkAllAsWorkingAsync(false, stoppingToken);
-                // Mark working exchanges
-                await exchangeService.UploadData(stoppingToken);
-            }
-            _logger.LogInformation($"Preparing exchanges finished");
         }
     }
 }

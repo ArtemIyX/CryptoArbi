@@ -39,6 +39,7 @@ class Program
                     options.UseMySql(conString, serverVersion, b => b.MigrationsAssembly("ArbiWriter")));
 
                 services.AddHostedService<TokenCollectorService>();
+                //services.AddHostedService<OrderBookCollectorService>();
                 services.AddRepos();
                 services.AddScoped<ITokenService, TokenService>();
                 services.AddScoped<IExchangeService, ExchangeService>();

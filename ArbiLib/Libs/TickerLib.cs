@@ -10,7 +10,7 @@ namespace ArbiLib.Libs
     {
         public static string GetPureTicker(string str)
         {
-            string[] pair = str.Split("/");
+            string[] pair = str.Replace(":USDT", "").Split("/");
             if (pair.Length == 2)
             {
                 return pair[0];
@@ -20,7 +20,7 @@ namespace ArbiLib.Libs
 
         public static bool IsUsdtPair(string str)
         {
-            string[] pair = str.Split("/");
+            string[] pair = str.Replace(":USDT", "").Split("/");
             if (pair.Length == 2)
             {
                 return pair[1] == "USDT";
