@@ -1,6 +1,7 @@
 ﻿using ArbiDataLib.Data.Repo;
 using ArbiDataLib.Models;
 using ccxt;
+using Microsoft.AspNetCore.Connections;
 using Microsoft.EntityFrameworkCore;
 
 namespace ArbiWriter.Services
@@ -22,16 +23,25 @@ namespace ArbiWriter.Services
         public static readonly ICollection<Exchange> ExchangeObjects =
             [
                 //new Binance(),  - adress verification 
+                //new Okx(), - adress verification 
                 new Mexc(),
                 new Kucoin(),
                 new Bybit(),
                 new Huobi(),
                 new Bingx(),
                 //new Bitmart(), - no network info
-                new Bitmex(),
-                //new Okx(), - adress verification 
+                //new Bitmex(), - weird tickers, few amount of tickers
+                //new Lbank(), - no ask/bid
+                //new Coinbase() - no ask/bid
+                //new Coinex(), - no ask/bid
+
                 new Bitget(),
-                //new Gateio(), - no bid/ask volume
+                //new Gateio(), //OK (add urls, api keys)
+                //new Bitfinex(), //OK (add urls, api keys)
+                //new Cryptocom(), //OK (add urls, api keys)
+                //new Cex(), //OK (add urls, api keys)
+                //new Poloniex() //OK (add urls, api keys)
+                //new Bitrue(), //OK (add urls, api keys)
             ];
 
 

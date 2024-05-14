@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArbiWriter.Migrations
 {
     [DbContext(typeof(ArbiDbContext))]
-    [Migration("20240514112306_Initial")]
+    [Migration("20240514142041_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -84,10 +84,6 @@ namespace ArbiWriter.Migrations
                     b.Property<string>("ExchangeId")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
-
-                    b.Property<string>("FullSymbolName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAdd()

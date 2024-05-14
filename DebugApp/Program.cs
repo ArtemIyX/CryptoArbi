@@ -38,6 +38,14 @@ internal class Program
 
     private static async Task Main(string[] args)
     {
+        Exchange exchange = new ccxt.Bitfinex();
+        await Console.Out.WriteLineAsync(exchange.id);
+        //var fetched = await exchange.FetchTickers();
+        var fetched = await exchange.FetchOrderBook("BTC/USDT");
+        //var list = fetched.tickers.Select(x => new {sym= x.Value.symbol, ask= x.Value.ask, bid=x.Value.bid}).ToList();
+        await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(fetched, Formatting.Indented));
+
+        return;
         await Console.Out.WriteLineAsync("Loading");
         var sym = "SWASH/USDT";
         var a = FetchOrderBook(new Kucoin(), sym);

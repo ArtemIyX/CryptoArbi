@@ -82,10 +82,6 @@ namespace ArbiWriter.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("FullSymbolName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
                     b.Property<DateTime>("Updated")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)")

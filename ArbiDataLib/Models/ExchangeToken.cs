@@ -14,9 +14,6 @@ namespace ArbiDataLib.Models
         public long Id { get; set; }
 
         [Required, NotNull]
-        public required string FullSymbolName { get; set; }
-
-        [Required, NotNull]
         public required string DisplayName { get; set; }
 
         [MaybeNull, DefaultValue(null)]
@@ -58,7 +55,6 @@ namespace ArbiDataLib.Models
         public ExchangeTokenResponse ToResponse() =>
             new(
                 Id,
-                FullSymbolName,
                 DisplayName,
                 Ask,
                 Bid,
@@ -79,8 +75,6 @@ namespace ArbiDataLib.Models
         [JsonPropertyName("id")]
         public long Id { get; set; } = 0;
 
-        [JsonPropertyName("fullSymbolName")]
-        public string FullSymbolName { get; set; } = string.Empty;
 
         [JsonPropertyName("displayName")]
         public string DisplayName { get; set; } = string.Empty;
@@ -124,14 +118,13 @@ namespace ArbiDataLib.Models
         }
 
         // Full constructor
-        public ExchangeTokenResponse(long id, string fullSymbolName,
+        public ExchangeTokenResponse(long id,
             string displayName, double? ask, double? bid, double? dayVolumeUSDT,
             double? askVolume, double? bidVolume, DateTime updated, string exchangeId,
             bool active, bool deposit, bool withdraw,
             IList<TokenNetworkResponse> networks)
         {
             Id = id;
-            FullSymbolName = fullSymbolName;
             DisplayName = displayName;
             Ask = ask;
             Bid = bid;
@@ -149,7 +142,6 @@ namespace ArbiDataLib.Models
         public ExchangeTokenResponse(ExchangeTokenResponse other)
         {
             Id = other.Id;
-            FullSymbolName = other.FullSymbolName;
             DisplayName = other.DisplayName;
             Ask = other.Ask;
             Bid = other.Bid;

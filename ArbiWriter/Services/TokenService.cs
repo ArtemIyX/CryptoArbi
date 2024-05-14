@@ -38,7 +38,6 @@ namespace ArbiWriter.Services
             string friendlySymbol = TickerLib.GetPureTicker(tickerName);
             return new ExchangeToken()
             {
-                FullSymbolName = tickerName,
                 ExchangeId = exchange.id,
                 DisplayName = friendlySymbol,
                 Ask = ticker.ask ?? 0.0,
@@ -65,15 +64,13 @@ namespace ArbiWriter.Services
 
         public async Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default)
             => await _tokenRepo.GetDbSet().FirstOrDefaultAsync(
-                x => x.ExchangeId == ownerId && x.FullSymbolName == fullName,
+                x => x.ExchangeId == ownerId && x.DisplayName == fullName,
                 stoppingToken);
 
         public async Task UpdateTokensNetworks(Exchange owner, CancellationToken stoppingToken = default)
         {
             Currencies currenciesContainer = await owner.FetchCurrencies();
             Tickers tickersContainer = await owner.FetchTickers();
-
-            // Update tokens 
 
             //_logger.LogWarning($"{owner.id} -> {tickersContainer.tickers.Count}");
             foreach (KeyValuePair<string, Ticker> x in tickersContainer.tickers)
@@ -89,7 +86,7 @@ namespace ArbiWriter.Services
 
                 KeyValuePair<string, Currency> currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
 
-                ExchangeToken? tokenInDb = await FindToken(owner.id, x.Value.symbol ?? "", stoppingToken);
+                ExchangeToken? tokenInDb = await FindToken(owner.id, friendlySymbol ?? "", stoppingToken);
 
                 if (tokenInDb is not null)
                 {
@@ -106,10 +103,6 @@ namespace ArbiWriter.Services
                 }
                 else
                 {
-                    if (owner.id == "bitmex")
-                    {
-                        _logger.LogWarning(x.Value.symbol);
-                    }
                     ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value, currency.Value);
                     if (tokenEntity is not null)
                     {
@@ -137,7 +130,7 @@ namespace ArbiWriter.Services
                 KeyValuePair<string, Currency>? currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
                 if (currency is null) continue;
 
-                ExchangeToken? tokenInDb = await FindToken(owner.id, x.Value.symbol ?? "", stoppingToken);
+                ExchangeToken? tokenInDb = await FindToken(owner.id, friendlySymbol ?? "", stoppingToken);
                 if (tokenInDb is null) continue;
 
                 IList<Task> addTasks = [];
@@ -164,18 +157,26 @@ namespace ArbiWriter.Services
 
         public async Task UpdateTokensOrderBook(Exchange owner, CancellationToken stoppingToken = default)
         {
-            var tokens = _tokenRepo.AsQueryable().Where(x => x.ExchangeId == owner.id && x.Active).Select(x => x.FullSymbolName).ToList();
-            _logger.LogInformation($"{owner.id} -> {tokens.Count}");
-            /* List<Task> fetchTasks = [];
-             foreach (var item in tokens)
-             {
-                 fetchTasks.Add(Task.Run(async () =>
-                 {
-                     OrderBook? res = await owner.FetchOrderBook(item.FullSymbolName);
-                     _logger.LogInformation($"{JsonConvert.SerializeObject(res)}");
-                 }, stoppingToken));
-             }
-             await Task.WhenAll(fetchTasks);*/
+            var tokens = await owner.FetchTickers();
+            //_logger.LogInformation($"{owner.id} -> {tokens.Count}");
+            int i = 0;
+            foreach (var item in tokens.tickers)
+            {
+                try
+                {
+                    await owner.FetchOrderBook(item.Value.symbol);
+                    _logger.LogInformation($"[{owner.id}]Book: {item.Value.symbol} -> {i}|{tokens.tickers.Count}");
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    ++i;
+                }
+            }
+            //OrderBook? res = 
         }
     }
 }
