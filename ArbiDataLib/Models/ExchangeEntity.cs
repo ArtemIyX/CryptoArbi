@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using System.Xml.Linq;
+using ArbiDataLib.Data;
 
 namespace ArbiDataLib.Models
 {

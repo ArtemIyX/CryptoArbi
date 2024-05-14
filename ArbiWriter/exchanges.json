@@ -2,28 +2,43 @@
   "ExApi": [
     {
       "ExchangeId": "bybit",
-      "Api": "",
-      "Secret": ""
+      "Api": "aJv0cSZCrrFaRAgkNc",
+      "Secret": "OX7seP9MF0zlrRYHX53kEC8A8RI5YbOA8hQ5"
     },
     {
       "ExchangeId": "bitget",
-      "Api": "",
-      "Secret": ""
+      "Api": "bg_0ee44a14a90894f4ce988b7e5321e3ae",
+      "Secret": "264c3696b612721cdb55367d976720f14504bdde7e473237442fc3fb52592f99"
     },
     {
       "ExchangeId": "huobi",
-      "Api": "",
-      "Secret": ""
+      "Api": "1e97e9c7-b064d4ad-1qdmpe4rty-8ae91",
+      "Secret": "7094daec-2b544b14-6ba7d68f-da025"
     },
     {
       "ExchangeId": "kucoin",
-      "Api": "",
-      "Secret": ""
+      "Api": "6638a9bd94805d0001543ada",
+      "Secret": "bb32e948-1e57-4d86-9d62-6b6fb08ca4c5"
     },
     {
       "ExchangeId": "mexc",
-      "Api": "",
-      "Secret": ""
+      "Api": "mx0vglcOBtqupE6a7G",
+      "Secret": "3a5372c613b4487cb529b87eb97c0f4c"
+    },
+    {
+      "ExchangeId": "bingx",
+      "Api": "NjzKvnwsHxfy3VoMw5qygtCYiGhU7Q4BkvZLGmdWzxKv2ydcwAVRCmzQSkw5YIicGqq0oJ1ETocBkNH8ntd6Sg",
+      "Secret": "3OUqZGZnx6xedw9zQUC78MqmOa1ZcE4v3S7hZ026SibWB2JFErcHjMJc7u6Gow2rp74qreAyMuGBiGfxjw"
+    },
+    {
+      "ExchangeId": "bitmart",
+      "Api": "53b032eec393c70eb2f06d5ecf4d5d9993c65a93",
+      "Secret": "fa334237f67dec87265dfeb51569ab2fb8e9bbf2cf8a5b56dfda7bc3258191cb"
+    },
+    {
+      "ExchangeId": "bitmex",
+      "Api": "bnEBTH9y0FwXZcUm2lMTnpy3",
+      "Secret": "vhMfh5sWdrrPGwDwUGNxKE3CVbDBUr9h2C22VPfgbWRwVhOP"
     }
   ]
 }

@@ -2,7 +2,7 @@
 using System.Text.Json.Serialization;
 
 
-namespace ArbiDataLib.Models
+namespace ArbiDataLib.Data
 {
     public class ExchangeUrlInfo
     {

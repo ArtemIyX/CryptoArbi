@@ -50,6 +50,10 @@ namespace ArbiDataLib.Models
 
         public virtual IList<ExchangeTokenNetwork> Networks { get; set; }
 
+        public virtual IList<OrderBookItem> Asks { get; set; }
+
+        public virtual IList<OrderBookItem> Bids { get; set; }
+
         public double? AskVolumeUsdt => AskVolume is not null ? AskVolume * Ask : null;
         public double? BidVolumeUsdt => AskVolume is not null ? BidVolume * Bid : null;
 

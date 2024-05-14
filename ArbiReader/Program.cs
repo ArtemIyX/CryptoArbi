@@ -55,9 +55,7 @@ try
         o.ModelBinderProviders.Insert(0, new ArbiFilterModelBinderProvider());
     });
     builder.Services.AddEndpointsApiExplorer();
-    builder.Services.AddScoped<IRepository<ExchangeTokenNetwork, long>, TokenNetworkRepository>();
-    builder.Services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
-    builder.Services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
+    builder.Services.AddRepos();
     builder.Services.AddScoped<IExchangeService, ExchangeService>();
     builder.Services.AddScoped<ITokenService, TokenService>();
     builder.Services.AddScoped<IExchangeInfoService, ExchangeInfoService>();

@@ -9,6 +9,7 @@ namespace ArbiDataLib.Data
         public DbSet<ExchangeEntity> Exchanges { get; set; }
         public DbSet<ExchangeToken> ExchangeTokens { get; set; }
         public DbSet<ExchangeTokenNetwork> TokenNetworks { get; set; }
+        public DbSet<OrderBookItem> OrderBooks { get; set; }
 
         public ArbiDbContext(DbContextOptions<ArbiDbContext> options) : base(options)
         {
@@ -32,6 +33,11 @@ namespace ArbiDataLib.Data
             modelBuilder.Entity<ExchangeToken>()
                .HasMany(e => e.Networks)
                .WithOne(n => n.Token)
+               .HasForeignKey(n => n.ExchangeTokenId);
+
+            modelBuilder.Entity<ExchangeToken>()
+               .HasMany(e => e.Bids)
+               .WithOne(n => n.ExchangeToken)
                .HasForeignKey(n => n.ExchangeTokenId);
         }
     }

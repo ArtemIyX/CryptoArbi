@@ -1,4 +1,4 @@
-﻿using ArbiDataLib.Models;
+﻿using ArbiDataLib.Data;
 
 namespace ArbiReader.Services
 {

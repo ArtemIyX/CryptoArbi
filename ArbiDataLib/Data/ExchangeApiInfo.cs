@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
-namespace ArbiDataLib.Models
+namespace ArbiDataLib.Data
 {
     public class ExchangeApiInfo
     {

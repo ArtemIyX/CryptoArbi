@@ -1,42 +1,132 @@
-﻿using ArbiLib.Services;
-using ccxt;
+﻿using ccxt;
 using DebugApp;
+using Microsoft.VisualBasic;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Reflection.Metadata.Ecma335;
 
 internal class Program
 {
+    public class OrderDataItem
+    {
+        public double Price { get; set; }
+        public double Vol { get; set; }
+    }
+    public class OrderData
+    {
+        [JsonProperty("ask")]
+        public List<List<double>> ask { get; set; }
+
+        [JsonProperty("bid")]
+        public List<List<double>> bid { get; set; }
+
+        public static IList<OrderDataItem> Convert(List<List<double>> list)
+        {
+            return list.Select(x => new OrderDataItem()
+            {
+                Price = x[0],
+                Vol = x[1]
+            }).ToList();
+        }
+    }
     private static readonly Dictionary<string, string[]> NetworkSynonyms = new()
         {
             { "ERC20", new string[] { "ERC-20", "ETH", "ERC 20" } },
             { "BEP20", new string[] { "BEP-20, BEP", "BSC", "ERC 20"} },
             { "SOL", new string[] {"SOLANA"} }
         };
+
     private static async Task Main(string[] args)
     {
-        Exchange ex = new Bingx();
-        ex.apiKey = "NjzKvnwsHxfy3VoMw5qygtCYiGhU7Q4BkvZLGmdWzxKv2ydcwAVRCmzQSkw5YIicGqq0oJ1ETocBkNH8ntd6Sg";
-        ex.secret = "3OUqZGZnx6xedw9zQUC78MqmOa1ZcE4v3S7hZ026SibWB2JFErcHjMJc7u6Gow2rp74qreAyMuGBiGfxjw";
-        await Console.Out.WriteLineAsync("Loading...");
-        await Console.Out.WriteLineAsync(ex.id);
-        //Tickers tickersContainer = await ex.FetchTickers();
-        //await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(tickersContainer, formatting: Formatting.Indented));
-        Currencies currenciesContainer = await ex.FetchCurrencies();
-        HashSet<string> networks = new HashSet<string>();
-        foreach (var item in currenciesContainer.currencies)
+        await Console.Out.WriteLineAsync("Loading");
+        var sym = "SWASH/USDT";
+        var a = FetchOrderBook(new Kucoin(), sym);
+        var b = FetchOrderBook(new Mexc(), sym);
+        await Task.WhenAll(a, b);
+        OrderData res = new OrderData()
         {
-            if(item.Value.networks is not null)
+            ask = a.Result.asks,
+            bid = b.Result.bids
+        };
+        await File.WriteAllTextAsync("C:\\Users\\SystemX\\Downloads\\data.json", JsonConvert.SerializeObject(res));
+        await Console.Out.WriteLineAsync("finished");
+        string text = await File.ReadAllTextAsync("C:\\Users\\SystemX\\Downloads\\data.json");
+        OrderData orderData = JsonConvert.DeserializeObject<OrderData>(text);
+        IList<OrderDataItem> ask = OrderData.Convert(orderData.ask);
+        IList<OrderDataItem> bid = OrderData.Convert(orderData.bid);
+        double profitBefore = Percent(ask.OrderBy(x => x.Price).First().Price, bid.OrderByDescending(x => x.Price).First().Price);
+        double halfProfit = profitBefore / 2;
+        await Console.Out.WriteLineAsync($"Profit before: {profitBefore}");
+        await Console.Out.WriteLineAsync($"Half profit: {halfProfit}");
+
+        int askNum = 1;
+        int bidNum = 1;
+        double askVolume = SumVol(ask, askNum);
+        double bidVolume = SumVol(bid, bidNum);
+        double askAvg = AveragePrice(ask, askNum);
+        double bidAvg = AveragePrice(bid, bidNum);
+        double currentProfit = Percent(askAvg, bidAvg);
+        await Console.Out.WriteLineAsync($"Ask avg: {askAvg}, bid avg: {bidAvg}");
+
+        while (true)
+        {
+            if (askNum >= ask.Count)
             {
-                foreach (var network in item.Value.networks)
-                {
-                    await Console.Out.WriteLineAsync($"[{item.Key}]{network.Key} {(network.Value.fee ?? 0.0).ToString()}");
-                    //await Console.Out.WriteLineAsync($"[{item.Key}]{network.Key} {}");
-                }
+                await Console.Out.WriteLineAsync($"Ask num ({askNum}) => ask.Count");
+                break;
+            }
+            if (bidNum >= bid.Count)
+            {
+                await Console.Out.WriteLineAsync($"Bid num ({bidNum}) => ask.Count");
+                break;
+            }
+            if (currentProfit <= halfProfit)
+            {
+                await Console.Out.WriteLineAsync($"Current profit {currentProfit} <= {halfProfit} half profit");
+                break;
+            }
+            if (askVolume > bidVolume)
+            {
+                await Console.Out.WriteLineAsync($"Ask volume {askVolume} > bid volume {bidVolume}");
+                bidNum++;
+                bidVolume = SumVol(bid, bidNum);
+                bidAvg = AveragePrice(bid, bidNum);
+                currentProfit = Percent(askAvg, bidAvg);
+                continue;
+            }
+            if(bidVolume > askVolume)
+            {
+                await Console.Out.WriteLineAsync($"Bid volume {bidVolume} > ask volume {askVolume}");
+                askNum++;
+                askVolume = SumVol(ask, askNum);
+                askAvg = AveragePrice(ask, askNum);
+                currentProfit = Percent(askAvg, bidAvg);
+                continue;
             }
         }
-        //await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(currenciesContainer, formatting: Formatting.Indented));
-        await Console.Out.WriteLineAsync("Finished");
+        double resultVolume = Math.Min(askVolume, bidVolume);
+        double buyPrice = resultVolume * askAvg;
+        double sellPrice = resultVolume * bidAvg;
+        await Console.Out.WriteLineAsync($"Volume {resultVolume:F3}");
+        await Console.Out.WriteLineAsync($"Budget {buyPrice:F2}$");
+        await Console.Out.WriteLineAsync($"Buy [{ask[0].Price}] - [{ask[askNum-1].Price}] (avg {askAvg:F5}) -> -{buyPrice:F2}$");
+        await Console.Out.WriteLineAsync($"Sell [{bid[0].Price}] - [{bid[askNum - 1].Price}] (avg {bidAvg:F5}) -> +{sellPrice:F2}$");
+        await Console.Out.WriteLineAsync($"Profit: {sellPrice-buyPrice:F2}$");
     }
+
+    public static double AveragePrice(IList<OrderDataItem> list, int num)
+        => list.Take(num).Average(x => x.Price);
+
+    public static double SumVol(IList<OrderDataItem> list, int num)
+        => list.Take(num).Sum(x => x.Vol);
+
+    static double Percent(double oldValue, double newValue)
+        => ((newValue - oldValue) / oldValue) * 100;
+
+
+    public static async Task<OrderBook> FetchOrderBook(Exchange ex, string sym)
+        => await ex.FetchOrderBook(sym);
+    
 
     public static bool IsNetworkEqual(string first, string second)
     {

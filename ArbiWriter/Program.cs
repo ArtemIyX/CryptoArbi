@@ -39,12 +39,11 @@ class Program
                     options.UseMySql(conString, serverVersion, b => b.MigrationsAssembly("ArbiWriter")));
 
                 services.AddHostedService<TokenCollectorService>();
-                services.AddScoped<IRepository<ExchangeToken, long>, TokenRepository>();
-                services.AddScoped<IRepository<ExchangeTokenNetwork, long>, TokenNetworkRepository>();
-                services.AddScoped<IRepository<ExchangeEntity, string>, ExchangeRepository>();
+                services.AddRepos();
                 services.AddScoped<ITokenService, TokenService>();
                 services.AddScoped<IExchangeService, ExchangeService>();
                 services.AddScoped<ITokenCollector, TokenCollectorService>();
                 services.AddScoped<IExchangeApiService, ExchangeApiService>();
+
             });
 }
