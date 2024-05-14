@@ -14,7 +14,7 @@ namespace ArbiDataLib.Data
         public ArbiDbContext(DbContextOptions<ArbiDbContext> options) : base(options)
         {
             Database.EnsureCreated();
-            //Database.Migrate();
+            Database.Migrate();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -35,6 +35,10 @@ namespace ArbiDataLib.Data
                .WithOne(n => n.Token)
                .HasForeignKey(n => n.ExchangeTokenId);
 
+            modelBuilder.Entity<ExchangeToken>()
+              .HasMany(e => e.Asks)
+              .WithOne(n => n.ExchangeToken)
+              .HasForeignKey(n => n.ExchangeTokenId);
             modelBuilder.Entity<ExchangeToken>()
                .HasMany(e => e.Bids)
                .WithOne(n => n.ExchangeToken)
