@@ -93,9 +93,37 @@ namespace ArbiWriter.Migrations
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
+            migrationBuilder.CreateTable(
+                name: "OrderBooks",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    IsAsk = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Price = table.Column<double>(type: "double", nullable: false),
+                    Volume = table.Column<double>(type: "double", nullable: false),
+                    ExchangeTokenId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderBooks", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderBooks_Tokens_ExchangeTokenId",
+                        column: x => x.ExchangeTokenId,
+                        principalTable: "Tokens",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
             migrationBuilder.CreateIndex(
                 name: "IX_Networks_ExchangeTokenId",
                 table: "Networks",
+                column: "ExchangeTokenId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderBooks_ExchangeTokenId",
+                table: "OrderBooks",
                 column: "ExchangeTokenId");
 
             migrationBuilder.CreateIndex(
@@ -109,6 +137,9 @@ namespace ArbiWriter.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Networks");
+
+            migrationBuilder.DropTable(
+                name: "OrderBooks");
 
             migrationBuilder.DropTable(
                 name: "Tokens");

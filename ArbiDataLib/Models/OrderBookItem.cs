@@ -15,6 +15,9 @@ namespace ArbiDataLib.Models
         [Key]
         public long Id { get; set; }
 
+        [DefaultValue(false)]
+        public bool IsAsk { get; set; }
+
         [DefaultValue(0.0)]
         public double Price { get; set; }
 

@@ -13,7 +13,7 @@ namespace ArbiDataLib.Data
 
         public ArbiDbContext(DbContextOptions<ArbiDbContext> options) : base(options)
         {
-            Database.EnsureCreated();
+            //Database.EnsureCreated();
             Database.Migrate();
         }
 
@@ -36,13 +36,9 @@ namespace ArbiDataLib.Data
                .HasForeignKey(n => n.ExchangeTokenId);
 
             modelBuilder.Entity<ExchangeToken>()
-              .HasMany(e => e.Asks)
+              .HasMany(e => e.OrderBook)
               .WithOne(n => n.ExchangeToken)
               .HasForeignKey(n => n.ExchangeTokenId);
-            modelBuilder.Entity<ExchangeToken>()
-               .HasMany(e => e.Bids)
-               .WithOne(n => n.ExchangeToken)
-               .HasForeignKey(n => n.ExchangeTokenId);
         }
     }
 }

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArbiWriter.Migrations
 {
     [DbContext(typeof(ArbiDbContext))]
-    [Migration("20240507184830_Initial")]
+    [Migration("20240514112306_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -138,6 +138,33 @@ namespace ArbiWriter.Migrations
                     b.ToTable("Networks");
                 });
 
+            modelBuilder.Entity("ArbiDataLib.Models.OrderBookItem", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ExchangeTokenId")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsAsk")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("double");
+
+                    b.Property<double>("Volume")
+                        .HasColumnType("double");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExchangeTokenId");
+
+                    b.ToTable("OrderBooks");
+                });
+
             modelBuilder.Entity("ArbiDataLib.Models.ExchangeToken", b =>
                 {
                     b.HasOne("ArbiDataLib.Models.ExchangeEntity", "Exchange")
@@ -160,6 +187,17 @@ namespace ArbiWriter.Migrations
                     b.Navigation("Token");
                 });
 
+            modelBuilder.Entity("ArbiDataLib.Models.OrderBookItem", b =>
+                {
+                    b.HasOne("ArbiDataLib.Models.ExchangeToken", "ExchangeToken")
+                        .WithMany("OrderBook")
+                        .HasForeignKey("ExchangeTokenId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ExchangeToken");
+                });
+
             modelBuilder.Entity("ArbiDataLib.Models.ExchangeEntity", b =>
                 {
                     b.Navigation("Tokens");
@@ -168,6 +206,8 @@ namespace ArbiWriter.Migrations
             modelBuilder.Entity("ArbiDataLib.Models.ExchangeToken", b =>
                 {
                     b.Navigation("Networks");
+
+                    b.Navigation("OrderBook");
                 });
 #pragma warning restore 612, 618
         }
