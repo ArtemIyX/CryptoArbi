@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ArbiWriter.Migrations
 {
     [DbContext(typeof(ArbiDbContext))]
-    [Migration("20240514142041_Initial")]
-    partial class Initial
+    [Migration("20240515102934_Initital")]
+    partial class Initital
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

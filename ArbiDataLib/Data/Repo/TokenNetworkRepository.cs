@@ -36,5 +36,13 @@ namespace ArbiDataLib.Data.Repo
 
         public IQueryable<ExchangeTokenNetwork> AsQueryable() => _context.TokenNetworks.AsQueryable();
 
+        public async Task AddRange(IEnumerable<ExchangeTokenNetwork> entities, CancellationToken stoppingToken = default)
+            => await _context.TokenNetworks.AddRangeAsync(entities, stoppingToken);
+
+        public void Delete(ExchangeTokenNetwork entity, CancellationToken stoppingToken = default)
+            => _context.TokenNetworks.Remove(entity);
+
+        public void DeleteRange(IEnumerable<ExchangeTokenNetwork> enttities, CancellationToken stoppingToken = default)
+            => _context.TokenNetworks.RemoveRange(enttities);
     }
 }

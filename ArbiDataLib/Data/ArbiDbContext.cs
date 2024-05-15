@@ -30,15 +30,15 @@ namespace ArbiDataLib.Data
                 .Property(b => b.Updated)
                 .HasDefaultValueSql("current_timestamp(6)");
 
-            modelBuilder.Entity<ExchangeToken>()
+            /*modelBuilder.Entity<ExchangeToken>()
                .HasMany(e => e.Networks)
                .WithOne(n => n.Token)
                .HasForeignKey(n => n.ExchangeTokenId);
 
-            modelBuilder.Entity<ExchangeToken>()
-              .HasMany(e => e.OrderBook)
-              .WithOne(n => n.ExchangeToken)
-              .HasForeignKey(n => n.ExchangeTokenId);
+            modelBuilder.Entity<OrderBookItem>()
+                .HasOne(ob => ob.ExchangeToken)             // OrderBookItem has one ExchangeToken
+                .WithMany()                                 // ExchangeToken can be related to many OrderBookItems
+                .HasForeignKey(ob => ob.ExchangeTokenId);   // Foreign key property in OrderBookItem*/
         }
     }
 }

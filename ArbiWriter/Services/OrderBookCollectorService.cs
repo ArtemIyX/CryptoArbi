@@ -11,7 +11,7 @@ namespace ArbiWriter.Services
         ILogger<OrderBookCollectorService> logger,
         IServiceScopeFactory serviceScopeFactory) : BackgroundService, IOrderBookCollector
     {
-        private const string ClassName = nameof(TokenCollectorService);
+        private const string ClassName = nameof(OrderBookCollectorService);
         private readonly ILogger<OrderBookCollectorService> _logger = logger;
         private readonly IServiceScopeFactory serviceScopeFactory = serviceScopeFactory;
 
@@ -47,7 +47,7 @@ namespace ArbiWriter.Services
             while (!stoppingToken.IsCancellationRequested)
             {
                 await HandleExchangeAsync(exchange, stoppingToken);
-                await Task.Delay(1000, stoppingToken);
+                await Task.Delay(250, stoppingToken);
             }
         }
 

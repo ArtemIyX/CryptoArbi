@@ -43,11 +43,13 @@ namespace ArbiDataLib.Models
         public bool Withdraw { get; set; }
 
         public string ExchangeId { get; set; }
+
+        [ForeignKey("ExchangeId")]
         public virtual ExchangeEntity? Exchange { get; set; }
 
-        public virtual IList<ExchangeTokenNetwork> Networks { get; set; }
+        public virtual ICollection<ExchangeTokenNetwork> Networks { get; set; }
 
-        public virtual IList<OrderBookItem> OrderBook { get; set; }
+        public virtual ICollection<OrderBookItem> OrderBook { get; set; }
 
         public double? AskVolumeUsdt => AskVolume is not null ? AskVolume * Ask : null;
         public double? BidVolumeUsdt => AskVolume is not null ? BidVolume * Bid : null;
@@ -110,7 +112,7 @@ namespace ArbiDataLib.Models
         public bool Withdraw { get; set; } = false;
 
         [JsonPropertyName("networks")]
-        public IList<TokenNetworkResponse> Networks { get; set; } = [];
+        public ICollection<TokenNetworkResponse> Networks { get; set; } = [];
 
         // Empty constructor
         public ExchangeTokenResponse()
@@ -122,7 +124,7 @@ namespace ArbiDataLib.Models
             string displayName, double? ask, double? bid, double? dayVolumeUSDT,
             double? askVolume, double? bidVolume, DateTime updated, string exchangeId,
             bool active, bool deposit, bool withdraw,
-            IList<TokenNetworkResponse> networks)
+            ICollection<TokenNetworkResponse> networks)
         {
             Id = id;
             DisplayName = displayName;

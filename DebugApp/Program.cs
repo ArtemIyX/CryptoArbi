@@ -2,7 +2,11 @@
 using DebugApp;
 using Microsoft.VisualBasic;
 using Newtonsoft.Json;
+using Org.BouncyCastle.Utilities;
+using System.Diagnostics;
+using System.Diagnostics.Metrics;
 using System.Globalization;
+using System.Reflection;
 using System.Reflection.Metadata.Ecma335;
 
 internal class Program
@@ -38,14 +42,76 @@ internal class Program
 
     private static async Task Main(string[] args)
     {
-        Exchange exchange = new ccxt.Bitfinex();
+        Exchange exchange = new ccxt.Binance();
         await Console.Out.WriteLineAsync(exchange.id);
-        //var fetched = await exchange.FetchTickers();
-        var fetched = await exchange.FetchOrderBook("BTC/USDT");
-        //var list = fetched.tickers.Select(x => new {sym= x.Value.symbol, ask= x.Value.ask, bid=x.Value.bid}).ToList();
-        await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(fetched, Formatting.Indented));
+        var fetched = await exchange.FetchTickers();
+        var symbols = fetched.tickers.Select(x => x.Value.symbol).ToList();
+        await Console.Out.WriteLineAsync(JsonConvert.SerializeObject(symbols, Formatting.Indented));
 
-        return;
+        Console.ReadLine();
+        Console.Clear();
+        await Console.Out.WriteLineAsync("Lets do some fucking work!");
+        // Создаем список задач
+
+
+        while (symbols.Count != 0)
+        {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+            List<Task> tasks = [];
+            // Add 8 tasks
+            int n = 10;
+            for (int i = 0; i < n; ++i)
+            {
+                if (symbols.Count <= 0)
+                    break;
+                tasks.Add(DoAsyncWork(exchange, symbols.First() ?? ""));
+                symbols.RemoveAt(0);
+            }
+            await Task.WhenAll(tasks);
+            stopwatch.Stop();
+            double totalWait = 1000;
+            await Console.Out.WriteLineAsync($"{n} items in {stopwatch.Elapsed.TotalSeconds:F3}s");
+            if (stopwatch.Elapsed.TotalMilliseconds < totalWait)
+            {
+                await Console.Out.WriteLineAsync($"Waiting {totalWait - stopwatch.Elapsed.TotalMilliseconds}ms...");
+                await Task.Delay((int)(totalWait - stopwatch.Elapsed.TotalMilliseconds));
+            }
+        }
+
+
+        Console.WriteLine($"All tasks completed");
+    }
+
+    private static async Task DoAsyncWork(Exchange exchange, string v)
+    {
+        try
+        {
+            var book = await exchange.FetchOrderBook(v);
+            await Console.Out.WriteLineAsync($"Task - {v} OK ({book.asks.First()[0]})");
+        }
+        catch(Exception ex)
+        {
+            await Console.Out.WriteLineAsync($"Task - {v} exception: {ex.Message}");
+        }
+        
+    }
+
+    public static double AveragePrice(IList<OrderDataItem> list, int num)
+        => list.Take(num).Average(x => x.Price);
+
+    public static double SumVol(IList<OrderDataItem> list, int num)
+        => list.Take(num).Sum(x => x.Vol);
+
+    static double Percent(double oldValue, double newValue)
+        => ((newValue - oldValue) / oldValue) * 100;
+
+
+    public static async Task<OrderBook> FetchOrderBook(Exchange ex, string sym)
+        => await ex.FetchOrderBook(sym);
+    
+    public static async Task ProfitAlgo()
+    {
         await Console.Out.WriteLineAsync("Loading");
         var sym = "SWASH/USDT";
         var a = FetchOrderBook(new Kucoin(), sym);
@@ -102,7 +168,7 @@ internal class Program
                 currentProfit = Percent(askAvg, bidAvg);
                 continue;
             }
-            if(bidVolume > askVolume)
+            if (bidVolume > askVolume)
             {
                 await Console.Out.WriteLineAsync($"Bid volume {bidVolume} > ask volume {askVolume}");
                 askNum++;
@@ -117,24 +183,10 @@ internal class Program
         double sellPrice = resultVolume * bidAvg;
         await Console.Out.WriteLineAsync($"Volume {resultVolume:F3}");
         await Console.Out.WriteLineAsync($"Budget {buyPrice:F2}$");
-        await Console.Out.WriteLineAsync($"Buy [{ask[0].Price}] - [{ask[askNum-1].Price}] (avg {askAvg:F5}) -> -{buyPrice:F2}$");
+        await Console.Out.WriteLineAsync($"Buy [{ask[0].Price}] - [{ask[askNum - 1].Price}] (avg {askAvg:F5}) -> -{buyPrice:F2}$");
         await Console.Out.WriteLineAsync($"Sell [{bid[0].Price}] - [{bid[askNum - 1].Price}] (avg {bidAvg:F5}) -> +{sellPrice:F2}$");
-        await Console.Out.WriteLineAsync($"Profit: {sellPrice-buyPrice:F2}$");
+        await Console.Out.WriteLineAsync($"Profit: {sellPrice - buyPrice:F2}$");
     }
-
-    public static double AveragePrice(IList<OrderDataItem> list, int num)
-        => list.Take(num).Average(x => x.Price);
-
-    public static double SumVol(IList<OrderDataItem> list, int num)
-        => list.Take(num).Sum(x => x.Vol);
-
-    static double Percent(double oldValue, double newValue)
-        => ((newValue - oldValue) / oldValue) * 100;
-
-
-    public static async Task<OrderBook> FetchOrderBook(Exchange ex, string sym)
-        => await ex.FetchOrderBook(sym);
-    
 
     public static bool IsNetworkEqual(string first, string second)
     {

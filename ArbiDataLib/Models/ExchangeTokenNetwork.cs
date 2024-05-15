@@ -33,6 +33,8 @@ namespace ArbiDataLib.Models
         public double? Fee { get; set; } = null;
 
         public long ExchangeTokenId { get; set; }
+
+        [ForeignKey("ExchangeTokenId")]
         public virtual ExchangeToken Token { get; set; }
 
         public TokenNetworkResponse ToResponse() => 

@@ -3,6 +3,9 @@ using ArbiDataLib.Models;
 using ArbiLib.Libs;
 using ccxt;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
+using System.Collections;
+using System.Diagnostics;
 
 namespace ArbiWriter.Services
 {
@@ -14,16 +17,12 @@ namespace ArbiWriter.Services
         public Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default);
     }
 
-    public class TokenService(IRepository<ExchangeToken, long> tokenRepository,
-            IRepository<ExchangeTokenNetwork, long> networkRepository,
-            IRepository<OrderBookItem, long> orderBookRepository,
+    public class TokenService(IServiceScopeFactory serviceScopeFactory,
             ILogger<TokenService> logger) : ITokenService
     {
-        private readonly IRepository<ExchangeToken, long> _tokenRepo = tokenRepository;
-        private readonly IRepository<OrderBookItem, long> _orderBookRepo = orderBookRepository;
-        private readonly IRepository<ExchangeTokenNetwork, long> _networkRepo = networkRepository;
+        private const string ClassName = nameof(TokenService);
         private readonly ILogger<TokenService> _logger = logger;
-
+        private readonly IServiceScopeFactory serviceScopeFactory = serviceScopeFactory;
 
         public ExchangeToken? CreateTokenEntity(Exchange exchange, in ccxt.Ticker ticker, in ccxt.Currency currency)
         {
@@ -63,120 +62,211 @@ namespace ArbiWriter.Services
             };
 
         public async Task<ExchangeToken?> FindToken(string ownerId, string fullName, CancellationToken stoppingToken = default)
-            => await _tokenRepo.GetDbSet().FirstOrDefaultAsync(
-                x => x.ExchangeId == ownerId && x.DisplayName == fullName,
-                stoppingToken);
+        {
+            using IServiceScope scope = serviceScopeFactory.CreateScope();
+            IRepository<ExchangeToken, long> tokenRepo =
+               scope.ServiceProvider.GetRequiredService<IRepository<ExchangeToken, long>>();
+            return await tokenRepo.AsQueryable().FirstOrDefaultAsync(
+               x => x.ExchangeId == ownerId && x.DisplayName == fullName,
+               stoppingToken);
+        }
+
 
         public async Task UpdateTokensNetworks(Exchange owner, CancellationToken stoppingToken = default)
         {
             Currencies currenciesContainer = await owner.FetchCurrencies();
             Tickers tickersContainer = await owner.FetchTickers();
-
-            //_logger.LogWarning($"{owner.id} -> {tickersContainer.tickers.Count}");
-            foreach (KeyValuePair<string, Ticker> x in tickersContainer.tickers)
+            using (IServiceScope scope = serviceScopeFactory.CreateScope())
             {
-                if (string.IsNullOrEmpty(x.Value.symbol))
-                    continue;
-                if (!TickerLib.IsUsdtPair(x.Value.symbol))
-                    continue;
-                string friendlySymbol = TickerLib.GetPureTicker(x.Value.symbol);
+                IRepository<ExchangeToken, long> tokenRepo =
+                    scope.ServiceProvider.GetRequiredService<IRepository<ExchangeToken, long>>();
 
-                if (!currenciesContainer.currencies.ContainsKey(friendlySymbol.ToUpper()))
-                    continue;
-
-                KeyValuePair<string, Currency> currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
-
-                ExchangeToken? tokenInDb = await FindToken(owner.id, friendlySymbol ?? "", stoppingToken);
-
-                if (tokenInDb is not null)
+                //_logger.LogWarning($"{owner.id} -> {tickersContainer.tickers.Count}");
+                foreach (KeyValuePair<string, Ticker> x in tickersContainer.tickers)
                 {
+                    if (string.IsNullOrEmpty(x.Value.symbol))
+                        continue;
+                    if (!TickerLib.IsUsdtPair(x.Value.symbol))
+                        continue;
+                    string friendlySymbol = TickerLib.GetPureTicker(x.Value.symbol);
 
-                    tokenInDb.Ask = x.Value.ask;
-                    tokenInDb.Bid = x.Value.bid;
-                    tokenInDb.AskVolume = x.Value.askVolume;
-                    tokenInDb.BidVolume = x.Value.bidVolume;
-                    tokenInDb.DayVolumeUSDT = x.Value.quoteVolume;
-                    tokenInDb.Active = currency.Value.active ?? false;
-                    tokenInDb.Deposit = currency.Value.deposit ?? false;
-                    tokenInDb.Withdraw = currency.Value.withdraw ?? false;
-                    _tokenRepo.Update(tokenInDb, stoppingToken);
-                }
-                else
-                {
-                    ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value, currency.Value);
-                    if (tokenEntity is not null)
+                    if (!currenciesContainer.currencies.ContainsKey(friendlySymbol.ToUpper()))
+                        continue;
+
+                    KeyValuePair<string, Currency> currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
+
+                    ExchangeToken? tokenInDb = await FindToken(owner.id, friendlySymbol ?? "", stoppingToken);
+
+                    if (tokenInDb is not null)
                     {
-                        await _tokenRepo.Add(tokenEntity, stoppingToken);
-                    }
-                }
-            }
-            await _tokenRepo.SaveChangesAsync(stoppingToken);
 
-
-            // Update networsk
-
-            foreach (KeyValuePair<string, Ticker> x in tickersContainer.tickers)
-            {
-                if (string.IsNullOrEmpty(x.Value.symbol))
-                    continue;
-
-                if (!TickerLib.IsUsdtPair(x.Value.symbol))
-                    continue;
-                string friendlySymbol = TickerLib.GetPureTicker(x.Value.symbol);
-
-                if (!currenciesContainer.currencies.ContainsKey(friendlySymbol.ToUpper()))
-                    continue;
-
-                KeyValuePair<string, Currency>? currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
-                if (currency is null) continue;
-
-                ExchangeToken? tokenInDb = await FindToken(owner.id, friendlySymbol ?? "", stoppingToken);
-                if (tokenInDb is null) continue;
-
-                IList<Task> addTasks = [];
-                foreach (var net in currency.Value.Value.networks)
-                {
-                    ExchangeTokenNetwork? networkInDb = _networkRepo.AsQueryable().FirstOrDefault(x => x.ExchangeTokenId == tokenInDb.Id);
-                    if (networkInDb is null)
-                    {
-                        ExchangeTokenNetwork newNetwork = CreateNetworkEntity(tokenInDb, net.Key, net.Value);
-                        addTasks.Add(_networkRepo.Add(newNetwork, stoppingToken));
+                        tokenInDb.Ask = x.Value.ask;
+                        tokenInDb.Bid = x.Value.bid;
+                        tokenInDb.AskVolume = x.Value.askVolume;
+                        tokenInDb.BidVolume = x.Value.bidVolume;
+                        tokenInDb.DayVolumeUSDT = x.Value.quoteVolume;
+                        tokenInDb.Active = currency.Value.active ?? false;
+                        tokenInDb.Deposit = currency.Value.deposit ?? false;
+                        tokenInDb.Withdraw = currency.Value.withdraw ?? false;
+                        tokenRepo.Update(tokenInDb, stoppingToken);
                     }
                     else
                     {
-                        networkInDb.Active = net.Value.active ?? false;
-                        networkInDb.Deposit = net.Value.deposit ?? false;
-                        networkInDb.Withdraw = net.Value.withdraw ?? false;
-                        networkInDb.Fee = net.Value.fee;
+                        ExchangeToken? tokenEntity = CreateTokenEntity(owner, x.Value, currency.Value);
+                        if (tokenEntity is not null)
+                        {
+                            await tokenRepo.Add(tokenEntity, stoppingToken);
+                        }
                     }
                 }
-                await Task.WhenAll(addTasks);
+                await tokenRepo.SaveChangesAsync(stoppingToken);
             }
-            await _networkRepo.SaveChangesAsync();
+
+            // Update networsk
+            using (IServiceScope scope = serviceScopeFactory.CreateScope())
+            {
+                IRepository<ExchangeTokenNetwork, long> networkRepo =
+                    scope.ServiceProvider.GetRequiredService<IRepository<ExchangeTokenNetwork, long>>();
+                foreach (KeyValuePair<string, Ticker> x in tickersContainer.tickers)
+                {
+                    if (string.IsNullOrEmpty(x.Value.symbol))
+                        continue;
+
+                    if (!TickerLib.IsUsdtPair(x.Value.symbol))
+                        continue;
+                    string friendlySymbol = TickerLib.GetPureTicker(x.Value.symbol);
+
+                    if (!currenciesContainer.currencies.ContainsKey(friendlySymbol.ToUpper()))
+                        continue;
+
+                    KeyValuePair<string, Currency>? currency = currenciesContainer.currencies.FirstOrDefault(a => a.Key == friendlySymbol.ToString());
+                    if (currency is null) continue;
+
+                    ExchangeToken? tokenInDb = await FindToken(owner.id, friendlySymbol ?? "", stoppingToken);
+                    if (tokenInDb is null) continue;
+
+                    foreach (var net in currency.Value.Value.networks)
+                    {
+                        ExchangeTokenNetwork? networkInDb = networkRepo.AsQueryable().FirstOrDefault(x => x.ExchangeTokenId == tokenInDb.Id);
+                        if (networkInDb is null)
+                        {
+                            ExchangeTokenNetwork newNetwork = CreateNetworkEntity(tokenInDb, net.Key, net.Value);
+                            await networkRepo.Add(newNetwork, stoppingToken);
+                        }
+                        else
+                        {
+                            networkInDb.Active = net.Value.active ?? false;
+                            networkInDb.Deposit = net.Value.deposit ?? false;
+                            networkInDb.Withdraw = net.Value.withdraw ?? false;
+                            networkInDb.Fee = net.Value.fee;
+                        }
+                    }
+                }
+                await networkRepo.SaveChangesAsync(stoppingToken);
+            }
         }
 
+        private static double _waitMax = 800.0;
+        private static double _orderBookTasksMax = 10;
+        private async Task ProcessOrderBook(Exchange owner, string sym, CancellationToken stoppingToken = default)
+        {
+            try
+            {
+
+                // Fetch order book by symbol. It will throw errors if failed
+                OrderBook orderBook = await owner.FetchOrderBook(sym);
+
+                // Must be valid orderbook
+                if (orderBook.asks is null) throw new NullReferenceException(nameof(orderBook.asks));
+                if (orderBook.bids is null) throw new NullReferenceException(nameof(orderBook.bids));
+
+                //_logger.LogInformation($"[{owner.id}] {sym} book fetched ({orderBook.asks.First()[0]})");
+                /*using (IServiceScope scope = serviceScopeFactory.CreateScope())
+                {
+                    IRepository<OrderBookItem, long> orderBookRepo =
+                        scope.ServiceProvider.GetRequiredService<IRepository<OrderBookItem, long>>();
+                    // Get current order book by symbol
+                    IEnumerable<OrderBookItem> currentOrderBook = orderBookRepo
+                    .AsQueryable()
+                        .Where(x => x.ExchangeTokenId == token.Id)
+                        .AsEnumerable();
+                    orderBookRepo.DeleteRange(currentOrderBook, stoppingToken);
+                }
+
+                // Convert asks to items
+                IEnumerable<OrderBookItem> asks = orderBook.asks.Select(x => new OrderBookItem()
+                {
+                    ExchangeTokenId = token.Id,
+                    IsAsk = true,
+                    Price = x[0],
+                    Volume = x[1]
+                });
+
+                // Convert bids to items
+                IEnumerable<OrderBookItem> bids = orderBook.bids.Select(x => new OrderBookItem()
+                {
+                    ExchangeTokenId = token.Id,
+                    IsAsk = false,
+                    Price = x[0],
+                    Volume = x[1]
+                });
+                using (IServiceScope scope = serviceScopeFactory.CreateScope())
+                {
+                    IRepository<OrderBookItem, long> orderBookRepo =
+                        scope.ServiceProvider.GetRequiredService<IRepository<OrderBookItem, long>>();
+                    // Add asks and bids
+                    await orderBookRepo.AddRange(asks.Concat(bids), stoppingToken);
+                    // Save all changes
+                    await orderBookRepo.SaveChangesAsync(stoppingToken);
+                }*/
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"{owner.id} ({sym} order book warn: {ex.Message}");
+            }
+            finally
+            {
+
+            }
+        }
         public async Task UpdateTokensOrderBook(Exchange owner, CancellationToken stoppingToken = default)
         {
-            var tokens = await owner.FetchTickers();
-            //_logger.LogInformation($"{owner.id} -> {tokens.Count}");
-            int i = 0;
-            foreach (var item in tokens.tickers)
+            Currencies currenciesContainer = await owner.FetchCurrencies();
+            Tickers tickersContainer = await owner.FetchTickers();
+            IList<ExchangeToken> tokens = [];
+            using (IServiceScope scope = serviceScopeFactory.CreateScope())
             {
-                try
-                {
-                    await owner.FetchOrderBook(item.Value.symbol);
-                    _logger.LogInformation($"[{owner.id}]Book: {item.Value.symbol} -> {i}|{tokens.tickers.Count}");
-                }
-                catch (Exception ex)
-                {
+                IRepository<ExchangeToken, long> tokenRepo =
+                    scope.ServiceProvider.GetRequiredService<IRepository<ExchangeToken, long>>();
+                tokens = tokenRepo
+                    .AsQueryable()
+                    .Where(x => x.Active && x.ExchangeId == owner.id)
+                    .ToList();
+            }
 
-                }
-                finally
+            Stopwatch global = Stopwatch.StartNew();
+            int n = tokens.Count;
+            while(tokens.Count > 0)
+            {
+                IList<Task> tasks = [];
+                Stopwatch stopwatch = Stopwatch.StartNew();
+                for(int i = 0; i < _orderBookTasksMax; ++i)
                 {
-                    ++i;
+                    if (tokens.Count <= 0) break;
+                    tasks.Add(ProcessOrderBook(owner, $"{tokens.First().DisplayName}/USDT", stoppingToken));
+                    tokens.RemoveAt(0);
+                }
+                await Task.WhenAll(tasks);
+                stopwatch.Stop();
+                _logger.LogDebug($"[{owner.id}] {_orderBookTasksMax} items in {stopwatch.Elapsed.TotalSeconds:F3}s");
+                if (stopwatch.Elapsed.TotalMilliseconds < _waitMax)
+                {
+                    _logger.LogDebug($"[{owner.id}] Waiting {_waitMax - stopwatch.Elapsed.TotalMilliseconds:F5}ms...");
+                    await Task.Delay((int)(_waitMax - stopwatch.Elapsed.TotalMilliseconds), stoppingToken);
                 }
             }
-            //OrderBook? res = 
+            _logger.LogInformation($"[{owner.id} -> {n} items in {global.Elapsed.TotalSeconds:F2}s");
         }
     }
 }
+

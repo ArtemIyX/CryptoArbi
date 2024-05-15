@@ -40,5 +40,14 @@ namespace ArbiDataLib.Data.Repo
         }
 
         public IQueryable<OrderBookItem> AsQueryable() => _context.OrderBooks.AsQueryable();
+
+        public async Task AddRange(IEnumerable<OrderBookItem> entities, CancellationToken stoppingToken = default)
+           => await _context.OrderBooks.AddRangeAsync(entities, stoppingToken);
+
+        public void Delete(OrderBookItem entity, CancellationToken stoppingToken = default)
+            => _context.OrderBooks.Remove(entity);
+
+        public void DeleteRange(IEnumerable<OrderBookItem> enttities, CancellationToken stoppingToken = default)
+            => _context.OrderBooks.RemoveRange(enttities);
     }
 }

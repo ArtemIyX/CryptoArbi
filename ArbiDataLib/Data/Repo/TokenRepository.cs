@@ -36,5 +36,14 @@ namespace ArbiDataLib.Data.Repo
         }
 
         public IQueryable<ExchangeToken> AsQueryable() => _context.ExchangeTokens.AsQueryable();
+
+        public async Task AddRange(IEnumerable<ExchangeToken> entities, CancellationToken stoppingToken = default)
+            => await _context.ExchangeTokens.AddRangeAsync(entities, stoppingToken);
+
+        public void Delete(ExchangeToken entity, CancellationToken stoppingToken = default)
+            => _context.ExchangeTokens.Remove(entity);
+
+        public void DeleteRange(IEnumerable<ExchangeToken> enttities, CancellationToken stoppingToken = default)
+            => _context.ExchangeTokens.RemoveRange(enttities);
     }
 }

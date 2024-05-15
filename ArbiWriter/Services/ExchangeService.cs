@@ -80,7 +80,7 @@ namespace ArbiWriter.Services
                 if (ex is not null)
                 {
                     ex.Working = true;
-                    _exchangeRepo.Update(ex);
+                    _exchangeRepo.Update(ex, stoppingToken);
                 }
                 else
                 {
