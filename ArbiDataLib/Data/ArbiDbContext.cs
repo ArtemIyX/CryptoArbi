@@ -11,7 +11,7 @@ namespace ArbiDataLib.Data
 
         public ArbiDbContext(DbContextOptions<ArbiDbContext> options) : base(options)
         {
-            Database.EnsureCreatedAsync();
+            Database.EnsureCreated();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
